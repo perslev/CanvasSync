@@ -12,22 +12,33 @@ files and creates a similar folder structure on the local computer:
 
 
 CanvasSync uses the Canvas LMS API (https://canvas.instructure.com/doc/api/) to pull resources on a Canvas server. In
-order to authenticate as the user an authentication token mut be generated on the Canvas web server under the
-'Accounts --> Settings' menu as showed below:
+order to authenticate as the user an authentication token must be generated on the Canvas web server. This is done by
+going to 'Account' followed by 'Settings'. Near the bottom under the 'Approved integrations' section new authentication
+tokens may be generated. A token is a substitution to the familiar username-password based authentication and allows
+3rd party applications like CanvasSync to authenticate with the Canvas server API and pull resources. Please note that
+by supplying an authentication token to the CanvasSync software, you allow it to communicate with the Canvas server on
+your behalf, see Disclaimer below.
+
+The process of generating a token is illustrated below:
 
 
 ![alt tag](https://cloud.githubusercontent.com/assets/12041524/22701027/c25ccbd8-ed5c-11e6-9ace-c8687e124bc8.png)
 
 
-The authentication token along with a path pointing to a folder to where the sync will take place and the domain
-of the Canvas server must be set up during the initial launch of CanvasSync. These settings will be stored in an
-encrypted local file to keep the authentication token secure. Thus, the user must specify a password that must also be
-supplied whenever CanvasSync is launched at a later time.
+During the initial launch of CanvasSync the user must specify various settings:
+
+* A path to a folder to which synchronization will occur. Note that the path should also include a sub-folder name. Example:
+If you wish to sync to a folder called Canvas on the Desktop, write "~/Desktop/Canvas" (without creating the folder 'Canvas' beforehand)
+* The Canvas web server domain
+* The authentication token generated as illustrated above.
+
+These settings will be stored in an encrypted local file to keep the authentication token secure. Consequently, the user must
+specify a password that must also be supplied whenever CanvasSync is launched to synchronize at a later time.
 
 Usage examples
 --------------
-CanvasSync is launched by pointing the Python interpreter to either the CanvasSync main folder or the __main__.py file
-located at ../CanvasSync/__main__.py
+CanvasSync is launched by pointing the Python (version 2.7) interpreter to either the CanvasSync main folder
+or the __main__.py file located at ../CanvasSync/__main__.py
 ```
 python /path/to/CanvasSync
 ```
