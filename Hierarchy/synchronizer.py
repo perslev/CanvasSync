@@ -82,7 +82,7 @@ class Synchronizer(Entity):
         self._add(Course(course_id, course_name, course_path, parent=self))
 
     def _download_courses(self):
-        """ Returns a dictionary of courses from the Canvas server """
+        """ [HIDDEN] Returns a dictionary of courses from the Canvas server """
         return self.api.get_courses()
 
     def _add_courses(self):
