@@ -28,6 +28,7 @@ the user input password.
 
 # Inbuilt modules
 import os
+import sys
 
 # Third party modules
 import requests
@@ -58,6 +59,11 @@ class Settings(object):
         """ Loads the current settings from the settings file and sets the attributes of the Settings object """
         encrypted_message = open(self.settings_path, "rb").read()
         self.sync_path_, self.domain_, self.token_ = decrypt(encrypted_message).split("#SPLIT#")
+
+        if not self.validate_token(self.token_):
+            print "\n[ERROR] The authentication token has been reset, you must generate a new on the canvas webpage and reset\n" \
+                  "the CanvasSync settings using the -s or --setup command line arguments"
+            sys.exit()
 
     def set_settings(self):
         """
@@ -124,17 +130,7 @@ class Settings(object):
         # Keep asking until a valid domain has been entered by the user
         while not found:
             domain = "https://" + raw_input("\nEnter the Canvas domain of your institution:\n$ https://")
-
-            try:
-                response = requests.get(domain + "/api/v1/courses", timeout=5).content
-                if response == "{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
-                    # If this response, the server exists and understands the API call but complains that the call was
-                    # not authenticated - the URL represents a Canvas server
-                    found = True
-                else:
-                    print "\n[ERROR] Not a valid Canvas web server. Wrong domain?"
-            except Exception:
-                print "\n[ERROR] Invalid domain."
+            found = self.validate_domain(domain)
 
         self.domain_ = domain
         self.print_settings()
@@ -152,15 +148,33 @@ class Settings(object):
         # Keep asking until a valid authentication token has been entered by the user
         while not found:
             token = raw_input("\nEnter authentication token (see help for details):\n$ ")
-
-            response = requests.get(self.domain_ + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).content
-            if "Invalid access token" in response:
-                print "The server did not accept the authentication token. Please try agian."
-            else:
-                found = True
+            found = self.validate_token(token)
 
         self.token_ = token
         self.print_settings()
+
+    def validate_domain(self, domain):
+        try:
+            response = requests.get(domain + "/api/v1/courses", timeout=5).content
+            if response == "{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
+                # If this response, the server exists and understands the API call but complains that the call was
+                # not authenticated - the URL represents a Canvas server
+                return True
+            else:
+                print "\n[ERROR] Not a valid Canvas web server. Wrong domain?"
+                return False
+        except Exception:
+            print "\n[ERROR] Invalid domain."
+            return False
+
+    def validate_token(self, token):
+        response = requests.get(self.domain_ + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).content
+
+        if "Invalid access token" in response:
+            print "The server did not accept the authentication token."
+            return False
+        else:
+            return True
 
     def print_settings(self, clear=True):
         """ Print the settings currently in memory. Clear the console first if specified by the 'clear' parameter """
