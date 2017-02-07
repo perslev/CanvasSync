@@ -38,10 +38,9 @@ The hierarchy of Entity objects is displayed below:
 import os
 import sys
 
-# CanvasSync modules
 from CanvasSync.Hierarchy.entity import Entity
-from CanvasSync.Statics import static_functions
 from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics import static_functions
 
 
 class Item(Entity):

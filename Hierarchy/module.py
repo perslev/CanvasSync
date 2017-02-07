@@ -41,8 +41,9 @@ The Module object encapsulates a list of children Folder objects or Item objects
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Hierarchy.item import Item
 from CanvasSync.Hierarchy.subfolder import Folder
-from CanvasSync.Statics import static_functions
+
 from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics import static_functions
 
 
 class Module(Entity):

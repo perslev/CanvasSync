@@ -37,9 +37,10 @@ The Synchronizer encapsulates a list of children Course objects.
 """
 
 # CanvasSync modules
-from CanvasSync.Statics import static_functions
 from CanvasSync.Hierarchy.course import Course
 from CanvasSync.Hierarchy.entity import Entity
+
+from CanvasSync.Statics import static_functions
 
 
 class Synchronizer(Entity):

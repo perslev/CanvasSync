@@ -43,8 +43,9 @@ as parent.
 # CanvasSync modules
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Hierarchy.item import Item
-from CanvasSync.Statics import static_functions
+
 from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics import static_functions
 
 
 class Folder(Entity):

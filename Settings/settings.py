@@ -29,13 +29,11 @@ the user input password.
 # Inbuilt modules
 import os
 
-# Third party modules
 import requests
 
-# CanvasSync modules
-from CanvasSync.Statics import static_functions
-from CanvasSync.Statics.ANSI import Colors
 from CanvasSync.Settings.encrypt import encrypt, decrypt
+from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics import static_functions
 
 
 class Settings(object):
