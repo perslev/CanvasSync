@@ -11,6 +11,7 @@ CanvasSync uses the Canvas LMS API (https://canvas.instructure.com/doc/api/) to 
 order to authenticate as the user an authentication token mut be generated on the Canvas web server under the
 'Accounts --> Settings' menu as showed below:
 
+![alt tag](https://cloud.githubusercontent.com/assets/12041524/22701027/c25ccbd8-ed5c-11e6-9ace-c8687e124bc8.png)
 
 
 *
