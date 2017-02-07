@@ -91,7 +91,7 @@ class Course(Entity):
     def _add_modules(self):
         """ [HIDDEN]  Method that adds all Module objects to the list of Module objects """
 
-        # Download dictionary of modules and add them all to the list of children
+        # Download list of dictionaries representing modules and add them all to the list of children
         for position, module in enumerate(self._download_modules()):
             module_id = module["id"]
             module_name = static_functions.get_corrected_name(module["name"])

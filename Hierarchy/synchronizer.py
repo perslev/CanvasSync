@@ -88,7 +88,7 @@ class Synchronizer(Entity):
     def _add_courses(self):
         """ [HIDDEN]  Method that adds all Course objects to the list of Course objects """
 
-        # Download dictionary of courses and add them all to the list of children
+        # Download list of dictionaries representing courses and add them all to the list of children
         for course in self._download_courses():
             course_id = course["id"]
             course_name = course["course_code"].split(";")[-1]
