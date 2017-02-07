@@ -16,8 +16,8 @@ information:
 
 1) A path to with synchronization will occur. The path must be pointing to a valid folder and contain a sub folder name.
    The sub folder is generated and stores all synchronized courses.
-2) The domain_ of the Canvas web server.
-3) An authentication token_ used to authenticate with the Canvas API. The token_ is generated on the Canvas web server
+2) The domain of the Canvas web server.
+3) An authentication token used to authenticate with the Canvas API. The token is generated on the Canvas web server
    after authentication under "Settings".
 
 The main module may take input from the command line and will act accouringly. Without command line arguments,
