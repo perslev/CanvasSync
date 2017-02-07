@@ -38,7 +38,7 @@ specify a password that must also be supplied whenever CanvasSync is launched to
 Usage examples
 --------------
 CanvasSync is launched by pointing the Python (version 2.7) interpreter to either the CanvasSync main folder
-or the __main__.py file located at ../CanvasSync/__main__.py
+or the \_\_main\_\_.py file located at ../CanvasSync/\_\_main\_\_.py
 ```
 python /path/to/CanvasSync
 ```
