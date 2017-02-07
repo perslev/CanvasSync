@@ -40,7 +40,6 @@ The Course object encapsulates a list of children Module objects and has the Syn
 # CanvasSync modules
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Hierarchy.module import Module
-
 from CanvasSync.Statics.ANSI import Colors
 from CanvasSync.Statics import static_functions
 
