@@ -130,9 +130,13 @@ class Module(Entity):
             item_position = item["position"]
             item_type = item["type"]
 
-            # If the item is a file, add it
-            if item_type == "File":
-                url = item["url"]
+            # If the item is a file, html page or external URL, add it
+            if item_type in ("File", "Page", "ExternalUrl"):
+                if item_type == "ExternalUrl":
+                    url = item["external_url"]
+                else:
+                    url = item["url"]
+
                 self._add_item(item_id, item_name, item_position, item_type, url)
 
         # Add all sub-folders as Folder objects to the list of children
