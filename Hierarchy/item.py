@@ -37,10 +37,12 @@ The hierarchy of Entity objects is displayed below:
 # Inbuilt modules
 import os
 import sys
+import io
 
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Statics.ANSI import Colors
 from CanvasSync.Statics import static_functions
+from CanvasSync.Statics.url_shortcut_maker import make_url_shortcut
 
 
 class Item(Entity):
@@ -64,14 +66,18 @@ class Item(Entity):
         Entity.__init__(self, id_number=id, name=name, sync_path=path, parent=parent, folder=False, verbose=False)
 
         self.position = position   # Currently not used!
-        self.type = type           # Currently not used!
+        self.type = type
         self.url = url
 
-        # Download dictionary of information on the file
-        self.file_info = self.get_file()
+        if self.type == "ExternalUrl":
+            make_url_shortcut(url=self.url, path=self.sync_path)
+            print u"\r" + Colors.GREEN + u"[SYNCED]" + Colors.ENDC + unicode(self)[len("[SYNCED]"):]
+        else:
+            # Download dictionary of information on the file
+            self.file_info = self.get_file()
 
-        # Synchronize file (download if not already downloaded)
-        self.sync()
+            # Synchronize file (download if not already downloaded)
+            self.sync()
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -88,39 +94,54 @@ class Item(Entity):
         If the file has already been downloaded, skip downloading.
         """
 
-        # Extract file information from the item dictionary
-        file_name = static_functions.get_corrected_name(self.file_info["filename"])
-        dowload_url = self.file_info["url"]
-        download_path = self.sync_path[:-len(self.name)] + file_name
+        if self.type == "File":
+            # Extract file information from the item dictionary
+            file_name = static_functions.get_corrected_name(self.file_info["filename"])
+            dowload_url = self.file_info["url"]
+            download_path = self.sync_path[:-len(self.name)] + file_name
 
-        # Might be useful in the feuture
-        # file_type = self.file_info["mime_class"]
-        # size = self.file_info["size"]
+            # Might be useful in the feuture
+            # file_type = self.file_info["mime_class"]
+            # size = self.file_info["size"]
 
-        if not os.path.exists(download_path):
-            # If not already downloaded.
-            # Print 'DOWNLOADING' status line
-            print Colors.BLUE + u"[DOWNLOADING]" + Colors.ENDC + unicode(self)[len("[DOWNLOADING]"):]
+            if not os.path.exists(download_path):
+                # If not already downloaded.
+                # Print 'DOWNLOADING' status line
+                print Colors.BLUE + u"[DOWNLOADING]" + Colors.ENDC + unicode(self)[len("[DOWNLOADING]"):]
 
-            # Download file payload from server
-            file_data = self.api.download_file(dowload_url)
+                # Download file payload from server
+                file_data = self.api.download_file(dowload_url)
 
-            # Write data to file
-            try:
-                with open(download_path, "wb") as out_file:
-                    out_file.write(file_data)
+                # Write data to file
+                try:
+                    with open(download_path, "wb") as out_file:
+                        out_file.write(file_data)
 
-                # Move up one line
-                sys.stdout.write('\033[F')
-                sys.stdout.flush()
-            except KeyboardInterrupt as e:
-                # If interrupted mid-writing, delete the corrupted file
-                if os.path.exists(download_path):
-                    os.remove(download_path)
+                    # Move up one line
+                    sys.stdout.write('\033[F')
+                    sys.stdout.flush()
+                except KeyboardInterrupt as e:
+                    # If interrupted mid-writing, delete the corrupted file
+                    if os.path.exists(download_path):
+                        os.remove(download_path)
 
-                # Re-raise, will be catched in __main__.py
-                raise e
+                    # Re-raise, will be catched in __main__.py
+                    raise e
+
+        elif self.type == "Page":
+            body = self.file_info["body"]
+            html_url = self.file_info["html_url"]
+
+            if not os.path.exists(self.sync_path):
+                with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
+                    out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
+                    out_file.write(u"<big><a href=\"%s\">Click here to open this page in Canvas</a></big>" % html_url)
+                    out_file.write(u"<hr>")
+                    out_file.write(body)
 
         # If here, file was donwloaded, show 'SYNCED' status line
         print u"\r" + Colors.GREEN + u"[SYNCED]" + Colors.ENDC + unicode(self)[len("[SYNCED]"):]
         sys.stdout.flush()
+
+
+
