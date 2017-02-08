@@ -61,11 +61,9 @@ The CanvasSync module has the following dependencies:
 - PyCrypto  (https://pypi.python.org/pypi/pycrypto)
 - py-bcrypt (http://www.mindrot.org/projects/py-bcrypt/)
 
-Using PIP the latest versions may be installed by executing the following commands:
+Using PIP the latest versions may be installed by executing the following command from within the CanvasSync folder:
 ```
-pip install requests
-pip install pycrypto
-pip install py-bcrypt
+pip install -r requirements.txt
 ```
 
 Disclaimer
