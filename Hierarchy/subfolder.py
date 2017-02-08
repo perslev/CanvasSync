@@ -70,5 +70,5 @@ class SubFolder(Module):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.get("subfolder") + "Sub folder" +
-                                                                        ANSI.get("end"), self.name)
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Sub folder", formatting="subfolder"),
+                                                                        self.name)
