@@ -131,6 +131,8 @@ class Settings(object):
                 found = True
 
         self.sync_path_ = sync_path
+
+        # Disable path auto-completer
         readline.parse_and_bind('set disable-completion on')
         self.print_settings()
 
