@@ -78,7 +78,7 @@ class InstructureApi(object):
         """
         return self.get_json("/api/v1/courses/%s/modules/%s/items" % (course_id, module_id))
 
-    def get_file(self, url):
+    def download_file_information(self, url):
         """
         Returns a dictionary of information on a specified item
 
@@ -87,7 +87,7 @@ class InstructureApi(object):
         url = url.split(self.domain)[-1]
         return self.get_json(url)
 
-    def download_file(self, donwload_url):
+    def download_file_payload(self, donwload_url):
         """
         Returns the payload of a specified file in the Canvas system
 
