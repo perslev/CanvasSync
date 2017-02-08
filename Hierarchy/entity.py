@@ -25,6 +25,7 @@ while the Module is the derived class.
 # Inbuilt modules
 import os
 
+# CanvasSync module imports
 from CanvasSync.Statics import static_functions
 
 

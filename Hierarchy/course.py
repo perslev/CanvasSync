@@ -40,7 +40,7 @@ The Course object encapsulates a list of children Module objects and has the Syn
 # CanvasSync modules
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Hierarchy.module import Module
-from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
 
 
@@ -65,7 +65,7 @@ class Course(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (Colors.COURSE + "Course" + Colors.ENDC,
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Course", formatting="course"),
                                                                         self.name)
 
     def _add_module(self, module_id, module_name, module_position):

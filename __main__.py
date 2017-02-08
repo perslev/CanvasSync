@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.split(os.path.split(os.path.abspath(__file__))[0])[0]
 
 # CanvasSync modules
 from CanvasSync.Hierarchy.synchronizer import Synchronizer
-from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics.instructure_api import InstructureApi
 from CanvasSync import usage
@@ -83,7 +83,7 @@ def run_canvas_sync():
         try:
             settings.set_settings()
         except KeyboardInterrupt:
-            print Colors.RED + "\n\n[*] Setup interrupted" + Colors.ENDC
+            print ANSI.format("\n\n[*] Setup interrupted", formatting="red")
             sys.exit()
 
     # Load the settings currently in the settings file
@@ -102,7 +102,7 @@ def run_canvas_sync():
     synchronizer = Synchronizer(settings=settings, api=api)
     synchronizer.sync()
 
-    print Colors.BOLD + "\n\n[*] Sync complete" + Colors.ENDC
+    print ANSI.format("\n\n[*] Sync complete", formatting="bold")
 
 
 # If main module
@@ -110,5 +110,5 @@ if __name__ == "__main__":
     try:
         run_canvas_sync()
     except KeyboardInterrupt:
-        print Colors.RED + "\n\n[*] Synchronization interrupted" + Colors.ENDC
+        print ANSI.format("\n\n[*] Synchronization interrupted", formatting="red")
         sys.exit()

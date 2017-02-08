@@ -26,10 +26,10 @@ The hierarchy of Entity objects is displayed below:
 [THIS] Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-       Level 4 to N     (Folder)     <--- Inherits from Entity base class
+       Level 4 to N   (SubFolder)    <--- Inherits from Entity base class
                            |
                           ...
-                        (Folder)
+                      (SubFolder)
                           ...
                            |
        Level 4 or N+1     Item       <--- Inherits from Entity base class
@@ -40,9 +40,8 @@ The Module object encapsulates a list of children Folder objects or Item objects
 # CanvasSync modules
 from CanvasSync.Hierarchy.entity import Entity
 from CanvasSync.Hierarchy.item import Item
-from CanvasSync.Hierarchy.subfolder import Folder
 
-from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
 
 
@@ -64,11 +63,12 @@ class Module(Entity):
         Entity.__init__(self, id_number=module_id, name=module_name, sync_path=module_path, parent=parent)
 
         # Add all items as Folder or Item objects to the list of children
+        self.items = False
         self._add_items()
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (Colors.RED + "Module" + Colors.ENDC,
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Module", formatting="module"),
                                                                         self.name)
 
     def _add_item(self, item_id, item_name, item_position, item_type, url):
@@ -104,7 +104,9 @@ class Module(Entity):
         sub_folder_path = self.sync_path + u"%s - %s" % (folder_position, folder_name)
 
         # Initialize Folder object and add to list of children
-        self._add(Folder(folder_id, folder_name, sub_folder_path, parent=self, items=folder_items))
+        from CanvasSync.Hierarchy.subfolder import SubFolder
+
+        self._add(SubFolder(folder_id, folder_name, sub_folder_path, parent=self, items=folder_items))
 
     def _download_items(self):
         """ Returns a dictionary of items from the Canvas server """
@@ -116,12 +118,13 @@ class Module(Entity):
                   If the item is a sub-folder it will be added as a Folder object instead.
         """
 
-        # Download dictionary of items
-        items = self._download_items()
+        # If the Folder was initialized with an items dictionary, skip downloading
+        if not self.items:
+            self.items = self._download_items()
 
         # Determine which items are in the outer-scope (located in the folder represented by this module) and which
         # items are located in sub-folders under this module.
-        items_in_this_scope, sub_folders = static_functions.reorganize(items)
+        items_in_this_scope, sub_folders = static_functions.reorganize(self.items)
 
         # Add all non-sub-folder items to the list of children. Currently, only file items are added.
         for item in items_in_this_scope:
