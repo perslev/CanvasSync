@@ -29,6 +29,8 @@ the user input password.
 # Inbuilt modules
 import os
 import sys
+import readline
+import glob
 
 # Third party modules
 import requests
@@ -95,11 +97,25 @@ class Settings(object):
         The path should point into a directory along with a sub-folder name of a folder not already existing.
         This folder wll be created using the os module.
         """
-        found = False
 
+        # Enable auto-completion of path and cursor movement using the read line module
+        def path_completer(text, state):
+            if "~" in text:
+                text = text.replace("~", os.path.expanduser("~"))
+
+            paths = glob.glob("%s*" % text)
+            paths.append(False)
+
+            return os.path.abspath(paths[state]) + '/'
+
+        readline.set_completer_delims(' \t\n;')
+        readline.parse_and_bind("tab: complete")
+        readline.set_completer(path_completer)
+
+        found = False
         # Keep asking until a valid path has been entered by the user
         while not found:
-            sync_path = raw_input("\nEnter a path to sync to:\n$ ")
+            sync_path = raw_input("\nEnter a relative or absolute path to sync to (~/Desktop/Canvas etc.):\n$ ")
 
             # Expand tilde if present in the sync_path
             if "~" in sync_path:
@@ -109,10 +125,13 @@ class Settings(object):
             # Check if the path already exists
             if os.path.exists(sync_path):
                 print "\n[ERROR] The supplied path is a folder. A sub folder name must also be specified."
+            elif not os.path.exists(os.path.split(sync_path)[0]):
+                print "\n[ERROR] Base path '%s' does not exist." % os.path.split(sync_path)[0]
             else:
                 found = True
 
         self.sync_path_ = sync_path
+        readline.parse_and_bind('set disable-completion on')
         self.print_settings()
 
     def ask_for_domain(self):
