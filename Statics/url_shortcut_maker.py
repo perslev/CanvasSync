@@ -12,8 +12,9 @@ def _make_mac_url_shortcut(url, path):
 </dict>
 </plist>""" % url
 
-    with open(path + ".webloc", "w") as out_file:
-        out_file.write(url_content)
+    if not os.path.exists(path + ".webloc"):
+        with open(path + ".webloc", "w") as out_file:
+            out_file.write(url_content)
 
 
 def _make_linux_url_shortcut(url, path):
@@ -25,16 +26,18 @@ Type=Link
 URL=%s
 Icon=text-html""" % (name, url)
 
-    with open(path + ".desktop", "w") as out_file:
-        out_file.write(url_content)
+    if not os.path.exists(path + ".desktop"):
+        with open(path + ".desktop", "w") as out_file:
+            out_file.write(url_content)
 
 
 def _make_windows_url_shortcut(url, path):
     url_content ="""[InternetShortcut]
 URL=%s""" % url
 
-    with open(path + ".URL", "w") as out_file:
-        out_file.write(url_content)
+    if not os.path.exists(path + ".URL"):
+        with open(path + ".URL", "w") as out_file:
+            out_file.write(url_content)
 
 
 def make_url_shortcut(url, path):
