@@ -18,8 +18,9 @@ terminal window.
 class ANSI(object):
     GREEN           = u'\033[32m'
     YELLOW          = u'\033[93m'
+    RED             = u'\033[91m'
     COURSE          = u'\033[94m'
-    MODULE          = u'\033[91m'
+    MODULE          = u'\033[31m'
     FILE            = u'\033[93m'
     PAGE            = u'\033[96m'
     EXTERNALURL     = u'\033[35m'
@@ -31,19 +32,26 @@ class ANSI(object):
     LINE_UP         = u'\033[F'
 
     esc_seq_dict = {"green": GREEN,
-                  "yellow": YELLOW,
-                  "blue": BLUE,
-                  "file": FILE,
-                  "page": PAGE,
-                  "externalurl": EXTERNALURL,
-                  "course": COURSE,
-                  "module": MODULE,
-                  "subfolder": SUBFOLDER,
-                  "lineup": LINE_UP,
-                  "bold": BOLD,
-                  "underline": UNDERLINE,
-                  "end": ENDC}
+                    "yellow": YELLOW,
+                    "blue": BLUE,
+                    "red": RED,
+                    "file": FILE,
+                    "page": PAGE,
+                    "externalurl": EXTERNALURL,
+                    "course": COURSE,
+                    "module": MODULE,
+                    "subfolder": SUBFOLDER,
+                    "lineup": LINE_UP,
+                    "bold": BOLD,
+                    "underline": UNDERLINE,
+                    "end": ENDC}
 
     @staticmethod
-    def get(descriptor):
-        return ANSI.esc_seq_dict[descriptor.lower()]
+    def _get(formatting):
+        """ Return the ANSI escape sequence linked to a formatting string """
+        return ANSI.esc_seq_dict[formatting.lower()]
+
+    @staticmethod
+    def format(text, formatting):
+        """ Format a string of text using ANSI escape sequences """
+        return ANSI._get(formatting) + unicode(text) + ANSI._get("end")
