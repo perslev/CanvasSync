@@ -10,20 +10,40 @@ February 2017
 """
 ANSI.py, Class
 
-A small helper-object that simply contains various ANSI escape sequences used to manipulate print statements in the
+A small helper-object containing various ANSI escape sequences used to manipulate print statements in the
 terminal window.
 """
 
-class Colors(object):
-    GREEN = u'\033[32m'
-    YELLOW = u'\033[93m'
-    COURSE = u'\033[94m'
-    MODULE = u'\033[96m'
-    ITEM = u'\033[93m'
-    FOLDER = u'\033[95m'
-    BLUE = u'\033[36m'
-    RED = u'\033[91m'
-    ENDC = u'\033[0m'
-    BOLD = u'\033[1m'
-    UNDERLINE = u'\033[4m'
-    LINE_UP = u'\033[F'
+
+class ANSI(object):
+    GREEN           = u'\033[32m'
+    YELLOW          = u'\033[93m'
+    COURSE          = u'\033[94m'
+    MODULE          = u'\033[91m'
+    FILE            = u'\033[93m'
+    PAGE            = u'\033[96m'
+    EXTERNALURL     = u'\033[35m'
+    SUBFOLDER       = u'\033[34m'
+    BLUE            = u'\033[36m'
+    ENDC            = u'\033[0m'
+    BOLD            = u'\033[1m'
+    UNDERLINE       = u'\033[4m'
+    LINE_UP         = u'\033[F'
+
+    esc_seq_dict = {"green": GREEN,
+                  "yellow": YELLOW,
+                  "blue": BLUE,
+                  "file": FILE,
+                  "page": PAGE,
+                  "externalurl": EXTERNALURL,
+                  "course": COURSE,
+                  "module": MODULE,
+                  "subfolder": SUBFOLDER,
+                  "lineup": LINE_UP,
+                  "bold": BOLD,
+                  "underline": UNDERLINE,
+                  "end": ENDC}
+
+    @staticmethod
+    def get(descriptor):
+        return ANSI.esc_seq_dict[descriptor.lower()]
