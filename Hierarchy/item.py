@@ -82,8 +82,9 @@ class Item(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.get(self.type) + "%s" % self.type +
-                                                                        ANSI.get("end"), self.name)
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("%s" % self.type,
+                                                                                    formatting=self.type),
+                                                                        self.name)
 
     def _get_file_information(self):
         """ Returns a dictionary of information on the item from the Canvas server """
@@ -166,7 +167,7 @@ class Item(Entity):
 
         if overwrite_previous_line:
             # Move up one line
-            print ANSI.get("lineup")
+            print ANSI.format("", "lineup")
             sys.stdout.flush()
 
-        print ANSI.get(color) + u"[%s]" % status + ANSI.get("end") + unicode(self)[len(status) + 2:]
+        print ANSI.format(u"[%s]" % status, formatting=color) + unicode(self)[len(status) + 2:]
