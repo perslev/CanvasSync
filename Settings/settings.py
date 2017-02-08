@@ -98,7 +98,7 @@ class Settings(object):
         This folder wll be created using the os module.
         """
 
-        # Enable auto-completion of path and cursor movement using the read line module
+        # Enable auto-completion of path and cursor movement using the readline and glob modules
         def path_completer(text, state):
             if "~" in text:
                 text = text.replace("~", os.path.expanduser("~"))
