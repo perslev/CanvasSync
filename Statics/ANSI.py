@@ -54,4 +54,4 @@ class ANSI(object):
     @staticmethod
     def format(text, formatting):
         """ Format a string of text using ANSI escape sequences """
-        return ANSI._get(formatting) + unicode(text) + ANSI._get("end")
+        return ANSI._get(formatting) + text + ANSI._get("end")
