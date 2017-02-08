@@ -40,7 +40,7 @@ import sys
 import io
 
 from CanvasSync.Hierarchy.entity import Entity
-from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
 from CanvasSync.Statics.url_shortcut_maker import make_url_shortcut
 
@@ -68,79 +68,105 @@ class Item(Entity):
         self.position = position   # Currently not used!
         self.type = type
         self.url = url
+        self.file_info = None
 
         if self.type == "ExternalUrl":
             # The file type is an external URL. Create a URL shortcut for the appropriate platform.
-            make_url_shortcut(url=self.url, path=self.sync_path)
+            was_downloaded = self.sync_url()
+        elif self.type == "Page":
+            was_downloaded = self.sync_page()
         else:
-            # Download dictionary of information on the file
-            self.file_info = self.get_file()
+            was_downloaded = self.sync_file()
 
-            # Synchronize file (download if not already downloaded)
-            self.sync()
-
-        # If here, file was donwloaded, show 'SYNCED' status line
-        print u"\r" + Colors.GREEN + u"[SYNCED]" + Colors.ENDC + unicode(self)[len("[SYNCED]"):]
-        sys.stdout.flush()
+        self.print_status("SYNCED", color="green", overwrite_previous_line=was_downloaded)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (Colors.ITEM + "Item" + Colors.ENDC,
-                                                                        self.name)
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.get(self.type) + "%s" % self.type +
+                                                                        ANSI.get("end"), self.name)
 
-    def get_file(self):
+    def _get_file_information(self):
         """ Returns a dictionary of information on the item from the Canvas server """
-        return self.api.get_file(self.url)
+        self.file_info = self.api.download_file_information(self.url)
 
-    def sync(self):
+    def sync_url(self):
+        make_url_shortcut(url=self.url, path=self.sync_path)
+
+        # Always return False as the DOWNLOADING prompt is not shown, and we don't need to overwrite last line
+        # when printing synced status
+        return False
+
+    def sync_page(self):
+        if os.path.exists(self.sync_path + ".html"):
+            return False
+
+        # Print download status
+        self.print_status("DOWNLOADING", color="blue")
+
+        # Download dictionary of information on the file
+        self._get_file_information()
+
+        # Create a HTML page locally and add a link leading to the live version
+        body = self.file_info["body"]
+        html_url = self.file_info["html_url"]
+
+        if not os.path.exists(self.sync_path):
+            with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
+                out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
+                out_file.write(u"<big><a href=\"%s\">Click here to open this page in Canvas</a></big>" % html_url)
+                out_file.write(u"<hr>")
+                out_file.write(body)
+
+        return True
+
+    def sync_file(self):
         """
         Synchronize the file by downloading it from the Canvas server and saving it to the sync path
         If the file has already been downloaded, skip downloading.
         """
 
-        if self.type == "File":
-            # Extract file information from the item dictionary
-            file_name = static_functions.get_corrected_name(self.file_info["filename"])
-            dowload_url = self.file_info["url"]
-            download_path = self.sync_path[:-len(self.name)] + file_name
+        # We must download file information before we can check, if it has already been downloaded, as we need to get
+        # the file name. This is quick however, as the payload of the file is not downloaded here.
+        self._get_file_information()
 
-            # Might be useful in the feuture
-            # file_type = self.file_info["mime_class"]
-            # size = self.file_info["size"]
+        # Extract file information from the item dictionary
+        file_name = static_functions.get_corrected_name(self.file_info["filename"])
+        download_url = self.file_info["url"]
+        download_path = self.sync_path[:-len(self.name)] + file_name
 
-            if not os.path.exists(download_path):
-                # If not already downloaded.
-                # Print 'DOWNLOADING' status line
-                print Colors.BLUE + u"[DOWNLOADING]" + Colors.ENDC + unicode(self)[len("[DOWNLOADING]"):]
-                sys.stdout.flush()
+        # Might be useful in the feuture
+        # file_type = self.file_info["mime_class"]
+        # size = self.file_info["size"]
 
-                # Download file payload from server
-                file_data = self.api.download_file(dowload_url)
+        if os.path.exists(download_path):
+            return False
 
-                # Write data to file
-                try:
-                    with open(download_path, "wb") as out_file:
-                        out_file.write(file_data)
+        self.print_status("DOWNLOADING", color="blue")
 
-                    # Move up one line
-                    sys.stdout.write('\033[F')
-                    sys.stdout.flush()
-                except KeyboardInterrupt as e:
-                    # If interrupted mid-writing, delete the corrupted file
-                    if os.path.exists(download_path):
-                        os.remove(download_path)
+        # Download file payload from server
+        file_data = self.api.download_file_payload(download_url)
 
-                    # Re-raise, will be catched in __main__.py
-                    raise e
+        # Write data to file
+        try:
+            with open(download_path, "wb") as out_file:
+                out_file.write(file_data)
 
-        elif self.type == "Page":
-            # If the file is a HTML page create a HTML page locally and add a link leading to the live version
-            body = self.file_info["body"]
-            html_url = self.file_info["html_url"]
+        except KeyboardInterrupt as e:
+            # If interrupted mid-writing, delete the corrupted file
+            if os.path.exists(download_path):
+                os.remove(download_path)
 
-            if not os.path.exists(self.sync_path):
-                with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
-                    out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
-                    out_file.write(u"<big><a href=\"%s\">Click here to open this page in Canvas</a></big>" % html_url)
-                    out_file.write(u"<hr>")
-                    out_file.write(body)
+            # Re-raise, will be catched in __main__.py
+            raise e
+
+        return True
+
+    def print_status(self, status, color, overwrite_previous_line=False):
+        """ Print status to console """
+
+        if overwrite_previous_line:
+            # Move up one line
+            print ANSI.get("lineup")
+            sys.stdout.flush()
+
+        print ANSI.get(color) + u"[%s]" % status + ANSI.get("end") + unicode(self)[len(status) + 2:]
