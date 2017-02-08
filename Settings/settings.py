@@ -37,7 +37,7 @@ import requests
 
 # CanvasSync modules
 from CanvasSync.Settings.encrypt import encrypt, decrypt
-from CanvasSync.Statics.ANSI import Colors
+from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
 
 
@@ -74,7 +74,7 @@ class Settings(object):
 
         # Clear the console and print guidance
         static_functions.clear_console()
-        print Colors.UNDERLINE + "\nPlease specify the following settings to use CanvasSync:\n" + Colors.ENDC
+        print ANSI.UNDERLINE + "\nPlease specify the following settings to use CanvasSync:\n" + ANSI.ENDC
         self.print_settings(clear=False)
 
         # Prompt user for settings
@@ -202,6 +202,6 @@ class Settings(object):
         if clear:
             static_functions.clear_console()
 
-        print Colors.BOLD + "[*] Sync path:             " + Colors.ENDC + Colors.BLUE + self.sync_path_ + Colors.ENDC
-        print Colors.BOLD + "[*] Canvas domain:         " + Colors.ENDC + Colors.BLUE + self.domain_ + Colors.ENDC
-        print Colors.BOLD + "[*] Authentication token:  " + Colors.ENDC + Colors.BLUE + self.token_ + Colors.ENDC
+        print ANSI.BOLD + "[*] Sync path:             " + ANSI.ENDC + ANSI.BLUE + self.sync_path_ + ANSI.ENDC
+        print ANSI.BOLD + "[*] Canvas domain:         " + ANSI.ENDC + ANSI.BLUE + self.domain_ + ANSI.ENDC
+        print ANSI.BOLD + "[*] Authentication token:  " + ANSI.ENDC + ANSI.BLUE + self.token_ + ANSI.ENDC
