@@ -26,7 +26,7 @@ The hierarchy of Entity objects is displayed below:
 [THIS] Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-       Level 4 to N   (SubFolder)    <--- Inherits from Entity base class
+       Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
                            |
                           ...
                       (SubFolder)
@@ -61,10 +61,6 @@ class Module(Entity):
 
         # Initialize base class
         Entity.__init__(self, id_number=module_id, name=module_name, sync_path=module_path, parent=parent)
-
-        # Add all items as Folder or Item objects to the list of children
-        self.items = False
-        self._add_items()
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -103,28 +99,32 @@ class Module(Entity):
         # Get path to folder in local folder
         sub_folder_path = self.sync_path + u"%s - %s" % (folder_position, folder_name)
 
-        # Initialize Folder object and add to list of children
+        # Initialize Folder object and add to list of children, then sync
         from CanvasSync.Hierarchy.subfolder import SubFolder
 
-        self._add(SubFolder(folder_id, folder_name, sub_folder_path, parent=self, items=folder_items))
+        subfolder = SubFolder(folder_id, folder_name, sub_folder_path, parent=self, items=folder_items)
+        self._add(subfolder)
+        subfolder.sync()
 
     def _download_items(self):
         """ Returns a dictionary of items from the Canvas server """
         return self.api.get_items(self.get_parent().get_id(), self.id)
 
-    def _add_items(self):
+    def _add_items(self, items=None):
         """
         [HIDDEN]  Method that adds all Items under the module to the list of children.
                   If the item is a sub-folder it will be added as a Folder object instead.
+
+        items : list | A list of dictionaries of information on items
         """
 
         # If the Folder was initialized with an items dictionary, skip downloading
-        if not self.items:
-            self.items = self._download_items()
+        if not items:
+            items = self._download_items()
 
         # Determine which items are in the outer-scope (located in the folder represented by this module) and which
         # items are located in sub-folders under this module.
-        items_in_this_scope, sub_folders = static_functions.reorganize(self.items)
+        items_in_this_scope, sub_folders = static_functions.reorganize(items)
 
         # Add all non-sub-folder items to the list of children. Currently, only file items are added.
         for item in items_in_this_scope:
@@ -153,3 +153,9 @@ class Module(Entity):
     def get_folders(self):
         """ Getter-method for the list of children, calls _get_children method of base class """
         return self._get_children()
+
+    def sync(self):
+        """
+        Synchronize the Module object by adding all children to the object.
+        """
+        self._add_items()

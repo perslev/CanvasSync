@@ -25,10 +25,10 @@ The hierarchy of Entity objects is displayed below:
        Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-       Level 4 to N     (Folder)     <--- Inherits from Entity base class
+       Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
                            |
                           ...
-                        (Folder)
+                      (SubFolder)
                           ...
                            |
        Level 4 or N+1     Item       <--- Inherits from Entity base class
@@ -78,8 +78,10 @@ class Synchronizer(Entity):
         # Get the sync path to the course
         course_path = self.sync_path + "%s" % course_name
 
-        # Initialize the Course object and then add it to the list of courses
-        self._add(Course(course_id, course_name, course_path, parent=self))
+        # Initialize the Course object and then add it to the list of courses, then sync
+        course = Course(course_id, course_name, course_path, parent=self)
+        self._add(course)
+        course.sync()
 
     def _download_courses(self):
         """ [HIDDEN] Returns a dictionary of courses from the Canvas server """

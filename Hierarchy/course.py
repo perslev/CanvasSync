@@ -26,10 +26,10 @@ The hierarchy of Entity objects is displayed below:
        Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-       Level 4 to N     (Folder)     <--- Inherits from Entity base class
+       Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
                            |
                           ...
-                        (Folder)
+                      (SubFolder)
                           ...
                            |
        Level 4 or N+1     Item       <--- Inherits from Entity base class
@@ -60,9 +60,6 @@ class Course(Entity):
         # Initialize base class
         Entity.__init__(self, id_number=course_id, name=course_name, sync_path=course_path, parent=parent)
 
-        # Add all modules as Module objects to the list of children
-        self._add_modules()
-
     def __repr__(self):
         """ String representation, overwriting base class method """
         return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Course", formatting="course"),
@@ -81,8 +78,10 @@ class Course(Entity):
         # Get path to module in local folder
         module_path = self.sync_path + u"%s - %s" % (module_position, module_name)
 
-        # Initialize Module object and add to list of children
-        self._add(Module(module_id, module_name, module_path, parent=self))
+        # Initialize Module object and add to list of children, then sync
+        module = Module(module_id, module_name, module_path, parent=self)
+        self._add(module)
+        module.sync()
 
     def _download_modules(self):
         """ Returns a dictionary of modules from the Canvas server """
@@ -101,3 +100,7 @@ class Course(Entity):
     def get_modules(self):
         """ Getter-method for the list of children, calls _get_children method of base class """
         return self._get_children()
+
+    def sync(self):
+        # Add all modules as Module objects to the list of children
+        self._add_modules()

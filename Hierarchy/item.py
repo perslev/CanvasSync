@@ -25,10 +25,10 @@ The hierarchy of Entity objects is displayed below:
        Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-       Level 4 to N     (Folder)     <--- Inherits from Entity base class
+       Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
                            |
                           ...
-                        (Folder)
+                      (SubFolder)
                           ...
                            |
 [THIS] Level 4 or N+1     Item       <--- Inherits from Entity base class
@@ -167,7 +167,8 @@ class Item(Entity):
 
         if overwrite_previous_line:
             # Move up one line
-            print ANSI.format("", "lineup")
+            sys.stdout.write(ANSI.format("", formatting="lineup"))
             sys.stdout.flush()
 
         print ANSI.format(u"[%s]" % status, formatting=color) + unicode(self)[len(status) + 2:]
+        sys.stdout.flush()

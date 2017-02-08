@@ -10,9 +10,11 @@ February 2017
 """
 subfolder.py, Third level class in hierarchy
 
-The Folder class is the fourth-to Nth level Entity object in the folder hierarchy. It inherits from the base Entity
-class and extends its functionality to allow downloading information on Items listed under the sub-folder in the Canvas
-system. An Item object or Folder object is initialized for each item found and appended to a list of children under the
+The Folder class is the fourth-to Nth level Entity object in the folder hierarchy. It inherits from the base Module
+class and extends its slightly by adding the ability to instantiate with a dictionary of file information that does not
+need downloading from the Canvas server. All other functionality is identical to the Module object. The SubFolder object
+may instantiate itself for recursive traversing of the folder hierarchy.
+An Item object or Folder object is initialized for each item found and appended to a list of children under the
 Folder object.
 
 Note: There could be another sub-folder encapsulated by this Folder object, which is handled by recursion.
@@ -28,10 +30,10 @@ The hierarchy of Entity objects is displayed below:
        Level 3           Module      <--- Inherits from Entity base class
                            |
                            |
-[THIS] Level 4 to N     (Folder)     <--- Inherits from Entity base class
+[THIS] Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
                            |
                           ...
-                        (Folder)
+                      (SubFolder)
                           ...
                            |
        Level 4 or N+1     Item       <--- Inherits from Entity base class
@@ -62,13 +64,13 @@ class SubFolder(Module):
         # Initialize base class
         Module.__init__(self, module_id=folder_id, module_name=folder_name, module_path=folder_path, parent=parent)
 
-        # The Folder object may be initialized with a item dictionary instead of downloading them from the server
         self.items = items
-
-        # Add all items as Folder or Item objects to the list of children
-        self._add_items()
 
     def __repr__(self):
         """ String representation, overwriting base class method """
         return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Sub folder", formatting="subfolder"),
                                                                         self.name)
+
+    def sync(self):
+        # Add all items as Folder or Item objects to the list of children
+        self._add_items(items=self.items)
