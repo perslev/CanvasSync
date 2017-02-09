@@ -37,10 +37,10 @@ The Synchronizer encapsulates a list of children Course objects.
 """
 
 # CanvasSync modules
-from CanvasSync.Hierarchy.course import Course
-from CanvasSync.Hierarchy.entity import Entity
-
+from CanvasSync.CanvasEntities.course import Course
+from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.Statics import static_functions
+from CanvasSync.Statics.ANSI import ANSI
 
 
 class Synchronizer(Entity):
@@ -51,7 +51,7 @@ class Synchronizer(Entity):
         Constructor method, initializes base Entity class and adds all children Course objects to the list of children
 
         settings : object | A Settings object, has top-level sync path attribute
-        api      : object | A InstructureApi object
+        api      : object | An InstructureApi object
         """
 
         # Start sync by clearing the console window
@@ -67,49 +67,49 @@ class Synchronizer(Entity):
         """ String representation, overwriting base class method """
         return u"\n[*] Synchronizing to folder: %s\n" % self.sync_path
 
-    def _add_course(self, course_id, course_name):
-        """
-        [HIDDEN] Method that adds a Course object to the list of Course objects
-
-        course_id   : int    | The ID number of the course to initialize a Course object on
-        course_name : string | The name representation of the course
-        """
-
-        # Get the sync path to the course
-        course_path = self.sync_path + "%s" % course_name
-
-        # Initialize the Course object and then add it to the list of courses, then sync
-        course = Course(course_id, course_name, course_path, parent=self)
-        self._add(course)
-        course.sync()
-
-    def _download_courses(self):
-        """ [HIDDEN] Returns a dictionary of courses from the Canvas server """
+    def download_courses(self):
+        """ Returns a dictionary of courses from the Canvas server """
         return self.api.get_courses()
 
-    def _add_courses(self):
-        """ [HIDDEN]  Method that adds all Course objects to the list of Course objects """
+    def add_courses(self):
+        """ Method that adds all Course objects representing Canvas courses to the list of children """
 
-        # Download list of dictionaries representing courses and add them all to the list of children
-        for course in self._download_courses():
-            course_id = course["id"]
-            course_name = course["course_code"].split(";")[-1]
+        # Download list of dictionaries representing Canvas courses and add them all to the list of children
+        for course_information in self.download_courses():
+            course = Course(course_information, parent=self)
+            self.add_child(course)
 
-            self._add_course(course_id, course_name)
+    def walk(self):
+        """ Walk by adding all Courses to the list of children """
 
-    def get_courses(self):
-        """ Getter-method for the list of children, calls _get_children method of base class """
-        return self._get_children()
+        # Print initial walk message
+        print unicode(self)
+        print ANSI.format("\n[*] Mapping out the Canvas folder hierarchy. Please wait...", "red")
+
+        self.add_courses()
+
+        counter = [2]
+        for course in self:
+            course.walk(counter)
+
+        return counter
 
     def sync(self):
-        self._add_courses()
+        """
+        1) Adding all Courses objects to the list of children
+        2) Synchronize all children objects
+        """
+        print unicode(self)
+
+        self.add_courses()
+        for course in self:
+            course.sync()
 
     def show(self):
-        """ Traverses the folder hierarchy and prints every level """
-        print u"\n%s" % self
+        """ Show the folder hierarchy by printing every level """
+
+        static_functions.clear_console()
+        print u"\n%s" % unicode(self)
+
         for course in self:
-            print course
-            for module in course:
-                print module
-                for item in module:
-                    print item
+            course.show()

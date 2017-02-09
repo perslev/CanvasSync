@@ -78,7 +78,7 @@ class InstructureApi(object):
         """
         return self.get_json("/api/v1/courses/%s/modules/%s/items" % (course_id, module_id))
 
-    def download_file_information(self, url):
+    def download_item_information(self, url):
         """
         Returns a dictionary of information on a specified item
 
@@ -95,3 +95,11 @@ class InstructureApi(object):
         """
         url = donwload_url.split(self.domain)[-1]
         return self._get(url).content
+
+    def get_assigments(self, course_id):
+        """
+        Returns a list of dictionaries of information on assignment objects under a course ID
+
+        course_id : int | A course ID nuber
+        """
+        return self.get_json("/api/v1/courses/%s/assignments" % course_id)

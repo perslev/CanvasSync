@@ -24,6 +24,8 @@ class ANSI(object):
     FILE            = u'\033[93m'
     PAGE            = u'\033[96m'
     EXTERNALURL     = u'\033[35m'
+    ASSIGNMENT      = u'\033[33m'
+    ASSIGNMENTS     = u'\033[37m'
     SUBFOLDER       = u'\033[34m'
     BLUE            = u'\033[36m'
     ENDC            = u'\033[0m'
@@ -41,6 +43,8 @@ class ANSI(object):
                     "course": COURSE,
                     "module": MODULE,
                     "subfolder": SUBFOLDER,
+                    "assignment": ASSIGNMENT,
+                    "assignments": ASSIGNMENTS,
                     "lineup": LINE_UP,
                     "bold": BOLD,
                     "underline": UNDERLINE,

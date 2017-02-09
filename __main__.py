@@ -38,7 +38,7 @@ import sys
 sys.path.insert(0, os.path.split(os.path.split(os.path.abspath(__file__))[0])[0])
 
 # CanvasSync modules
-from CanvasSync.Hierarchy.synchronizer import Synchronizer
+from CanvasSync.CanvasEntities.synchronizer import Synchronizer
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics.instructure_api import InstructureApi
@@ -100,6 +100,8 @@ def run_canvas_sync():
 
     # Start Synchronizer with the current settings
     synchronizer = Synchronizer(settings=settings, api=api)
+    # line_count = synchronizer.walk()
+    # synchronizer.show()
     synchronizer.sync()
 
     print ANSI.format("\n\n[*] Sync complete", formatting="bold")

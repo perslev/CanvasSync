@@ -30,7 +30,7 @@ from CanvasSync.Statics import static_functions
 
 
 class Entity(object):
-    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None, verbose=True):
+    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None):
         """
         Constructor method
 
@@ -88,9 +88,6 @@ class Entity(object):
         if self.folder:
             self._make_folder()
 
-        if verbose:
-            print unicode(self)
-
     def __getitem__(self, item):
         """ Container get-item method can be used to access a specific child object """
         return self.children[item]
@@ -128,11 +125,11 @@ class Entity(object):
         """ Getter method for the sync path """
         return self.sync_path
 
-    def _add(self, child):
+    def add_child(self, child):
         """ Add a child object to the list of children """
         self.children.append(child)
 
-    def _get_children(self):
+    def get_children(self):
         """ Getter method for the list of children """
         return self.children
 
