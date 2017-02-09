@@ -66,7 +66,7 @@ def reorganize(items):
 
 def clear_console():
     """ Clears the console on UNIX and Windows """
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def get_corrected_path(path, parent_path, folder):
