@@ -111,6 +111,8 @@ class LinkedFile(Entity):
         with open(self.sync_path, "wb") as out_file:
             out_file.write(data.content)
 
+        return True
+
     def walk(self, counter):
         """ Stop walking, endpoint """
 
