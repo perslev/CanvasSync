@@ -36,7 +36,8 @@ class AssignmentsFolder(Entity):
                         id_number=assignments_folder_id,
                         name=assignments_folder_name,
                         sync_path=assignments_folder_path,
-                        parent=parent)
+                        parent=parent,
+                        identifier="assignment_folder")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -71,12 +72,12 @@ class AssignmentsFolder(Entity):
 
         self.add_assignments()
 
-        for assignment in self:
-            assignment.sync()
+        for child in self:
+            child.sync()
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
         print unicode(self)
 
-        for assignment in self:
-            assignment.show()
+        for child in self:
+            child.show()

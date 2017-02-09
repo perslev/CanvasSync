@@ -43,7 +43,8 @@ class Assignment(Entity):
                         id_number=assignment_id,
                         name=assignment_name,
                         sync_path=assignment_path,
-                        parent=parent)
+                        parent=parent,
+                        identifier="assignment")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

@@ -39,7 +39,8 @@ class File(Entity):
                         name=file_name,
                         sync_path=file_path,
                         parent=parent,
-                        folder=False)
+                        folder=False,
+                        identifier="file")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

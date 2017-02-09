@@ -40,7 +40,8 @@ class Page(Entity):
                         name=page_name,
                         sync_path=page_path,
                         parent=parent,
-                        folder=False)
+                        folder=False,
+                        identifier="page")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

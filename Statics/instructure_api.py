@@ -61,15 +61,47 @@ class InstructureApi(object):
         """
         return self.get_json("/api/v1/courses")
 
-    def get_modules(self, course_id):
+    def get_modules_in_course(self, course_id):
         """
-        Returns a dictionary of modules located in a given course.
+        Returns a list of dictionaries on the Canvas modules located in a given course.
 
         course_id : int | A course ID number
         """
         return self.get_json("/api/v1/courses/%s/modules" % course_id)
 
-    def get_items(self, course_id, module_id):
+    def get_files_in_folder(self, folder_id):
+        """
+        Returns a list of dictionaries on the Canvas files located in a given folder
+
+        folder_id : int | A folder ID number
+        """
+        return self.get_json("/api/v1/folders/%s/files" % folder_id)
+
+    def get_folders_in_folder(self, folder_id):
+        """
+        Returns a list of dictionaries on the Canvas folders located in a given folder
+
+        folder_id : int | A folder ID number
+        """
+        return self.get_json("/api/v1/folders/%s/folders" % folder_id)
+
+    def get_files_in_course(self, course_id):
+        """
+        Returns a list of dictionaries on the Canvas files located in a given course.
+
+        course_id : int | A course ID number
+        """
+        return self.get_json("/api/v1/courses/%s/files" % course_id)
+
+    def get_folders_in_course(self, course_id):
+        """
+        Returns a list of dictionaries on the Canvas folders located in a given course.
+
+        course_id : int | A course ID number
+        """
+        return self.get_json("/api/v1/courses/%s/folders" % course_id)
+
+    def get_items_in_module(self, course_id, module_id):
         """
         Returns a dictionary of items located in a given module in a given course
 
@@ -96,7 +128,7 @@ class InstructureApi(object):
         url = donwload_url.split(self.domain)[-1]
         return self._get(url).content
 
-    def get_assigments(self, course_id):
+    def get_assignments_in_course(self, course_id):
         """
         Returns a list of dictionaries of information on assignment objects under a course ID
 

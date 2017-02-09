@@ -28,8 +28,8 @@ from CanvasSync.Statics import static_functions
 class Module(Entity):
     """ Derived class of the Entity base class """
 
-    def __init__(self, module_info, module_position, parent):
-        """
+    def __init__(self, module_info, module_position, parent, identifier="module"):
+        """, i
         Constructor method, initializes base Entity class and adds all children Folder and/or Item objects to the
         list of children
 
@@ -49,7 +49,8 @@ class Module(Entity):
                         id_number=module_id,
                         name=module_name,
                         sync_path=module_path,
-                        parent=parent)
+                        parent=parent,
+                        identifier=identifier)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -60,7 +61,7 @@ class Module(Entity):
 
     def get_item_information(self):
         """ Returns a dictionary of items from the Canvas server """
-        return self.api.get_items(self.get_parent().get_id(), self.id)
+        return self.api.get_items_in_module(self.get_parent().get_id(), self.id)
 
     def add_sub_folder(self, folder_info, folder_position, folder_items):
         """
@@ -74,9 +75,9 @@ class Module(Entity):
         """
 
         # Initialize Folder object and add to list of children, then sync
-        from CanvasSync.CanvasEntities.subfolder import SubFolder
+        from CanvasSync.CanvasEntities.sub_header import SubHeader
 
-        sub_folder = SubFolder(folder_info, folder_position, parent=self, items=folder_items)
+        sub_folder = SubHeader(folder_info, folder_position, parent=self, items=folder_items)
         self.add_child(sub_folder)
 
     def add_file(self, file_information):
@@ -138,10 +139,6 @@ class Module(Entity):
         for position, folder in enumerate(sub_folders):
             self.add_sub_folder(folder[0], position + 1, folder[1:])
 
-    def get_folders(self):
-        """ Getter-method for the list of children, calls _get_children method of base class """
-        return self.get_children()
-
     def walk(self, counter):
         """
         Walk by adding all File, Page, ExternalLink and SubFolder objects to the list of children
@@ -163,12 +160,12 @@ class Module(Entity):
 
         self.add_items()
 
-        for item in self:
-            item.sync()
+        for child in self:
+            child.sync()
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
         print unicode(self)
 
-        for item in self:
-            item.show()
+        for child in self:
+            child.show()

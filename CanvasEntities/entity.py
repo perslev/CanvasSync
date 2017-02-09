@@ -30,7 +30,8 @@ from CanvasSync.Statics import static_functions
 
 
 class Entity(object):
-    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None, settings=None):
+    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None, settings=None, identifier="",
+                 synchronizer=None):
         """
         Constructor method
 
@@ -52,6 +53,9 @@ class Entity(object):
         # Parent object
         self.parent = parent
 
+        # Identifier, could be "course"
+        self.identifier = identifier
+
         # Entity name
         self.name = name
 
@@ -63,13 +67,13 @@ class Entity(object):
         if api:
             self.api = api
         else:
-            self.api = self.parent.get_api()
+            self.api = self.get_parent().get_api()
 
         # Set settings object
         if settings:
             self.settings = settings
         else:
-            self.settings = self.parent.get_settings()
+            self.settings = self.get_parent().get_settings()
 
         # Sync path
         if self.parent:
@@ -94,6 +98,15 @@ class Entity(object):
         if self.folder:
             self._make_folder()
 
+        # Set synchronizer object
+        if synchronizer:
+            self.synchronizer = synchronizer
+        else:
+            self.synchronizer = self.get_parent().get_synchronizer()
+
+            # Add Entity to the list in the Synchronizer object
+            self.get_synchronizer().add_entity(self, self.get_course().get_id())
+
     def __getitem__(self, item):
         """ Container get-item method can be used to access a specific child object """
         return self.children[item]
@@ -114,6 +127,31 @@ class Entity(object):
     def __nonzero__(self):
         """ Boolean representation method. Always returns True after initialization. """
         return True
+
+    def get_identifier_string(self):
+        """ Getter method for the identifier string """
+        return self.identifier
+
+    def get_course(self):
+        """ Go up one level until the Course object is reached, then return it """
+
+        if self.get_identifier_string() == "course":
+            return self
+
+        parent = self.parent
+
+        while parent.get_identifier_string().lower() != "course":
+            parent = parent.get_parent()
+
+        return parent
+
+    def get_name(self):
+        """ Getter method for the name """
+        return self.name
+
+    def get_synchronizer(self):
+        """ Getter method for the Synchronizer object """
+        return self.synchronizer
 
     def get_id(self):
         """ Getter method for the ID number """

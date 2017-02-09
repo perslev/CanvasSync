@@ -26,7 +26,8 @@ class ANSI(object):
     EXTERNALURL     = u'\033[35m'
     ASSIGNMENT      = u'\033[33m'
     ASSIGNMENTS     = u'\033[37m'
-    SUBFOLDER       = u'\033[34m'
+    SUBHEADER       = u'\033[34m'
+    FOLDER          = u'\033[93m'
     BLUE            = u'\033[36m'
     ENDC            = u'\033[0m'
     BOLD            = u'\033[1m'
@@ -43,8 +44,9 @@ class ANSI(object):
                     "course": COURSE,
                     "module": MODULE,
                     "linkedfile": COURSE,
-                    "subfolder": SUBFOLDER,
+                    "subheader": SUBHEADER,
                     "assignment": ASSIGNMENT,
+                    "folder": GREEN,
                     "assignments": ASSIGNMENTS,
                     "lineup": LINE_UP,
                     "bold": BOLD,

@@ -20,6 +20,7 @@ Course object.
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.CanvasEntities.module import Module
 from CanvasSync.CanvasEntities.assignments_folder import AssignmentsFolder
+from CanvasSync.CanvasEntities.folder import Folder
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
 
@@ -46,7 +47,8 @@ class Course(Entity):
                         id_number=course_id,
                         name=course_name,
                         sync_path=course_path,
-                        parent=parent)
+                        parent=parent,
+                        identifier="course")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -57,7 +59,7 @@ class Course(Entity):
 
     def download_modules(self):
         """ Returns a list of dictionaries representing module objects """
-        return self.api.get_modules(self.id)
+        return self.api.get_modules_in_course(self.id)
 
     def add_modules(self):
         """ [HIDDEN]  Method that adds all Module objects to the list of Module objects """
@@ -69,7 +71,7 @@ class Course(Entity):
 
     def download_assignemtns(self):
         """ Return a list of dictionaries representing assignment objects """
-        return self.api.get_assigments(self.id)
+        return self.api.get_assignments_in_course(self.id)
 
     def add_assignments_folder(self):
         """ Add an AssigmentsFolder object to the children list """
@@ -83,12 +85,28 @@ class Course(Entity):
         assignments = AssignmentsFolder(assignments_info_list, self)
         self.add_child(assignments)
 
+    def add_files_folder(self):
+        """ Add a SubFolder object representing the files folder of the course """
+
+        # The main file folder should always be the first in the list, but is there a better way to get this initial ID
+        # than downloading the entire list of folders??
+        main_file_folder = self.api.get_folders_in_course(self.id)[0]
+
+        # Change name of folder
+        main_file_folder["name"] = "Other Files"
+
+        folder = Folder(main_file_folder, self)
+        self.add_child(folder)
+
     def walk(self, counter):
         """ Walk by adding all Modules and AssignmentFolder objects to the list of children """
         self.add_modules()
 
         # Add an AssignmentsFolder if at least one assignment is found under the course
         self.add_assignments_folder()
+
+        # Add files folder
+        self.add_files_folder()
 
         counter[0] += 1
         print unicode(self)
@@ -106,6 +124,9 @@ class Course(Entity):
 
         # Add an AssignmentsFolder if at least one assignment is found under the course
         self.add_assignments_folder()
+
+        # Add Various Files folder
+        self.add_files_folder()
 
         for child in self:
             child.sync()

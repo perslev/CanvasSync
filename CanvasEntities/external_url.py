@@ -38,7 +38,8 @@ class ExternalUrl(Entity):
                         name=url_name,
                         sync_path=url_path,
                         parent=parent,
-                        folder=False)
+                        folder=False,
+                        identifier="external_url")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
