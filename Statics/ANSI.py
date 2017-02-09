@@ -42,6 +42,7 @@ class ANSI(object):
                     "externalurl": EXTERNALURL,
                     "course": COURSE,
                     "module": MODULE,
+                    "linkedfile": COURSE,
                     "subfolder": SUBFOLDER,
                     "assignment": ASSIGNMENT,
                     "assignments": ASSIGNMENTS,

@@ -50,8 +50,10 @@ class Course(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Course", formatting="course"),
-                                                                        self.name)
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                                   % (ANSI.format("Course", formatting="course"),
+                                                                      self.name)
 
     def download_modules(self):
         """ Returns a list of dictionaries representing module objects """

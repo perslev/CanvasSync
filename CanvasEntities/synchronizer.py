@@ -61,7 +61,7 @@ class Synchronizer(Entity):
         sync_path = static_functions.get_corrected_path(settings.sync_path_, False, folder=True)
 
         # Initialize base class
-        Entity.__init__(self, id_number=-1, name="", sync_path=sync_path, api=api)
+        Entity.__init__(self, id_number=-1, name="", sync_path=sync_path, api=api, settings=settings)
 
     def __repr__(self):
         """ String representation, overwriting base class method """

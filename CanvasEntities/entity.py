@@ -30,7 +30,7 @@ from CanvasSync.Statics import static_functions
 
 
 class Entity(object):
-    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None):
+    def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None, settings=None):
         """
         Constructor method
 
@@ -64,6 +64,12 @@ class Entity(object):
             self.api = api
         else:
             self.api = self.parent.get_api()
+
+        # Set settings object
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = self.parent.get_settings()
 
         # Sync path
         if self.parent:
@@ -120,6 +126,10 @@ class Entity(object):
     def get_api(self):
         """ Getter method for the InstructureApi object """
         return self.api
+
+    def get_settings(self):
+        """ Getter method for the Settings object """
+        return self.settings
 
     def get_path(self):
         """ Getter method for the sync path """

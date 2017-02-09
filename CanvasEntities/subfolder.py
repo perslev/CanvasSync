@@ -51,9 +51,10 @@ class SubFolder(Module):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Sub folder",
-                                                                                    formatting="subfolder"),
-                                                                        self.name)
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                                   % (ANSI.format("Sub folder", formatting="subfolder"),
+                                                                      self.name)
 
     def walk(self, counter):
         """

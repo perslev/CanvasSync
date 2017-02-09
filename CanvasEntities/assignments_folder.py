@@ -40,9 +40,11 @@ class AssignmentsFolder(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Assignments Folder",
-                                                                                    formatting="assignments"),
-                                                                        self.name)
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                                   % (ANSI.format("Assignments Folder",
+                                                                                  formatting="assignments"),
+                                                                      self.name)
 
     def add_assignments(self):
         """ Add an Assignment object to the list of children """

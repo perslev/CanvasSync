@@ -57,7 +57,6 @@ def reorganize(items):
             # If not a folder, is the item in the outer most scope?
             outer_scope_files.append(item)
         else:
-            print item
             # File is located in a sub-folder
             sub_folders[current_sub_folder_index].append(item)
 

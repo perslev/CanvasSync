@@ -53,8 +53,10 @@ class Module(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Module", formatting="module"),
-                                                                        self.name)
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                                   % (ANSI.format("Module", formatting="module"),
+                                                                      self.name)
 
     def get_item_information(self):
         """ Returns a dictionary of items from the Canvas server """

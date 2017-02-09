@@ -66,7 +66,7 @@ class Page(Entity):
         if not os.path.exists(self.sync_path):
             with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
                 out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
-                out_file.write(u"<big><a href=\"%s\">Click here to open this page in Canvas</a></big>" % html_url)
+                out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
                 out_file.write(u"<hr>")
                 out_file.write(body)
 
