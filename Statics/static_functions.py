@@ -24,20 +24,24 @@ def reorganize(items):
     A list of items located in the outer scope is returned along with a list of containing dictionaries of items
     contained within each potential sub-folder.
 
-    items : dictionary | A JSON dictionary containing information on items located in some Module or sub-folder.
+    items : list | A list of JSON dictionary objects containing information on Canvas item objects
     """
+
+    # If no items, return empty lists
+    if len(items) == 0:
+        return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
     outer_scope_files = []
-
-    # Get the indent level of the outer most scope
-    outer_indent = items[0]["indent"]
 
     # Create a list that will hold sub dictionaries containing information on all files in the sub-folder
     sub_folders = []
 
     # Counter value used to keep track of how many the index of the current sub-folder that is being reorganized.
     current_sub_folder_index = -1
+
+    # Get the indent level of the outer most scope, should be that of the 0th item in the list, but we check all here.
+    outer_indent = min([items[index]["indent"] for index in range(len(items))])
 
     # Reorganize all items in 'items'
     for item in items:
@@ -53,6 +57,7 @@ def reorganize(items):
             # If not a folder, is the item in the outer most scope?
             outer_scope_files.append(item)
         else:
+            print item
             # File is located in a sub-folder
             sub_folders[current_sub_folder_index].append(item)
 
