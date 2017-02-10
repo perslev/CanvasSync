@@ -50,6 +50,13 @@ from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics.instructure_api import InstructureApi
 from CanvasSync import usage
 
+try:
+    import requests
+    import bcrypt
+    import Crypto
+except ImportError:
+    print "\n [ERROR] Missing dependencies. Please execute 'pip install -r requirements.txt'"
+
 
 def run_canvas_sync():
     # Get command line arguments (C-style)
