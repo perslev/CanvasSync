@@ -69,7 +69,7 @@ class File(Entity):
             if os.path.exists(self.sync_path):
                 os.remove(self.sync_path)
 
-            # Re-raise, will be catched in __main__.py
+            # Re-raise, will be catched in CanvasSync.py
             raise e
 
         return True

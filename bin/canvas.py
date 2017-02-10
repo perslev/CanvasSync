@@ -8,7 +8,7 @@ February 2017
 """
 
 """
-__main__.py, main module
+CanvasSync.py, main module
 
 Implements the main module of CanvasSync. This module initiates the top-level Synchronizer object with the
 settings specified in the settings file. If no settings file can be found, the user is promoted to supply the following
@@ -34,17 +34,8 @@ import getopt
 import os
 import sys
 
-# Add the CanvasSync module to the path variable at run time
-sys.path.insert(0, os.path.split(os.path.split(os.path.abspath(__file__))[0])[0])
-
 # CanvasSync modules
-try:
-    from CanvasSync.CanvasEntities.synchronizer import Synchronizer
-except ImportError:
-    print "\n[ERROR] Could not import CanvasSync modules.\n" \
-          "        Make sure the top level folder is named 'CanvasSync'.\n"
-    sys.exit(1)
-
+from CanvasSync.CanvasEntities.synchronizer import Synchronizer
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics.instructure_api import InstructureApi

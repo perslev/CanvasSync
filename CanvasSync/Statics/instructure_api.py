@@ -10,7 +10,7 @@ February 2017
 """
 instructure_api.py, Class
 
-The InstructureApi object is initialized with a Settings object from the __main__.py module.
+The InstructureApi object is initialized with a Settings object from the CanvasSync.py module.
 This class implements the basic API calling functionality to the Canvas by Instructure server.
 
 requests is used to do https communication with the server. The server domain and authentication token is

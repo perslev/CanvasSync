@@ -2,13 +2,22 @@
 
 from distutils.core import setup
 
+
 setup(name='CanvasSync',
-      version='1.0',
+      version='0.1',
       description='Synchronizes modules, assignments and files from a Canvas server to a local folder',
+      long_description=open("README.rst").read(),
       author='Mathias Perslev',
       author_email='mathias@perslev.com',
       url='https://github.com/perslev/CanvasSync',
-      packages=['CanvasSync', 'CanvasSync/CanvasEntities', 'CanvasSync/Settings', 'CanvasSync/Statics'],
-      scripts=['CanvasSync/__main__.py'],
-      package_data=['CanvasSync/README.md', 'CanvasSync/requirements.txt']
+      license="LICENSE.txt",
+      packages=["CanvasSync", "CanvasSync/CanvasEntities", "CanvasSync/Settings", "CanvasSync/Statics"],
+      scripts=['bin/canvas.py'],
+      install_requires=["request", "pycrypto", "py-bcrypt"],
+      classifiers=['Development Status :: 3 - Alpha',
+                   'Environment :: Console',
+                   'Operating System :: MacOS :: MacOS X',
+                   'Operating System :: POSIX',
+                   'Programming Language :: Python',
+                   'License :: OSI Approved :: MIT License']
      )

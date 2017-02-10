@@ -74,7 +74,7 @@ class Folder(Entity):
         entities = self.get_synchronizer().get_entities(self.get_course().get_id())
 
         # Get list of names of all the File objects of the entities list
-        black_list = [x.get_name() for x in entities if x.get_identifier_string() == "file" and len(x.get_name()) > 10]
+        black_list = [x.get_id() for x in entities if x.get_identifier_string() == "file"]
 
         return black_list
 
@@ -83,7 +83,8 @@ class Folder(Entity):
         files = self.api.get_files_in_folder(self.id)
 
         for file in files:
-            if static_functions.get_corrected_name(file["filename"]) in self.black_list:
+            # Skip duplicates if this settings is active (otherwise the list will be empty)
+            if file["id"] in self.black_list:
                 continue
 
             file = File(file, self, add_to_list_of_entities=False)
