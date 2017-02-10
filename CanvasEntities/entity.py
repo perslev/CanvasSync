@@ -31,7 +31,7 @@ from CanvasSync.Statics import static_functions
 
 class Entity(object):
     def __init__(self, id_number, name, sync_path, parent=None, folder=True, api=None, settings=None, identifier="",
-                 synchronizer=None):
+                 synchronizer=None, add_to_list_of_entities=True):
         """
         Constructor method
 
@@ -104,8 +104,9 @@ class Entity(object):
         else:
             self.synchronizer = self.get_parent().get_synchronizer()
 
-            # Add Entity to the list in the Synchronizer object
-            self.get_synchronizer().add_entity(self, self.get_course().get_id())
+            if add_to_list_of_entities:
+                # Add Entity to the list in the Synchronizer object
+                self.get_synchronizer().add_entity(self, self.get_course().get_id())
 
     def __getitem__(self, item):
         """ Container get-item method can be used to access a specific child object """

@@ -93,12 +93,18 @@ class Course(Entity):
 
         # The main file folder should always be the first in the list, but is there a better way to get this initial ID
         # than downloading the entire list of folders??
-        main_file_folder = self.api.get_folders_in_course(self.id)[0]
+        folders = self.api.get_folders_in_course(self.id)
+
+        main_folder = None
+        for folder in folders:
+            if folder["full_name"] == "course files":
+                main_folder = folder
+                break
 
         # Change name of folder
-        main_file_folder["name"] = "Other Files"
+        main_folder["name"] = "Other Files"
 
-        folder = Folder(main_file_folder, self)
+        folder = Folder(main_folder, self)
         self.add_child(folder)
 
     def walk(self, counter):

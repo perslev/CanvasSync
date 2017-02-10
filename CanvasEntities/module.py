@@ -61,9 +61,9 @@ class Module(Entity):
 
     def get_item_information(self):
         """ Returns a dictionary of items from the Canvas server """
-        return self.api.get_items_in_module(self.get_parent().get_id(), self.id)
+        return self.api.get_items_in_module(self.get_course().get_id(), self.id)
 
-    def add_sub_folder(self, folder_info, folder_position, folder_items):
+    def add_sub_header(self, folder_info, folder_position, folder_items):
         """
         [HIDDEN] Method that adds a Folder object to the list of children
 
@@ -137,7 +137,7 @@ class Module(Entity):
 
         # Add all sub-folders as Folder objects to the list of children along with the items the folder contain
         for position, folder in enumerate(sub_folders):
-            self.add_sub_folder(folder[0], position + 1, folder[1:])
+            self.add_sub_header(folder[0], position + 1, folder[1:])
 
     def walk(self, counter):
         """

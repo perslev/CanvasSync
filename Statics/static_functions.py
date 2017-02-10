@@ -34,8 +34,10 @@ def reorganize(items):
     items : list | A list of JSON dictionary objects containing information on Canvas item objects
     """
 
-    # If no items, return empty lists
-    if len(items) == 0:
+    # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
+    # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
+    # and error report). In both cases return empty lists.
+    if (isinstance(items, dict) and items.keys()[0] == "errors") or len(items) == 0:
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
@@ -48,7 +50,10 @@ def reorganize(items):
     current_sub_folder_index = -1
 
     # Get the indent level of the outer most scope, should be that of the 0th item in the list, but we check all here.
-    outer_indent = min([items[index]["indent"] for index in range(len(items))])
+    try:
+        outer_indent = min([items[index]["indent"] for index in range(len(items))])
+    except KeyError:
+        print items
 
     # Reorganize all items in 'items'
     for item in items:

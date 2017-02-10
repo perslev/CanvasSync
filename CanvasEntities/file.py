@@ -19,7 +19,7 @@ from CanvasSync.Statics import static_functions
 class File(Entity):
     """ Derived class of the Entity base class """
 
-    def __init__(self, file_info, parent):
+    def __init__(self, file_info, parent, add_to_list_of_entities=True):
         """
         Constructor method, initializes base Entity class
 
@@ -30,7 +30,7 @@ class File(Entity):
         self.file_info = file_info
 
         file_id = self.file_info["id"]
-        file_name = static_functions.get_corrected_name(self.file_info["filename"])
+        file_name = static_functions.get_corrected_name(self.file_info["display_name"])
         file_path = parent.get_path() + file_name
 
         # Initialize base class
@@ -40,7 +40,8 @@ class File(Entity):
                         sync_path=file_path,
                         parent=parent,
                         folder=False,
-                        identifier="file")
+                        identifier="file",
+                        add_to_list_of_entities=add_to_list_of_entities)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
