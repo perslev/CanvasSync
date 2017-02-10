@@ -82,6 +82,7 @@ def run_canvas_sync():
     if not settings.settings_file_exists() or setup:
         try:
             settings.set_settings()
+            settings.write_settings()
         except KeyboardInterrupt:
             print ANSI.format("\n\n[*] Setup interrupted", formatting="red")
             sys.exit()
@@ -92,7 +93,8 @@ def run_canvas_sync():
 
     # If -i or --info was specified, show the current settings and EXIT
     if show_info:
-        settings.print_settings(clear=False)
+        settings.print_settings(welcome=False, clear=True)
+        settings.print_advanced_settings(clear=False)
         sys.exit(0)
 
     # Initialize the Instructure Api object used to make API calls to the Canvas server

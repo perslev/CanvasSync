@@ -13,8 +13,15 @@ static_function.py, module
 A collection of small static helper-functions used in various modues of CanvasSync.
 """
 
+# TODO
+# - Improve domain validation check, it is quite limit at this moment
+# - (find better solution to sub-folder problem than the reorganize function?)
+
 # Inbuilt modules
 import os
+
+# Third party modules
+import requests
 
 
 def reorganize(items):
@@ -103,3 +110,32 @@ def get_corrected_name(name):
         # content of the folder. Reduce the length of the name and append trailing dots '...'
         name = name[:60] + "..."
     return name
+
+
+def validate_domain(domain):
+    try:
+        response = requests.get(domain + "/api/v1/courses", timeout=5).content
+        if response == "{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
+            # If this response, the server exists and understands the API call but complains that the call was
+            # not authenticated - the URL represents a Canvas server
+            return True
+        else:
+            print "\n[ERROR] Not a valid Canvas web server. Wrong domain?"
+            return False
+    except Exception:
+        print "\n[ERROR] Invalid domain."
+        return False
+
+
+def validate_token(domain, token):
+    if len(token) < 20:
+        print "The server did not accept the authentication token."
+        return False
+
+    response = requests.get(domain + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).content
+
+    if "Invalid access token" in response:
+        print "The server did not accept the authentication token."
+        return False
+    else:
+        return True

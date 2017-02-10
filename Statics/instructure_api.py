@@ -35,8 +35,7 @@ class InstructureApi(object):
 
         settings : string | A Settings object used to load domain and token attributes
         """
-        self.domain = settings.domain_
-        self.token = settings.token_
+        self.settings = settings
 
     def _get(self, api_call):
         """
@@ -44,7 +43,7 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return requests.get("%s%s" % (self.domain, api_call), headers={'Authorization': "Bearer %s" % self.token})
+        return requests.get("%s%s" % (self.settings.domain, api_call), headers={'Authorization': "Bearer %s" % self.settings.token})
 
     def get_json(self, api_call):
         """
@@ -116,7 +115,7 @@ class InstructureApi(object):
 
         url : string | The API url pointing to information on a specified file in the Canvas system
         """
-        url = url.split(self.domain)[-1]
+        url = url.split(self.settings.domain)[-1]
         return self.get_json(url)
 
     def download_file_payload(self, donwload_url):
@@ -125,7 +124,7 @@ class InstructureApi(object):
 
         donwload_url : string | The API download url pointing to a file in the Canvas system
         """
-        url = donwload_url.split(self.domain)[-1]
+        url = donwload_url.split(self.settings.domain)[-1]
         return self._get(url).content
 
     def get_assignments_in_course(self, course_id):

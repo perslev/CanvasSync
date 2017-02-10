@@ -14,6 +14,8 @@ A small helper-object containing various ANSI escape sequences used to manipulat
 terminal window.
 """
 
+# TODO
+# - This will fail on Windows machines, create function that just returns raw string if the OS is Windows (R.I.P colors)
 
 class ANSI(object):
     GREEN           = u'\033[32m'
@@ -25,10 +27,12 @@ class ANSI(object):
     PAGE            = u'\033[96m'
     EXTERNALURL     = u'\033[35m'
     ASSIGNMENT      = u'\033[33m'
+    WHITE           = u''
     ASSIGNMENTS     = u'\033[37m'
     SUBHEADER       = u'\033[34m'
     FOLDER          = u'\033[93m'
     BLUE            = u'\033[36m'
+    ANNOUNCER       = u'\033[31m'
     ENDC            = u'\033[0m'
     BOLD            = u'\033[1m'
     UNDERLINE       = u'\033[4m'
@@ -46,7 +50,9 @@ class ANSI(object):
                     "linkedfile": COURSE,
                     "subheader": SUBHEADER,
                     "assignment": ASSIGNMENT,
+                    "white": WHITE,
                     "folder": GREEN,
+                    "announcer": ANNOUNCER,
                     "assignments": ASSIGNMENTS,
                     "lineup": LINE_UP,
                     "bold": BOLD,

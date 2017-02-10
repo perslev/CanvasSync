@@ -57,7 +57,7 @@ class Assignment(Entity):
         """ Create the main HTML description page of the assignment """
 
         # Create URL pointing to Canvas live version of the assignment
-        url = self.settings.domain_ + "/courses/%s/assignments/%s" % (self.get_parent().get_parent().get_id(),
+        url = self.settings.domain + "/courses/%s/assignments/%s" % (self.get_parent().get_parent().get_id(),
                                                                       self.get_id())
 
         if not os.path.exists(self.sync_path + self.name + ".html"):
@@ -84,23 +84,25 @@ class Assignment(Entity):
             item = File(file_info, parent=self)
             self.add_child(item)
 
-        # We also look for links to files downloaded from other servers
-        # Get all URLs ending in a file name (determined as a ending with a '.'
-        # and then between 1 and 10 of any characters after that). This has 2 purposes:
-        # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
-        # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
-        urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info["description"])
+        if self.settings.download_linked:
+            # We also look for links to files downloaded from other servers
+            # Get all URLs ending in a file name (determined as a ending with a '.'
+            # and then between 1 and 10 of any characters after that). This has 2 purposes:
+            # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
+            # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info["description"])
 
-        for url in urls:
-            linked_file = LinkedFile(url, self)
+            for url in urls:
+                linked_file = LinkedFile(url, self)
 
-            if linked_file.url_is_valid():
-                self.add_child(linked_file)
-            else:
-                del linked_file
+                if linked_file.url_is_valid():
+                    self.add_child(linked_file)
+                else:
+                    del linked_file
 
     def walk(self, counter):
         """ Walk by adding all File objects to the list of children """
+
         self.add_files()
 
         counter[0] += 1

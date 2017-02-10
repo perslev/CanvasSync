@@ -58,7 +58,7 @@ class Synchronizer(Entity):
         static_functions.clear_console()
 
         # Get the corrected top-level sync path
-        sync_path = static_functions.get_corrected_path(settings.sync_path_, False, folder=True)
+        sync_path = static_functions.get_corrected_path(settings.sync_path, False, folder=True)
 
         # A dictionary to store lists of Entity objects added to the hierarchy under a course ID number
         self.entities = {}
@@ -92,8 +92,9 @@ class Synchronizer(Entity):
     def add_courses(self):
         """ Method that adds all Course objects representing Canvas courses to the list of children """
 
-        # Download list of dictionaries representing Canvas courses and add them all to the list of children
+        # Download list of dictionaries representing Canvas crouses and add them all to the list of children
         for course_information in self.download_courses():
+
             # Add an empty list to the entities dictionary that will store entities when added
             self.entities[course_information["id"]] = []
 

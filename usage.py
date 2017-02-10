@@ -1,3 +1,21 @@
+#!/usr/bin/env python2.7
+
+"""
+CanvasSync by Mathias Perslev
+
+MSc Bioinformatics, University of Copenhagen
+February 2017
+"""
+
+"""
+usage.py, module
+
+Implements the help function that displays the help prompt.
+"""
+
+# TODO
+# - Needs heavy updating to account for new features
+
 import sys
 
 

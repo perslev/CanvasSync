@@ -128,11 +128,11 @@ class Module(Entity):
 
         # Add all non-sub-folder items to the list of children. Currently, files, HTML pages and URLs are added.
         for item in items_in_this_scope:
-            if item["type"] == "File":
+            if item["type"] == "File" and self.settings.modules_settings["Files"]:
                 self.add_file(item)
-            elif item["type"] == "Page":
+            elif item["type"] == "Page" and self.settings.modules_settings["HTML pages"]:
                 self.add_page(item)
-            elif item["type"] == "ExternalUrl":
+            elif item["type"] == "ExternalUrl" and self.settings.modules_settings["External URLs"]:
                 self.add_url(item)
 
         # Add all sub-folders as Folder objects to the list of children along with the items the folder contain

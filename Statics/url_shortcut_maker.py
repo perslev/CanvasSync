@@ -1,3 +1,18 @@
+#!/usr/bin/env python2.7
+
+"""
+CanvasSync by Mathias Perslev
+
+MSc Bioinformatics, University of Copenhagen
+February 2017
+"""
+
+"""
+url_shortcut_maker.py, module
+
+A collection of functions that creates URL shortcuts based on the machine operating system
+"""
+
 import sys
 import os
 

@@ -8,7 +8,7 @@ February 2017
 """
 
 """
-encrypt.py, module
+cryptography.py, module
 
 Functions used to encrypt and decrypt the settings stored in the .CanvasSync.settings file. When the user has specified
 settings the string of information is encrypted using the AES 256 module of the PyCrypto library. A password is
@@ -46,7 +46,7 @@ def encrypt(message):
     for i in range(16):
         IV += chr(random.randint(0, 0xFF))
 
-    print "\n[*] Please enter password to encrypt the settings file:"
+    print "\nPlease enter a password to encrypt the settings file:"
     hashed_password = bcrypt.hashpw(getpass.getpass(), bcrypt.gensalt())
     with open(os.path.expanduser("~") + "/.CanvasSync.pw", "wb") as pass_file:
         pass_file.write(hashed_password)
@@ -75,7 +75,7 @@ def decrypt(message):
     # Get password from user and compare to answer
     valid_password = False
     while not valid_password:
-        print "\n[*] Please enter password to decrypt the settings file:"
+        print "\nPlease enter password to decrypt the settings file:"
         password = getpass.getpass()
         if bcrypt.hashpw(password, hashed_password) == hashed_password:
             valid_password = True

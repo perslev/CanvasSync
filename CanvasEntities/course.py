@@ -40,6 +40,7 @@ class Course(Entity):
 
         course_id = self.course_info["id"]
         course_name = static_functions.get_corrected_name(self.course_info["course_code"].split(";")[-1])
+
         course_path = parent.get_path() + course_name
 
         # Initialize base class
@@ -50,12 +51,13 @@ class Course(Entity):
                         parent=parent,
                         identifier="course")
 
+        self.to_be_synced = True if course_name in self.settings.courses_to_sync else False
+
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format("Course", formatting="course"),
-                                                                      self.name)
+        status = ANSI.format("[SYNCED]" if self.to_be_synced else "[SKIPPED]", formatting="green" if self.to_be_synced else "yellow")
+        return status + u" " * (7 if self.to_be_synced else 6) + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                        % (ANSI.format("Course", formatting="course"), self.name)
 
     def download_modules(self):
         """ Returns a list of dictionaries representing module objects """
@@ -100,7 +102,12 @@ class Course(Entity):
 
     def walk(self, counter):
         """ Walk by adding all Modules and AssignmentFolder objects to the list of children """
-        self.add_modules()
+
+        if not self.to_be_synced:
+            return
+
+        if not self.settings.modules_settings.values() == [False, False, False]:
+            self.add_modules()
 
         # Add an AssignmentsFolder if at least one assignment is found under the course
         self.add_assignments_folder()
@@ -120,10 +127,15 @@ class Course(Entity):
         """
         print unicode(self)
 
-        self.add_modules()
+        if not self.to_be_synced:
+            return
 
-        # Add an AssignmentsFolder if at least one assignment is found under the course
-        self.add_assignments_folder()
+        if not self.settings.modules_settings.values() == [False, False, False]:
+            self.add_modules()
+
+        if self.settings.sync_assignments:
+            # Add an AssignmentsFolder if at least one assignment is found under the course
+            self.add_assignments_folder()
 
         # Add Various Files folder
         self.add_files_folder()

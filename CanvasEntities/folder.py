@@ -109,6 +109,11 @@ class Folder(Entity):
         """
         Walk by adding all Files and Folder objects to the list of children
         """
+        if not self.black_list and self.settings.avoid_duplicates:
+            self.initialize_black_list()
+        else:
+            self.black_list = []
+
         self.add_files()
         self.add_sub_folders()
 
@@ -124,8 +129,10 @@ class Folder(Entity):
         """
         print unicode(self)
 
-        if not self.black_list:
+        if not self.black_list and self.settings.avoid_duplicates:
             self.initialize_black_list()
+        else:
+            self.black_list = []
 
         self.add_files()
         self.add_sub_folders()
