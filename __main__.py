@@ -38,7 +38,13 @@ import sys
 sys.path.insert(0, os.path.split(os.path.split(os.path.abspath(__file__))[0])[0])
 
 # CanvasSync modules
-from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+try:
+    from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+except ImportError:
+    print "\n[ERROR] Could not import CanvasSync modules.\n" \
+          "        Make sure the top level folder is named 'CanvasSync'.\n"
+    sys.exit(1)
+
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics.instructure_api import InstructureApi
@@ -111,6 +117,13 @@ def run_canvas_sync():
 
 # If main module
 if __name__ == "__main__":
+
+    if os.name == "nt":
+        raw_input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
+                  "       The application is not tested on Windows machines and may be\n"
+                  "       unstable. Colored output and other visuals are not supported.\n"
+                  "\n     Hit enter to start.")
+
     try:
         run_canvas_sync()
     except KeyboardInterrupt:
