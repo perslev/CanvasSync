@@ -43,15 +43,16 @@ class Course(Entity):
 
         course_path = parent.get_path() + course_name
 
+        self.to_be_synced = True if course_name in parent.settings.courses_to_sync else False
+
         # Initialize base class
         Entity.__init__(self,
                         id_number=course_id,
                         name=course_name,
                         sync_path=course_path,
                         parent=parent,
-                        identifier="course")
-
-        self.to_be_synced = True if course_name in self.settings.courses_to_sync else False
+                        identifier="course",
+                        folder=self.to_be_synced)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
