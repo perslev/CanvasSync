@@ -45,6 +45,7 @@ from six.moves import input
 from CanvasSync.CanvasEntities.synchronizer import Synchronizer
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
+from CanvasSync.Statics import static_functions
 from CanvasSync.Statics.instructure_api import InstructureApi
 from CanvasSync import usage
 
@@ -125,11 +126,12 @@ def run_canvas_sync():
 if __name__ == "__main__":
 
     if os.name == "nt":
+        static_functions.clear_console()
         input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
-                  "     The application is not developed for Windows machines and may be\n"
-                  "     unstable. Some pretty output layout and tab-autocompletion\n"
-                  "     is not supported... :(\n"
-                  "\n   Hit enter to start.")
+                  "      The application is not developed for Windows machines and may be\n"
+                  "      unstable. Some pretty output layout and tab-autocompletion\n"
+                  "      is not supported... :(\n"
+                  "\n    Hit enter to start.")
 
     try:
         run_canvas_sync()
