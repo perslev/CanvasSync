@@ -4,7 +4,7 @@ from distutils.core import setup
 
 
 setup(name='CanvasSync',
-      version='0.1.1',
+      version='0.1.2',
       description='Synchronizes modules, assignments and files from a Canvas server to a local folder',
       long_description=open("README.rst").read(),
       author='Mathias Perslev',

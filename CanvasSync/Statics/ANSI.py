@@ -14,9 +14,6 @@ A small helper-object containing various ANSI escape sequences used to manipulat
 terminal window.
 """
 
-# Inbuilt modules
-import os
-
 
 class ANSI(object):
     GREEN           = u'\033[32m'
@@ -68,9 +65,5 @@ class ANSI(object):
     @staticmethod
     def format(text, formatting):
         """ Format a string of text using ANSI escape sequences """
-
-        if os.name == "nt":
-            # Not supported in Windows CMD
-            return text
 
         return ANSI._get(formatting) + text + ANSI._get("end")

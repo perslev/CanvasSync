@@ -96,10 +96,6 @@ def get_corrected_path(path, parent_path, folder):
     folder      : boolean | Does the input path point to a folder? (False = file)
                              If the path points to a folder, a trailing forward slash is appended to the path string.
     """
-    if parent_path:
-        name = path.split(parent_path)[-1]
-        path = parent_path + name.replace("/", ".")
-
     path = os.path.abspath(path)
     path += "/" if folder else ""
 
@@ -117,6 +113,20 @@ def get_corrected_name(name):
         # The name is too long, this may happen for sub-folders where the title is accidentally used to describe the
         # content of the folder. Reduce the length of the name and append trailing dots '...'
         name = name[:60] + u"..."
+
+    name = name.replace("/", ".")
+    name = name.replace(":", "-")
+
+    if os.name == "nt":
+        # Cannot be in file names on Windows machines
+        name = name.replace("\\", ".")
+        name = name.replace("*", ".")
+        name = name.replace("?", "_")
+        name = name.replace('"', "_")
+        name = name.replace('<', "-")
+        name = name.replace('>', "-")
+        name = name.replace('|', "-")
+
     return name
 
 

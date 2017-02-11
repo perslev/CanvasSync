@@ -126,10 +126,10 @@ if __name__ == "__main__":
 
     if os.name == "nt":
         input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
-                  "       The application is not developed for Windows machines and may be\n"
-                  "       unstable. Colored output, output layout and tab-autocompletion\n"
-                  "       is not supported.\n"
-                  "\n     Hit enter to start.")
+                  "     The application is not developed for Windows machines and may be\n"
+                  "     unstable. Some pretty output layout and tab-autocompletion\n"
+                  "     is not supported... :(\n"
+                  "\n   Hit enter to start.")
 
     try:
         run_canvas_sync()
