@@ -58,10 +58,7 @@ def ask_for_sync_path():
             sync_path = sync_path.replace("~", os.path.expanduser("~"))
         sync_path = os.path.abspath(sync_path)
 
-        # Check if the path already exists
-        if os.path.exists(sync_path):
-            print "\n[ERROR] The supplied path is a folder. A sub folder name must also be specified."
-        elif not os.path.exists(os.path.split(sync_path)[0]):
+        if not os.path.exists(os.path.split(sync_path)[0]):
             print "\n[ERROR] Base path '%s' does not exist." % os.path.split(sync_path)[0]
         else:
             found = True
