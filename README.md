@@ -27,16 +27,16 @@ Installation
 The easiest way to install and run CanvasSync is by using PIP. Download and install CanvasSync along with its
 dependencies (see below) by running:
 
-'''
+```
 pip install CanvasSync
-'''
+```
 
 Alternatively, download the source distribution from the https://github.com/perslev/CanvasSync/tree/master/dist on GitHub
 (.tar.gz for UNIX and .zip for Windows) and run the following command on the distribution file:
 
-'''
+```
 pip install CanvasSync-<VERSION>.tar.gz
-'''
+```
 
 Lastly, you may use the supplied setup.py file to create your own source package or built package for your system.
 
