@@ -5,12 +5,23 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
+
+--------------------------------------------
+
+page, CanvasEntity Class
+
 """
+
+# Future imports
+from __future__ import print_function
 
 # Inbuilt modules
 import os
 import sys
 import io
+
+# Third party
+from six import text_type
 
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.Statics.ANSI import ANSI
@@ -30,8 +41,8 @@ class Page(Entity):
 
         self.page_info = page_info
 
-        page_id = self.page_info["id"]
-        page_name = static_functions.get_corrected_name(self.page_info["title"])
+        page_id = self.page_info[u"id"]
+        page_name = static_functions.get_corrected_name(self.page_info[u"title"])
         page_path = parent.get_path() + page_name
 
         # Initialize base class
@@ -41,31 +52,31 @@ class Page(Entity):
                         sync_path=page_path,
                         parent=parent,
                         folder=False,
-                        identifier="page")
+                        identifier=u"page")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Page",
-                                                                                    formatting="page"),
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Page",
+                                                                                    formatting=u"page"),
                                                                         self.name)
 
     def download(self):
         """ Download the page """
-        if os.path.exists(self.sync_path + ".html"):
+        if os.path.exists(self.sync_path + u".html"):
             return False
 
         # Print download status
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status(u"DOWNLOADING", color=u"blue")
 
         # Download additional info and HTML body of the Page object
-        self.page_info = self.api.download_item_information(self.page_info["url"])
+        self.page_info = self.api.download_item_information(self.page_info[u"url"])
 
         # Create a HTML page locally and add a link leading to the live version
-        body = self.page_info["body"]
-        html_url = self.page_info["html_url"]
+        body = self.page_info[u"body"]
+        html_url = self.page_info[u"html_url"]
 
         if not os.path.exists(self.sync_path):
-            with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
+            with io.open(self.sync_path + u".html", u"w", encoding=u"utf-8") as out_file:
                 out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
                 out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
                 out_file.write(u"<hr>")
@@ -77,17 +88,17 @@ class Page(Entity):
         """ Print status to console """
         if overwrite_previous_line:
             # Move up one line
-            sys.stdout.write(ANSI.format("", formatting="lineup"))
+            sys.stdout.write(ANSI.format(u"", formatting=u"lineup"))
             sys.stdout.flush()
 
-        print ANSI.format(u"[%s]" % status, formatting=color) + unicode(self)[len(status) + 2:]
+        print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
         sys.stdout.flush()
 
     def walk(self, counter):
         """ Stop walking, endpoint """
+        print(text_type(self))
 
         counter[0] += 1
-        print unicode(self)
         return
 
     def sync(self):
@@ -98,8 +109,8 @@ class Page(Entity):
         """
 
         was_downloaded = self.download()
-        self.print_status("SYNCED", color="green", overwrite_previous_line=was_downloaded)
+        self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))

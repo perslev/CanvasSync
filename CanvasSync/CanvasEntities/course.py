@@ -5,16 +5,23 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 course.py, Second level class in hierarchy
 
 The Course class is the second level Entity object in the folder hierarchy. It inherits from the base Entity
 class and extends its functionality to allow downloading information on Modules listed under the course in the Canvas
 system. A Module object is initialized for each module found and appended to a list of children under the
 Course object.
+
 """
+
+# Future imports
+from __future__ import print_function
+
+# Third party
+from six import text_type
 
 # CanvasSync modules
 from CanvasSync.CanvasEntities.entity import Entity
@@ -38,8 +45,8 @@ class Course(Entity):
 
         self.course_info = course_info
 
-        course_id = self.course_info["id"]
-        course_name = static_functions.get_corrected_name(self.course_info["course_code"].split(";")[-1])
+        course_id = self.course_info[u"id"]
+        course_name = static_functions.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
 
         course_path = parent.get_path() + course_name
 
@@ -51,14 +58,14 @@ class Course(Entity):
                         name=course_name,
                         sync_path=course_path,
                         parent=parent,
-                        identifier="course",
+                        identifier=u"course",
                         folder=self.to_be_synced)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]" if self.to_be_synced else "[SKIPPED]", formatting="green" if self.to_be_synced else "yellow")
+        status = ANSI.format(u"[SYNCED]" if self.to_be_synced else u"[SKIPPED]", formatting=u"green" if self.to_be_synced else u"yellow")
         return status + u" " * (7 if self.to_be_synced else 6) + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                        % (ANSI.format("Course", formatting="course"), self.name)
+                                                        % (ANSI.format(u"Course", formatting=u"course"), self.name)
 
     def download_modules(self):
         """ Returns a list of dictionaries representing module objects """
@@ -97,12 +104,12 @@ class Course(Entity):
 
         main_folder = None
         for folder in folders:
-            if folder["full_name"] == "course files":
+            if folder[u"full_name"] == u"course files":
                 main_folder = folder
                 break
 
         # Change name of folder
-        main_folder["name"] = "Other Files"
+        main_folder[u"name"] = u"Other Files"
 
         folder = Folder(main_folder, self)
         self.add_child(folder)
@@ -116,6 +123,8 @@ class Course(Entity):
         if not self.settings.modules_settings.values() == [False, False, False]:
             self.add_modules()
 
+        print(text_type(self))
+
         # Add an AssignmentsFolder if at least one assignment is found under the course
         self.add_assignments_folder()
 
@@ -123,7 +132,6 @@ class Course(Entity):
         self.add_files_folder()
 
         counter[0] += 1
-        print unicode(self)
         for child in self:
             child.walk(counter)
 
@@ -132,7 +140,7 @@ class Course(Entity):
         1) Adding all Modules and AssignmentFolder objects to the list of children
         2) Synchronize all children objects
         """
-        print unicode(self)
+        print(text_type(self))
 
         if not self.to_be_synced:
             return
@@ -152,7 +160,7 @@ class Course(Entity):
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))
 
         for child in self:
             child.show()

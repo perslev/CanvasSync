@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 ANSI.py, Class
 
 A small helper-object containing various ANSI escape sequences used to manipulate print statements in the

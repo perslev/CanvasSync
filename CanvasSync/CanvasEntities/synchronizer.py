@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 synchronizer.py, First level class in hierarchy
 
 The Synchronizer class is the highest level Entity object in the folder hierarchy. It inherits from the base Entity
@@ -34,7 +34,14 @@ The hierarchy of Entity objects is displayed below:
        Level 4 or N+1     Item       <--- Inherits from Entity base class
 
 The Synchronizer encapsulates a list of children Course objects.
+
 """
+
+# Future imports
+from __future__ import print_function
+
+# Third party
+from six import text_type
 
 # CanvasSync modules
 from CanvasSync.CanvasEntities.course import Course
@@ -66,12 +73,12 @@ class Synchronizer(Entity):
         # Initialize base class
         Entity.__init__(self,
                         id_number=-1,
-                        name="",
+                        name=u"",
                         sync_path=sync_path,
                         api=api,
                         settings=settings,
                         synchronizer=self,
-                        identifier="synchronizer")
+                        identifier=u"synchronizer")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -96,7 +103,7 @@ class Synchronizer(Entity):
         for course_information in self.download_courses():
 
             # Add an empty list to the entities dictionary that will store entities when added
-            self.entities[course_information["id"]] = []
+            self.entities[course_information[u"id"]] = []
 
             # Create Course object
             course = Course(course_information, parent=self)
@@ -106,8 +113,8 @@ class Synchronizer(Entity):
         """ Walk by adding all Courses to the list of children """
 
         # Print initial walk message
-        print unicode(self)
-        print ANSI.format("\n[*] Mapping out the Canvas folder hierarchy. Please wait...", "red")
+        print(self)
+        print(ANSI.format(u"\n[*] Mapping out the Canvas folder hierarchy. Please wait...", u"red"))
 
         self.add_courses()
 
@@ -122,7 +129,7 @@ class Synchronizer(Entity):
         1) Adding all Courses objects to the list of children
         2) Synchronize all children objects
         """
-        print unicode(self)
+        print(text_type(self))
 
         self.add_courses()
         for course in self:
@@ -132,7 +139,8 @@ class Synchronizer(Entity):
         """ Show the folder hierarchy by printing every level """
 
         static_functions.clear_console()
-        print u"\n%s" % unicode(self)
+        print(u"\n")
+        print(text_type(self))
 
         for course in self:
             course.show()

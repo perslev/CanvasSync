@@ -5,11 +5,22 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
+
+--------------------------------------------
+
+file, CanvasEntity Class
+
 """
+
+# Future imports
+from __future__ import print_function
 
 # Inbuilt modules
 import os
 import sys
+
+# Third party
+from six import text_type
 
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.Statics.ANSI import ANSI
@@ -29,8 +40,8 @@ class File(Entity):
 
         self.file_info = file_info
 
-        file_id = self.file_info["id"]
-        file_name = static_functions.get_corrected_name(self.file_info["display_name"])
+        file_id = self.file_info[u"id"]
+        file_name = static_functions.get_corrected_name(self.file_info[u"display_name"])
         file_path = parent.get_path() + file_name
 
         # Initialize base class
@@ -40,13 +51,13 @@ class File(Entity):
                         sync_path=file_path,
                         parent=parent,
                         folder=False,
-                        identifier="file",
+                        identifier=u"file",
                         add_to_list_of_entities=add_to_list_of_entities)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("File",
-                                                                                    formatting="file"),
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"File",
+                                                                                    formatting=u"file"),
                                                                         self.name)
 
     def download(self):
@@ -54,14 +65,14 @@ class File(Entity):
         if os.path.exists(self.sync_path):
             return False
 
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status(u"DOWNLOADING", color=u"blue")
 
         # Download file payload from server
-        file_data = self.api.download_file_payload(self.file_info["url"])
+        file_data = self.api.download_file_payload(self.file_info[u"url"])
 
         # Write data to file
         try:
-            with open(self.sync_path, "wb") as out_file:
+            with open(self.sync_path, u"wb") as out_file:
                 out_file.write(file_data)
 
         except KeyboardInterrupt as e:
@@ -79,17 +90,17 @@ class File(Entity):
 
         if overwrite_previous_line:
             # Move up one line
-            sys.stdout.write(ANSI.format("", formatting="lineup"))
+            sys.stdout.write(ANSI.format(u"", formatting=u"lineup"))
             sys.stdout.flush()
 
-        print ANSI.format(u"[%s]" % status, formatting=color) + unicode(self)[len(status) + 2:]
+        print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
         sys.stdout.flush()
 
     def walk(self, counter):
         """ Stop walking, endpoint """
+        print(text_type(self))
 
         counter[0] += 1
-        print unicode(self)
         return
 
     def sync(self):
@@ -99,8 +110,8 @@ class File(Entity):
         File objects have no children objects and represents an end point of a folder traverse.
         """
         was_downloaded = self.download()
-        self.print_status("SYNCED", color="green", overwrite_previous_line=was_downloaded)
+        self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))

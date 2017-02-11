@@ -25,6 +25,9 @@ while the Module is the derived class.
 # Inbuilt modules
 import os
 
+# Third party
+from six import text_type
+
 # CanvasSync module imports
 from CanvasSync.Statics import static_functions
 
@@ -129,6 +132,10 @@ class Entity(object):
         """ Boolean representation method. Always returns True after initialization. """
         return True
 
+    def __bool__(self):
+        """ Boolean representation method. Always returns True after initialization. """
+        return self.__nonzero__()
+
     def get_identifier_string(self):
         """ Getter method for the identifier string """
         return self.identifier
@@ -136,12 +143,12 @@ class Entity(object):
     def get_course(self):
         """ Go up one level until the Course object is reached, then return it """
 
-        if self.get_identifier_string() == "course":
+        if self.get_identifier_string() == u"course":
             return self
 
         parent = self.parent
 
-        while parent.get_identifier_string().lower() != "course":
+        while parent.get_identifier_string().lower() != u"course":
             parent = parent.get_parent()
 
         return parent

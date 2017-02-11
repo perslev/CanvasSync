@@ -1,1 +1,2 @@
-0.1, 10-02-17 - Initial release.
+0.1.0, 10-02-17 - Initial release.
+0.1.1, 11-02-17 - Now supports Python 3.x

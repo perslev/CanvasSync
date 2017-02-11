@@ -5,20 +5,18 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
+
+--------------------------------------------
+
+folder.py, CanvasEntity Class
 
 """
-folder.py, Third level class in hierarchy
 
-The SubHeader class is the fourth-to Nth level Entity object in the folder hierarchy. It inherits from the base Module
-class and extends its slightly by adding the ability to instantiate with a dictionary of file information that does not
-need downloading from the Canvas server. All other functionality is identical to the Module object. The SubHeader object
-may instantiate itself for recursive traversing of the folder hierarchy.
-An Item object or Folder object is initialized for each item found and appended to a list of children under the
-Folder object.
+# Future imports
+from __future__ import print_function
 
-Note: There could be another sub-folder encapsulated by this Folder object, which is handled by recursion.
-"""
+# Third party
+from six import text_type
 
 # CanvasSync modules
 from CanvasSync.Statics.ANSI import ANSI
@@ -43,8 +41,8 @@ class Folder(Entity):
 
         self.folder_info = folder_info
 
-        folder_id = self.folder_info["id"]
-        folder_name = static_functions.get_corrected_name(self.folder_info["name"])
+        folder_id = self.folder_info[u"id"]
+        folder_name = static_functions.get_corrected_name(self.folder_info[u"name"])
         folder_path = parent.get_path() + folder_name
 
         # Initialize base Module class
@@ -53,15 +51,15 @@ class Folder(Entity):
                         name=folder_name,
                         sync_path=folder_path,
                         parent=parent,
-                        identifier="folder")
+                        identifier=u"folder")
 
         self.black_list = black_list
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
+        status = ANSI.format(u"[SYNCED]", formatting=u"green")
         return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format("Folder", formatting="folder"),
+                                                                   % (ANSI.format(u"Folder", formatting=u"folder"),
                                                                       self.name)
 
     def initialize_black_list(self):
@@ -74,7 +72,7 @@ class Folder(Entity):
         entities = self.get_synchronizer().get_entities(self.get_course().get_id())
 
         # Get list of names of all the File objects of the entities list
-        black_list = [x.get_id() for x in entities if x.get_identifier_string() == "file"]
+        black_list = [x.get_id() for x in entities if x.get_identifier_string() == u"file"]
 
         return black_list
 
@@ -84,7 +82,7 @@ class Folder(Entity):
 
         for file in files:
             # Skip duplicates if this settings is active (otherwise the list will be empty)
-            if file["id"] in self.black_list:
+            if file[u"id"] in self.black_list:
                 continue
 
             file = File(file, self, add_to_list_of_entities=False)
@@ -95,7 +93,7 @@ class Folder(Entity):
         folders = self.api.get_folders_in_folder(self.id)
 
         for folder in folders:
-            if folder["name"] == "course_image":
+            if folder[u"name"] == u"course_image":
                 # Do we really need that course image?
                 continue
 
@@ -106,7 +104,7 @@ class Folder(Entity):
         """
         Walk by adding all Files and Folder objects to the list of children
         """
-        print unicode(self)
+        print(text_type(self))
 
         # If avoid duplicated setting is active, initialize black list of files found in Modules and
         # Assignments if it was not passed to the object at initialization.
@@ -127,7 +125,7 @@ class Folder(Entity):
         1) Adding all Files and Folder objects to the list of children
         2) Synchronize all children objects
         """
-        print unicode(self)
+        print(text_type(self))
 
         # If avoid duplicated setting is active, initialize black list of files found in Modules and
         # Assignments if it was not passed to the object at initialization.
@@ -141,3 +139,6 @@ class Folder(Entity):
 
         for item in self:
             item.sync()
+
+    def show(self):
+        pass

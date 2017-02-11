@@ -5,7 +5,19 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
+
+--------------------------------------------
+
+assignment.py, CanvasEntity Class
+
+
 """
+
+# Future imports
+from __future__ import print_function
+
+# Third party
+from six import text_type
 
 # CanvasSync module imports
 from CanvasSync.CanvasEntities.entity import Entity
@@ -37,14 +49,14 @@ class AssignmentsFolder(Entity):
                         name=assignments_folder_name,
                         sync_path=assignments_folder_path,
                         parent=parent,
-                        identifier="assignment_folder")
+                        identifier=u"assignment_folder")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
+        status = ANSI.format(u"[SYNCED]", formatting=u"green")
         return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format("Assignments Folder",
-                                                                                  formatting="assignments"),
+                                                                   % (ANSI.format(u"Assignments Folder",
+                                                                                  formatting=u"assignments"),
                                                                       self.name)
 
     def add_assignments(self):
@@ -56,10 +68,11 @@ class AssignmentsFolder(Entity):
 
     def walk(self, counter):
         """ Walk by adding all Assignment objects to the list of children """
+        print(text_type(self))
+
         self.add_assignments()
 
         counter[0] += 1
-        print unicode(self)
         for assignment in self:
             assignment.walk(counter)
 
@@ -68,7 +81,7 @@ class AssignmentsFolder(Entity):
         1) Adding all Assignment objects to the list of children
         2) Synchronize all children objects
         """
-        print unicode(self)
+        print(text_type(self))
 
         self.add_assignments()
 
@@ -77,7 +90,7 @@ class AssignmentsFolder(Entity):
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))
 
         for child in self:
             child.show()

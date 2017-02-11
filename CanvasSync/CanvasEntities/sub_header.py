@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 sub_header.py, Third level class in hierarchy
 
 The SubHeader class is the fourth-to Nth level Entity object in the folder hierarchy. It inherits from the base Module
@@ -19,6 +19,12 @@ SubHeader object.
 
 Note: There could be another SubHeader encapsulated by this SubHeader object, which is handled by recursion.
 """
+
+# Future imports
+from __future__ import print_function
+
+# Third party
+from six import text_type
 
 # CanvasSync modules
 from CanvasSync.Statics.ANSI import ANSI
@@ -42,22 +48,22 @@ class SubHeader(Module):
         self.folder_info = folder_info
 
         # Add 'title' value to new key 'name' as this is the key used in the Module object
-        self.folder_info["name"] = self.folder_info["title"]
+        self.folder_info[u"name"] = self.folder_info[u"title"]
 
         # Initialize base Module class
         Module.__init__(self,
                         module_info=folder_info,
                         module_position=folder_position,
                         parent=parent,
-                        identifier="sub_header")
+                        identifier=u"sub_header")
 
         self.items = items
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
+        status = ANSI.format(u"[SYNCED]", formatting=u"green")
         return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format("Sub header", formatting="subheader"),
+                                                                   % (ANSI.format(u"Sub header", formatting=u"subheader"),
                                                                       self.name)
 
     def walk(self, counter):
@@ -66,10 +72,11 @@ class SubHeader(Module):
         SubFolder is instantiated with a list of dictionaries of item information and will supply this to the add_items
         method. add_items will then not download the items from the server.
         """
+        print(text_type(self))
+
         self.add_items(items=self.items)
 
         counter[0] += 1
-        print unicode(self)
         for item in self:
             item.walk(counter)
 
@@ -81,7 +88,7 @@ class SubHeader(Module):
         SubFolder is instantiated with a list of dictionaries of item information and will supply this to the add_items
         method. add_items will then not download the items from the server.
         """
-        print unicode(self)
+        print(text_type(self))
 
         self.add_items(items=self.items)
 

@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 CanvasSync.py, main module
 
 Implements the main module of CanvasSync. This module initiates the top-level Synchronizer object with the
@@ -27,12 +27,19 @@ specified in the settings file.
 The module takes the arguments -h or --help that will show a help screen and quit.
 The module takes the arguments -i or --info that will show the currently logged settings from the settings file.
 The module takes the arguments -s or --setup that will force CanvasSync to prompt the user for settings.
+
 """
+
+# Future imports
+from __future__ import print_function
 
 # Inbuilt modules
 import getopt
 import os
 import sys
+
+# If python 2.7, use raw_input(), otherwise use input()
+from six.moves import input
 
 # CanvasSync modules
 from CanvasSync.CanvasEntities.synchronizer import Synchronizer
@@ -46,8 +53,8 @@ try:
     import bcrypt
     import Crypto
 except ImportError:
-    print "\n [ERROR] Missing dependencies.\n" \
-          "         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'"
+    print("\n [ERROR] Missing dependencies.\n"
+          "         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'")
 
 
 def run_canvas_sync():
@@ -56,7 +63,7 @@ def run_canvas_sync():
         opts, args = getopt.getopt(sys.argv[1:], "hsi", ["help", "setup", "info"])
     except getopt.GetoptError as err:
         # print help information and exit
-        print str(err)
+        print(err)
         usage.help()
 
     # Parse the command line arguments and act accordingly
@@ -89,7 +96,7 @@ def run_canvas_sync():
             settings.set_settings()
             settings.write_settings()
         except KeyboardInterrupt:
-            print ANSI.format("\n\n[*] Setup interrupted", formatting="red")
+            print(ANSI.format("\n\n[*] Setup interrupted", formatting="red"))
             sys.exit()
 
     # Load the settings currently in the settings file
@@ -111,20 +118,21 @@ def run_canvas_sync():
     # synchronizer.show()
     synchronizer.sync()
 
-    print ANSI.format("\n\n[*] Sync complete", formatting="bold")
+    print(ANSI.format("\n\n[*] Sync complete", formatting="bold"))
 
 
 # If main module
 if __name__ == "__main__":
 
     if os.name == "nt":
-        raw_input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
-                  "       The application is not tested on Windows machines and may be\n"
-                  "       unstable. Colored output and other visuals are not supported.\n"
+        input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
+                  "       The application is not developed for Windows machines and may be\n"
+                  "       unstable. Colored output, output layout and tab-autocompletion\n"
+                  "       is not supported.\n"
                   "\n     Hit enter to start.")
 
     try:
         run_canvas_sync()
     except KeyboardInterrupt:
-        print ANSI.format("\n\n[*] Synchronization interrupted", formatting="red")
+        print(ANSI.format("\n\n[*] Synchronization interrupted", formatting="red"))
         sys.exit()

@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 Implements a class representing files not located on the Canvas server
 Initialization of this object thus does not require a info dictionary as is the case for all classes representing true
 Canvas entities. Instead, LinkedFile should be initialized with a direct download link.
@@ -15,12 +15,16 @@ However, the LinkedFile is derived from the base entity class and the walk, sync
 and should be used in a similar fashion to other entity objects.
 """
 
+# Future imports
+from __future__ import print_function
+
 # Inbuilt modules
 import os
 import sys
 
 # Third party modules
 import requests
+from six import text_type
 
 # CanvasSync module imports
 from CanvasSync.CanvasEntities.entity import Entity
@@ -62,12 +66,12 @@ class LinkedFile(Entity):
                         sync_path=file_path,
                         parent=parent,
                         folder=False,
-                        identifier="linked_file")
+                        identifier=u"linked_file")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("Linked File",
-                                                                                    formatting="linkedfile"),
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Linked File",
+                                                                                    formatting=u"linkedfile"),
                                                                         self.name)
 
     def url_is_valid(self):
@@ -78,10 +82,10 @@ class LinkedFile(Entity):
 
         if overwrite_previous_line:
             # Move up one line
-            sys.stdout.write(ANSI.format("", formatting="lineup"))
+            sys.stdout.write(ANSI.format(u"", formatting=u"lineup"))
             sys.stdout.flush()
 
-        print ANSI.format(u"[%s]" % status, formatting=color) + unicode(self)[len(status) + 2:]
+        print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
         sys.stdout.flush()
 
     def download(self):
@@ -92,32 +96,32 @@ class LinkedFile(Entity):
         if os.path.exists(self.sync_path):
             return False
 
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status(u"DOWNLOADING", color=u"blue")
 
         # Attempt to download the file
         try:
-            data = requests.get(self.download_url)
+            response = requests.get(self.download_url)
         except Exception:
             # Could not download, catch any exception
-            self.print_status("FAILED", "red", overwrite_previous_line=True)
+            self.print_status(u"FAILED", u"red", overwrite_previous_line=True)
             return -1
 
         # Check for OK 200 HTTP response
-        if not data.status_code == 200:
-            self.print_status("FAILED", "red", overwrite_previous_line=True)
+        if not response.status_code == 200:
+            self.print_status(u"FAILED", u"red", overwrite_previous_line=True)
             return -1
 
         # If here, download was successful, write to disk and print status
-        with open(self.sync_path, "wb") as out_file:
-            out_file.write(data.content)
+        with open(self.sync_path, u"wb") as out_file:
+            out_file.write(response.content)
 
         return True
 
     def walk(self, counter):
         """ Stop walking, endpoint """
+        print(text_type(self))
 
         counter[0] += 1
-        print unicode(self)
         return
 
     def sync(self):
@@ -128,8 +132,8 @@ class LinkedFile(Entity):
         was_downloaded = self.download()
 
         if was_downloaded != - 1:
-            self.print_status("SYNCED", color="green", overwrite_previous_line=was_downloaded)
+            self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))

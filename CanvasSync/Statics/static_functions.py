@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 static_function.py, module
 
 A collection of small static helper-functions used in various modues of CanvasSync.
@@ -16,6 +16,9 @@ A collection of small static helper-functions used in various modues of CanvasSy
 # TODO
 # - Improve domain validation check, it is quite limit at this moment
 # - (find better solution to sub-folder problem than the reorganize function?)
+
+# Future imports
+from __future__ import print_function
 
 # Inbuilt modules
 import os
@@ -53,7 +56,7 @@ def reorganize(items):
     try:
         outer_indent = min([items[index]["indent"] for index in range(len(items))])
     except KeyError:
-        print items
+        print(items)
 
     # Reorganize all items in 'items'
     for item in items:
@@ -113,34 +116,34 @@ def get_corrected_name(name):
     if len(name) > 60:
         # The name is too long, this may happen for sub-folders where the title is accidentally used to describe the
         # content of the folder. Reduce the length of the name and append trailing dots '...'
-        name = name[:60] + "..."
+        name = name[:60] + u"..."
     return name
 
 
 def validate_domain(domain):
     try:
-        response = requests.get(domain + "/api/v1/courses", timeout=5).content
+        response = requests.get(domain + "/api/v1/courses", timeout=5).text
         if response == "{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
             # If this response, the server exists and understands the API call but complains that the call was
             # not authenticated - the URL represents a Canvas server
             return True
         else:
-            print "\n[ERROR] Not a valid Canvas web server. Wrong domain?"
+            print("\n[ERROR] Not a valid Canvas web server. Wrong domain?")
             return False
     except Exception:
-        print "\n[ERROR] Invalid domain."
+        print("\n[ERROR] Invalid domain.")
         return False
 
 
 def validate_token(domain, token):
     if len(token) < 20:
-        print "The server did not accept the authentication token."
+        print("The server did not accept the authentication token.")
         return False
 
-    response = requests.get(domain + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).content
+    response = str(requests.get(domain + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).text)
 
     if "Invalid access token" in response:
-        print "The server did not accept the authentication token."
+        print("The server did not accept the authentication token.")
         return False
     else:
         return True

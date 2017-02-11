@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 instructure_api.py, Class
 
 The InstructureApi object is initialized with a Settings object from the CanvasSync.py module.
@@ -52,7 +52,7 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return json.loads(self._get(api_call).content)
+        return json.loads(self._get(api_call).text)
 
     def get_courses(self):
         """

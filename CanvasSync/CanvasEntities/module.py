@@ -5,9 +5,9 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 module.py, Third level class in hierarchy
 
 The Module class is the third level Entity object in the folder hierarchy. It inherits from the base Entity
@@ -15,6 +15,12 @@ class and extends its functionality to allow downloading information on Items li
 system. An Item object or Folder object is initialized for each item found and appended to a list of children under the
 Module object.
 """
+
+# Future imports
+from __future__ import print_function
+
+# Third party
+from six import text_type
 
 # CanvasSync modules
 from CanvasSync.CanvasEntities.entity import Entity
@@ -28,7 +34,7 @@ from CanvasSync.Statics import static_functions
 class Module(Entity):
     """ Derived class of the Entity base class """
 
-    def __init__(self, module_info, module_position, parent, identifier="module"):
+    def __init__(self, module_info, module_position, parent, identifier=u"module"):
         """, i
         Constructor method, initializes base Entity class and adds all children Folder and/or Item objects to the
         list of children
@@ -40,8 +46,8 @@ class Module(Entity):
 
         self.module_info = module_info
 
-        module_id = self.module_info["id"]
-        module_name = static_functions.get_corrected_name(self.module_info["name"])
+        module_id = self.module_info[u"id"]
+        module_name = static_functions.get_corrected_name(self.module_info[u"name"])
         module_path = parent.get_path() + u"%s - %s" % (module_position, module_name)
 
         # Initialize base class
@@ -54,10 +60,10 @@ class Module(Entity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format("Module", formatting="module"),
-                                                                      self.name)
+        status = ANSI.format(u"[SYNCED]", formatting=u"green")
+        return (status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s"
+                                                                   % (ANSI.format(u"Module", formatting=u"module"),
+                                                                      self.name))
 
     def get_item_information(self):
         """ Returns a dictionary of items from the Canvas server """
@@ -85,7 +91,7 @@ class Module(Entity):
         Method that adds an Item object to the list of children and synchronizes it
         """
 
-        detailed_file_info = self.api.download_item_information(file_information["url"])
+        detailed_file_info = self.api.download_item_information(file_information[u"url"])
 
         # Initialize Item object and add to list of children
         item = File(detailed_file_info, self)
@@ -128,11 +134,11 @@ class Module(Entity):
 
         # Add all non-sub-folder items to the list of children. Currently, files, HTML pages and URLs are added.
         for item in items_in_this_scope:
-            if item["type"] == "File" and self.settings.modules_settings["Files"]:
+            if item[u"type"] == u"File" and self.settings.modules_settings[u"Files"]:
                 self.add_file(item)
-            elif item["type"] == "Page" and self.settings.modules_settings["HTML pages"]:
+            elif item[u"type"] == u"Page" and self.settings.modules_settings[u"HTML pages"]:
                 self.add_page(item)
-            elif item["type"] == "ExternalUrl" and self.settings.modules_settings["External URLs"]:
+            elif item[u"type"] == u"ExternalUrl" and self.settings.modules_settings[u"External URLs"]:
                 self.add_url(item)
 
         # Add all sub-folders as Folder objects to the list of children along with the items the folder contain
@@ -144,10 +150,11 @@ class Module(Entity):
         Walk by adding all File, Page, ExternalLink and SubFolder objects to the list of children
         Overwritten in derived SubFolder class
         """
+        print(text_type(self))
+
         self.add_items()
 
         counter[0] += 1
-        print unicode(self)
         for item in self:
             item.walk(counter)
 
@@ -156,7 +163,7 @@ class Module(Entity):
         1) Adding all File, Page, ExternalLink and SubFolder objects to the list of children
         2) Synchronize all children objects
         """
-        print unicode(self)
+        print(text_type(self))
 
         self.add_items()
 
@@ -165,7 +172,7 @@ class Module(Entity):
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))
 
         for child in self:
             child.show()

@@ -5,22 +5,27 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 usage.py, module
 
 Implements the help function that displays the help prompt.
+
 """
 
 # TODO
 # - Needs heavy updating to account for new features
 
+# Future imports
+from __future__ import print_function
+
+# Inbuilt modules
 import sys
 
 
 def help():
-    print """
+    print("""
 -------------------------
        CanvasSync
   Mathias Perslev, UCPH
@@ -72,5 +77,5 @@ ADDITIONAL RESOURCES
 --------------------
 https://canvas.instructure.com/
 https://api.instructure.com
-"""
+""")
     sys.exit(0)

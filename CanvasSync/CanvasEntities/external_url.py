@@ -5,11 +5,23 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
+
+--------------------------------------------
+
+external_url, CanvasEntity Class
+
 """
+
+# Future imports
+from __future__ import print_function
 
 # Inbuilt modules
 import sys
 
+# Third party
+from six import text_type
+
+# CanvasSync module imports
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
@@ -28,8 +40,8 @@ class ExternalUrl(Entity):
         """
         self.url_info = url_info
 
-        url_id = self.url_info["id"]
-        url_name = static_functions.get_corrected_name(self.url_info["title"])
+        url_id = self.url_info[u"id"]
+        url_name = static_functions.get_corrected_name(self.url_info[u"title"])
         url_path = parent.get_path() + url_name
 
         # Initialize base class
@@ -39,19 +51,19 @@ class ExternalUrl(Entity):
                         sync_path=url_path,
                         parent=parent,
                         folder=False,
-                        identifier="external_url")
+                        identifier=u"external_url")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format("ExternalUrl",
-                                                                                    formatting="externalurl"),
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"ExternalUrl",
+                                                                                    formatting=u"externalurl"),
                                                                         self.name)
 
     def walk(self, counter):
         """ Stop walking, endpoint """
+        print(text_type(self))
 
         counter[0] += 1
-        print unicode(self)
         return
 
     def sync(self):
@@ -59,14 +71,14 @@ class ExternalUrl(Entity):
         Synchronize by creating a local URL shortcut file in in at the sync_pat
         ExternalUrl objects have no children objects and represents an end point of a folder traverse.
         """
-        make_url_shortcut(url=self.url_info["external_url"], path=self.sync_path)
+        make_url_shortcut(url=self.url_info[u"external_url"], path=self.sync_path)
 
         # As opposed to the File and Page classes we never write the "DOWNLOAD" status as we already have
         # all information needed to create the URL shortcut at this point. Here we just print the SYNCED status
         # no matter if the shortcut was recreated or not
-        print ANSI.format(u"[SYNCED]", formatting="green") + unicode(self)[len("[SYNCED]"):]
+        print(ANSI.format(u"[SYNCED]", formatting=u"green") + str(self)[len(u"[SYNCED]"):])
         sys.stdout.flush()
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
-        print unicode(self)
+        print(text_type(self))
