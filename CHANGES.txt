@@ -1,3 +1,4 @@
 0.1.0, 10-02-17 - Initial release.
 0.1.1, 11-02-17 - Now supports Python 3.x
 0.1.2, 11-02-17 - Now supports Python on Windows machines
+0.1.2, 11-02-17 - Now supports Python on Windows machines, minor changes
