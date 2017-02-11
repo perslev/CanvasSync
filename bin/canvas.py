@@ -46,7 +46,8 @@ try:
     import bcrypt
     import Crypto
 except ImportError:
-    print "\n [ERROR] Missing dependencies. Please execute 'pip install -r requirements.txt'"
+    print "\n [ERROR] Missing dependencies.\n" \
+          "         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'"
 
 
 def run_canvas_sync():
