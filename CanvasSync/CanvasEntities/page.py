@@ -10,6 +10,15 @@ February 2017
 
 page, CanvasEntity Class
 
+The Page class stores information on HTML pages hosted on the Canvas server. It represents an end point in the hierarchy
+and contains no child objects. When the sync method is invoked the HTML pages will be downloaded or skipped depending on
+if it is already present in at the sync path. The HTML page will be appended with the title of the page along with a
+URL pointing to the live version of the HTML page on the server.
+
+A Module or SubHeader object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports
@@ -36,7 +45,7 @@ class Page(Entity):
         Constructor method, initializes base Entity class
 
         page_info : dict   | A dictionary of information on the Canvas page object
-        parent    : object | The parent object, a Module or SubFolder object
+        parent    : object | The parent object, a Module or SubHeader object
         """
 
         self.page_info = page_info

@@ -8,8 +8,14 @@ February 2017
 
 --------------------------------------------
 
-assignment.py, CanvasEntity Class
+assignments_folder.py, CanvasEntity Class
 
+The AssignmentsFolder class is a simple container class storing a list of child Assignment objects.
+It is one level below the parent Course class and inherits from the Entity base class.
+
+A Course object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
 
 """
 

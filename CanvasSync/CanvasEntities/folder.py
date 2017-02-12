@@ -10,6 +10,13 @@ February 2017
 
 folder.py, CanvasEntity Class
 
+The Folder class represents the top level 'Files' section in Canvas or a sub-folder here-off. The object is a container
+of other Folder objects as well as Files objects. Recursion is used to map the Folder hierarchy of the 'Files' section.
+
+A Course or Folder object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports
@@ -33,10 +40,8 @@ class Folder(Entity):
         Constructor method, initializes base Module class and adds all children Folder and/or Item objects to
         the list of children
 
-        folder_info     : dict   | A dictionary of information on the Canvas subHeader object
-        folder_position : int    | An integer representing the position in the folder (1 for first folder)
-        parent          : object | The parent object, a Module or Folder object
-        items           : list   | A list of dictionaries on Canvas item objects stored in the folder
+        folder_info     : dict   | A dictionary of information on the Canvas Folder object
+        parent          : object | The parent object, a Folder or Course object
         """
 
         self.folder_info = folder_info

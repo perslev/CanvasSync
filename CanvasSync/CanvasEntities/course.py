@@ -13,7 +13,13 @@ course.py, Second level class in hierarchy
 The Course class is the second level Entity object in the folder hierarchy. It inherits from the base Entity
 class and extends its functionality to allow downloading information on Modules listed under the course in the Canvas
 system. A Module object is initialized for each module found and appended to a list of children under the
-Course object.
+Course object. In addition, the object may initialize and store the AssignemntsFolder object representing the collection
+of assignments of the course as well as a single Folder object representing the collection of Folders and Files stored
+under the 'Files' section in Canvas.
+
+The Synchronizer class is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
 
 """
 

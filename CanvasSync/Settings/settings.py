@@ -38,6 +38,9 @@ from __future__ import print_function
 import os
 import sys
 
+# Third party modules
+from six.moves import input
+
 # CanvasSync modules
 from CanvasSync.Settings.cryptography import encrypt, decrypt
 from CanvasSync.Settings import user_prompter
@@ -72,16 +75,27 @@ class Settings(object):
 
     def load_settings(self):
         """ Loads the current settings from the settings file and sets the attributes of the Settings object """
+
+        if self.is_loaded():
+            return static_functions.validate_token(self.domain, self.token)
+
+        if not self.settings_file_exists():
+            self.set_settings()
+            return True
+
         encrypted_message = open(self.settings_path, u"rb").read()
-        messages = decrypt(encrypted_message).decode(u"utf-8").split(u"\n")
+        messages = decrypt(encrypted_message)
+        if not messages:
+            # Password file did not exist, set new settings
+            print(ANSI.format(u"\n[ERROR] The hashed password file does not longer exist. You must re-enter settings.", u"announcer"))
+            input(u"\nPres enter to continue.")
+            self.set_settings()
+            return self.load_settings()
+        else:
+            messages = messages.decode(u"utf-8").split(u"\n")
 
         # Set sync path, domain and auth token
         self.sync_path, self.domain, self.token = messages[:3]
-
-        if not static_functions.validate_token(self.domain, self.token):
-            print(u"\n[ERROR] The authentication token has been reset, you must generate a new on the canvas webpage and reset\n" \
-                  u"the CanvasSync settings using the -s or --setup command line arguments")
-            sys.exit()
 
         # Extract synchronization settings
         for message in messages:
@@ -108,29 +122,43 @@ class Settings(object):
             if message[:17] == u"Avoid duplicates$":
                 self.avoid_duplicates = True if message.split(u"$")[-1] == u"True" else False
 
+        if not static_functions.validate_token(self.domain, self.token):
+            return False
+        else:
+            return True
+
     def set_settings(self):
+        try:
+            self._set_settings()
+        except KeyboardInterrupt:
+            print(ANSI.format(u"\n\n[*] Setup interrupted, nothing was saved.", formatting=u"red"))
+            sys.exit()
+
+        self.write_settings()
+
+    def _set_settings(self):
         """
         Prompt the user for settings and write the information to a hidden file in the users home directory.
         """
 
         # Clear the console and print guidance
-        self.print_settings(clear=True)
+        self.print_settings(first_time_setup=True, clear=True)
 
         # Prompt user for sync path
         self.sync_path = user_prompter.ask_for_sync_path()
-        self.print_settings(clear=True)
+        self.print_settings(first_time_setup=True, clear=True)
 
         # Prompt user for domain
         self.domain = user_prompter.ask_for_domain()
-        self.print_settings(clear=True)
+        self.print_settings(first_time_setup=True, clear=True)
 
         # Prompt user for auth token
         self.token = user_prompter.ask_for_token(domain=self.domain)
-        self.print_settings(clear=True)
+        self.print_settings(first_time_setup=True, clear=True)
 
         # Prompt user for course sync selection
         self.courses_to_sync = user_prompter.ask_for_courses(self, api=self.api)
-        self.print_settings(clear=True)
+        self.print_settings(first_time_setup=True, clear=True)
 
         # Ask user for advanced settings
         show_advanced = user_prompter.ask_for_advanced_settings(self)
@@ -147,7 +175,7 @@ class Settings(object):
             self.avoid_duplicates = user_prompter.ask_for_avoid_duplicates(self)
 
     def write_settings(self):
-        self.print_settings(welcome=False, clear=True)
+        self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)
         print(ANSI.format(u"\n\nThese settings will be saved", u"announcer"))
 
@@ -194,13 +222,13 @@ class Settings(object):
         print(ANSI.BOLD + u"[*] Download linked files:    \t" + ANSI.ENDC + (ANSI.GREEN if self.download_linked else ANSI.RED) + str(self.download_linked) + ANSI.ENDC)
         print(ANSI.BOLD + u"[*] Avoid item duplicates:    \t" + ANSI.ENDC + (ANSI.GREEN if self.avoid_duplicates else ANSI.RED) + str(self.avoid_duplicates) + ANSI.ENDC)
 
-    def print_settings(self, welcome=True, clear=True):
+    def print_settings(self, first_time_setup=True, clear=True):
         """ Print the settings currently in memory. Clear the console first if specified by the 'clear' parameter """
         if clear:
             static_functions.clear_console()
 
-        if welcome:
-            print(ANSI.format(u"Welcome to CanvasSync!\nYou must specify at least the following settings"
+        if first_time_setup:
+            print(ANSI.format(u"This is a first time setup.\nYou must specify at least the following settings"
                               u" in order to run CanvasSync:\n", u"announcer"))
         else:
             print(ANSI.format(u"-----------------------------", u"file"))
@@ -221,3 +249,28 @@ class Settings(object):
 
             for index, course in enumerate(self.courses_to_sync[1:]):
                 print(u" "*27 + u"\t%s) " % (index+2) + ANSI.BLUE + course + ANSI.ENDC)
+
+    def show(self, quit=True):
+        """ Show the current settings, if quit=True, sys.exit after user confirmation """
+        valid_token = self.load_settings()
+
+        self.print_settings(first_time_setup=False, clear=True)
+        self.print_advanced_settings(clear=False)
+
+        if not valid_token:
+            self.print_auth_token_reset_error()
+
+        if quit:
+            sys.exit()
+        else:
+            input(u"\nHit enter to continue.")
+
+    def print_auth_token_reset_error(self):
+        """ Prints error message for when the auth token stored in the settings is no longer valid """
+        print(u"\n\n[ERROR] The authentication token has been reset.\n"
+              u"        You must generate a new from the canvas webpage and reset the CanvasSync settings\n"
+              u"        using the --setup command line arguments or from the main menu.")
+
+    def show_main_screen(self, settings_file_exists):
+        """ Linker method to the show_main_screen function of the user_prompter module """
+        return user_prompter.show_main_screen(settings_file_exists)

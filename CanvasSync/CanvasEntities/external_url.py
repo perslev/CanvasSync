@@ -10,6 +10,14 @@ February 2017
 
 external_url, CanvasEntity Class
 
+The ExternalUrl class stores information on external URLs and calls functions in the
+CanvasSync.Stats.url_shortcut_maker.py module to create platform specific URL shortcuts. It represents an end point
+in the hierarchy and contains no child objects.
+
+A Module or SubHeader object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports

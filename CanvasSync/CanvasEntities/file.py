@@ -10,6 +10,14 @@ February 2017
 
 file, CanvasEntity Class
 
+The File class stores information on files hosted on the Canvas server. It represents an end point in the hierarchy and
+contains no child objects. When the sync method is invoked the file will be downloaded or skipped depending on if it is
+already present in at the sync path.
+
+A Module, SubHeader, Folder or Assignment object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports
@@ -35,7 +43,7 @@ class File(Entity):
         Constructor method, initializes base Entity class
 
         assignment_info : dict   | A dictionary of information on the Canvas file object
-        parent          : object | The parent object, a Module, SubFolder or Assignment object
+        parent          : object | The parent object, a Module, SubHeader, Folder or Assignment object
         """
 
         self.file_info = file_info

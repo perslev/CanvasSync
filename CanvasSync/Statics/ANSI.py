@@ -36,26 +36,26 @@ class ANSI(object):
     UNDERLINE       = u'\033[4m'
     LINE_UP         = u'\033[F'
 
-    esc_seq_dict = {"green": GREEN,
-                    "yellow": YELLOW,
-                    "blue": BLUE,
-                    "red": RED,
-                    "file": FILE,
-                    "page": PAGE,
-                    "externalurl": EXTERNALURL,
-                    "course": COURSE,
-                    "module": MODULE,
-                    "linkedfile": COURSE,
-                    "subheader": SUBHEADER,
-                    "assignment": ASSIGNMENT,
-                    "white": WHITE,
-                    "folder": GREEN,
-                    "announcer": ANNOUNCER,
-                    "assignments": ASSIGNMENTS,
-                    "lineup": LINE_UP,
-                    "bold": BOLD,
-                    "underline": UNDERLINE,
-                    "end": ENDC}
+    esc_seq_dict = {u"green": GREEN,
+                    u"yellow": YELLOW,
+                    u"blue": BLUE,
+                    u"red": RED,
+                    u"file": FILE,
+                    u"page": PAGE,
+                    u"externalurl": EXTERNALURL,
+                    u"course": COURSE,
+                    u"module": MODULE,
+                    u"linkedfile": COURSE,
+                    u"subheader": SUBHEADER,
+                    u"assignment": ASSIGNMENT,
+                    u"white": WHITE,
+                    u"folder": GREEN,
+                    u"announcer": ANNOUNCER,
+                    u"assignments": ASSIGNMENTS,
+                    u"lineup": LINE_UP,
+                    u"bold": BOLD,
+                    u"underline": UNDERLINE,
+                    u"end": ENDC}
 
     @staticmethod
     def _get(formatting):
@@ -66,4 +66,4 @@ class ANSI(object):
     def format(text, formatting):
         """ Format a string of text using ANSI escape sequences """
 
-        return ANSI._get(formatting) + text + ANSI._get("end")
+        return ANSI._get(formatting) + text + ANSI._get(u"end")

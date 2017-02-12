@@ -10,7 +10,12 @@ February 2017
 
 assignment.py, CanvasEntity Class
 
+The Assignment class stores a list of child File objects and creates HTML pages representing the assignment description.
+It is one level below the parent container AssignmentsFolder class and inherits from the Entity base class.
 
+An AssignmentsFolder object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
 """
 
 # Future imports
@@ -40,8 +45,7 @@ class Assignment(Entity):
         Constructor method, initializes base Entity class
 
         assignment_info : dict   | A dictionary of information on the Canvas assignment object
-        assignment_path : string | The path pointing to the assignment location in the local folder hierarchy
-        parent          : object | The parent object, a course object
+        parent          : object | The parent object, an AssignmentsFolder object
         """
 
         self.assignment_info = assignment_info

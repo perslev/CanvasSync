@@ -10,7 +10,8 @@ February 2017
 
 static_function.py, module
 
-A collection of small static helper-functions used in various modues of CanvasSync.
+A collection of small static helper-functions used in various modules of CanvasSync.
+
 """
 
 # TODO
@@ -40,7 +41,7 @@ def reorganize(items):
     # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
     # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
     # and error report). In both cases return empty lists.
-    if (isinstance(items, dict) and items.keys()[0] == "errors") or len(items) == 0:
+    if (isinstance(items, dict) and items.keys()[0] == u"errors") or len(items) == 0:
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
@@ -54,17 +55,17 @@ def reorganize(items):
 
     # Get the indent level of the outer most scope, should be that of the 0th item in the list, but we check all here.
     try:
-        outer_indent = min([items[index]["indent"] for index in range(len(items))])
+        outer_indent = min([items[index][u"indent"] for index in range(len(items))])
     except KeyError:
         print(items)
 
     # Reorganize all items in 'items'
     for item in items:
         # Get the type of item and indent level
-        item_type = item["type"]
-        item_indent = item["indent"]
+        item_type = item[u"type"]
+        item_indent = item[u"indent"]
 
-        if item_type == "SubHeader":
+        if item_type == u"SubHeader":
             # If "SubHeader" the item is a sub-folder, add it to the list of sub-folders
             current_sub_folder_index += 1
             sub_folders.append([item])
@@ -80,7 +81,7 @@ def reorganize(items):
 
 def clear_console():
     """ Clears the console on UNIX and Windows """
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system(u'cls' if os.name == u'nt' else u'clear')
 
 
 def get_corrected_path(path, parent_path, folder):
@@ -97,7 +98,7 @@ def get_corrected_path(path, parent_path, folder):
                              If the path points to a folder, a trailing forward slash is appended to the path string.
     """
     path = os.path.abspath(path)
-    path += "/" if folder else ""
+    path += u"/" if folder else u""
 
     return path
 
@@ -114,46 +115,51 @@ def get_corrected_name(name):
         # content of the folder. Reduce the length of the name and append trailing dots '...'
         name = name[:60] + u"..."
 
-    name = name.replace("/", ".")
-    name = name.replace(":", "-")
+    name = name.replace(u"/", u".")
+    name = name.replace(u":", u"-")
 
-    if os.name == "nt":
+    if os.name == u"nt":
         # Cannot be in file names on Windows machines
-        name = name.replace("\\", ".")
-        name = name.replace("*", ".")
-        name = name.replace("?", "_")
-        name = name.replace('"', "_")
-        name = name.replace('<', "-")
-        name = name.replace('>', "-")
-        name = name.replace('|', "-")
+        name = name.replace(u"\\", u".")
+        name = name.replace(u"*", u"-")
+        name = name.replace(u"?", u"")
+        name = name.replace(u'"', u"'")
+        name = name.replace(u'<', u"-")
+        name = name.replace(u'>', u"-")
+        name = name.replace(u'|', u"-")
 
     return name
 
 
 def validate_domain(domain):
+    """ Validate the the specified domain is a valid Canvas domain by interpreting the HTTP response """
     try:
-        response = requests.get(domain + "/api/v1/courses", timeout=5).text
-        if response == "{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
+        response = requests.get(domain + u"/api/v1/courses", timeout=5).text
+        if response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
             # If this response, the server exists and understands the API call but complains that the call was
             # not authenticated - the URL represents a Canvas server
             return True
         else:
-            print("\n[ERROR] Not a valid Canvas web server. Wrong domain?")
+            print(u"\n[ERROR] Not a valid Canvas web server. Wrong domain?")
             return False
     except Exception:
-        print("\n[ERROR] Invalid domain.")
+        print(u"\n[ERROR] Invalid domain.")
         return False
 
 
 def validate_token(domain, token):
+    """
+    Validate the auth token in combination with the domain by interpreting the HTTP response. Should be called
+    after the validate_domain function to make sure that errors arise from the token.
+    """
     if len(token) < 20:
-        print("The server did not accept the authentication token.")
+        print(u"The server did not accept the authentication token.")
         return False
 
-    response = str(requests.get(domain + "/api/v1/courses", headers={'Authorization': "Bearer %s" % token}).text)
+    response = str(requests.get(domain + u"/api/v1/courses", headers={u'Authorization': u"Bearer %s" % token}).text)
 
-    if "Invalid access token" in response:
-        print("The server did not accept the authentication token.")
+    if u"Invalid access token" in response:
+        print(u"The server did not accept the authentication token.")
         return False
     else:
         return True

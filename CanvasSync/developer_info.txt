@@ -1,0 +1,93 @@
+
+CanvasSync as a package was developed to function in a end-user application perspective and is not optimized for general
+usage.
+
+CanvasSync is implemented as a collection of classes structures in a hieararchy reflecting the structure of the
+Canvas server closely. Canvas is a collection of various container 'entities' such as modules, assignments, folders etc.
+that may contain items such as files, HTML pages and URLs.
+
+The most important container objects are listed below:
+
+- Courses, represented by the Course object is the highest level representation in the Canvas server. It stores
+  all information on the course such as modules, files, assignments, grades, messages etc.
+- Modules, represented by the Modules object, are folder like structures organizing files, HTML pages and links to
+  external sites for a given course. The course Math 101 may for instance have a module called "Calculus" holding
+  various files and pages upload by the teacher
+- Subheaders, represented by the SubHeader class are sub folder like structures that separate items in modules into
+  sub categories.
+- Assignments, represented by the AssignmentsFolder is a collection of assignments under a course
+- The Files section is a folder of files represented by the Folder object that may recursively represent the folder
+  hieararchy of the Canvas Files section.
+
+
+In CanvasSync, the same structure is followed at least to some degree. A collection of CanvasEntities objects are
+organized into a hierarchy of levels displayed below. Most objects contain a list of child objects and one parent object:
+
+
+                               Synchronizer                                    <--- Inherits from Entity base class
+                                    |
+                                    |
+                                  Course                                       <--- Inherits from Entity base class
+                                    |
+                  ------------------------------------
+                  |                 |                |
+                  |                 |                |
+          AssignmentsFolder       Folder-<-<-      Module--------              <--- Inherits from Entity base class
+                  |                 |        |       |          |
+                  |                 |        |       |          |
+              Assignment            |-->->->-    (SubHeader)    |              <--- Inherits from Entity base class
+                  |                 |                |          |                    (SubHeader inherits from Module)
+                  |                 |                |          |
+            --------------          |                |-----------
+            |            |          |                |
+        LinkedFile       |          |      ----------------------              <--- Inherits from Entity base class
+                         |          |      |         |           |
+                         |          |      |         |           |
+                         ----------------File      Page    ExternalUrl         <--- Inherits from Entity base class
+
+
+
+At the very top we have a Synchronizer class that stores a list of Course child objects. The Synchronizer initializes
+the sync by propagating a sync method call to all its children. This sync call propagates all the way to the level of
+individual files, HTML pages, URLs and linked files (see below) that will not contain child objects ending the sync. The
+same process is used to walk the hierarchy mapping out the structure without downloading and printing the hierarchy.
+
+The Course object may hold both Module, Folder and AssignmentFolder objects.
+
+The Module object contains Files, HTML pages and ExternalURLs all representing hierarchy end points that must
+be downloaded from the server. The Module object may also contain SubHeader objects that are similar to the Module
+object (SubHeader inherits most of its features from the Module class) that likewise contains File, Page and ExternalUrl
+child classes.
+
+The Folder object represent the 'Files' section of Canvas. This section actually stores most of the Files found across
+other Canvas entities, but CanvasSync prioritises to put Items into Modules and Assignments to keep things organized.
+With the default settings, items that are already present in Modules or Assignments will therfore not be added to the
+Folder class.
+
+The AssignmentsFolder is a basic container of Assignemnt objects. The Assignment objects represents individual assignments
+in a course. The assignment description is downloaded into a HTML file and all files that are linked to in the description
+will also be downloaded, either through the File object (for Canvas hosted files) or the LinkedFile objects (for
+externally hosted files.)
+
+NOTE: In almost all cases the CanvasEntity objects is initialized with the raw JSON dictionary of information on the
+Canvas object of interest that was downloaded in the previous level. For instance, a Course object will contact the
+server and recieve a list of dictionaries of information on Module objects. For each dictionary a Module object is
+initialized.
+
+
+BASE CLASS: ENTITY
+------------------
+All Classes inherit directly (or indirectly through the Module class for the SubHeader class) which is a basic class
+holding information that is needed across all CanvasEntitiy objects. This information include: ID numbers, names,
+synchronization path (absolute path to the objects physical location in the local folder), a list of child objects etc.
+
+
+SETTINGS
+--------
+The CanvasSync application is initialized with a Settings object that holds information required to run the sync process
+(the top level sync path, the Canvas server domain, the authentication token, list of courses that should be synced)
+as well as other user defined settings.
+
+UNICODE
+-------
+CanvasSync is implemented to use mostly Unicode.

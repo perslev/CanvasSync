@@ -8,30 +8,14 @@ February 2017
 
 --------------------------------------------
 
-synchronizer.py, First level class in hierarchy
+synchronizer.py, CanvasEntity class
 
-The Synchronizer class is the highest level Entity object in the folder hierarchy. It inherits from the base Entity
-class and extends its functionality to allow downloading information on courses listed in the Canvas system. A Course
-object is initialized for each course found and appended to a list of children under the Synchronizer object.
-
-The hierarchy of Entity objects is displayed below:
-
-[THIS] Level 1        Synchronizer   <--- Inherits from Entity base class
-                           |
-                           |
-       Level 2           Course      <--- Inherits from Entity base class
-                           |
-                           |
-       Level 3           Module      <--- Inherits from Entity base class
-                           |
-                           |
-       Level 4 to N   (SubFolder)    <--- Inherits from Module base class  <---  Inherits from Entity base class
-                           |
-                          ...
-                      (SubFolder)
-                          ...
-                           |
-       Level 4 or N+1     Item       <--- Inherits from Entity base class
+The Synchronizer class is the highest level CanvasEntity object in the folder hierarchy.
+It inherits from the Entity base class and extends its functionality to allow downloading
+information on courses listed in the Canvas system.
+A Course object is initialized for each course found and appended to a list of children under the Synchronizer object.
+Synchronization, walking and printing of the folder hierarchy starts by invoking the method on the Synchronizer object
+which in turn propagates the signal to all children objects.
 
 The Synchronizer encapsulates a list of children Course objects.
 
@@ -60,6 +44,9 @@ class Synchronizer(Entity):
         settings : object | A Settings object, has top-level sync path attribute
         api      : object | An InstructureApi object
         """
+
+        if not settings.is_loaded():
+            settings.load_settings()
 
         # Start sync by clearing the console window
         static_functions.clear_console()

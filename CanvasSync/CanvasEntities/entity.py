@@ -5,28 +5,28 @@ CanvasSync by Mathias Perslev
 
 MSc Bioinformatics, University of Copenhagen
 February 2017
-"""
 
-"""
+--------------------------------------------
+
 Entity.py, Base class
 
-The base class of the CanvasSync folder hierarchy.
-This object implements basic functionality shared across all entities in the folder structure of the Canvas server.
-Higher level objects representing entities such as Courses, Modules, Folders and Items inherit from the object.
+The base class of the CanvasEntities object hierarchy.
+This object implements basic functionality shared across all entities in CanvasEntities package.
 
-Note that in the CanvasSync notation 'parent' refers to the Entity object located one logical level above,
-and a 'child' refers to an Entity object located one logical level below. For instance, a Module object is the parent
-of a sub-folder entity. The sub-folder entity might in turn encapsulate 4 children Item objects.
+The Entity class holds information such as ID numbers, names and absolute sync path and the list of child objects.
+It implements various getter-methods used to access information on objects across the CanvasEntities.
+In addition, the object is tied to an identifier string representing what derived class it is tied to.
+This is used for methods such as 'get_course' that will transverse the CanvasEntities hierarchy to find the top
+level course object.
 
-In regards to inheritance, the Entity class is the base class of a Module object for instance,
-while the Module is the derived class.
+Any CanvasEntity object may be the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Inbuilt modules
 import os
-
-# Third party
-from six import text_type
 
 # CanvasSync module imports
 from CanvasSync.Statics import static_functions
@@ -38,16 +38,24 @@ class Entity(object):
         """
         Constructor method
 
-        id_number : string  | The ID number of the entity, e.g. this could be a Module ID number
-        name      : string  | The name of the entity, e.g. this could be the name of a Course
-        sync_path : string  | A string representing the path to where the entity is synced to in the local folder
-        parent    : object  | An object representing the 'parent' to this Entity, that is the Entity one level above
-                              Note that this does not mean parent in regards to inheritance.
-        folder    : boolean | A boolean indicating whether this entity is a folder or file
-        api       : object  | An InstructureApi object
-        verbose   : boolean | A boolean indicating whether the string representation of this object should be printed
-                              to the screen after initialization. This value is False for Item objects that implement
-                              their own special printing functionality to account for download status etc.
+        id_number    : string  | The ID number of the entity, e.g. this could be a Module ID number
+        name         : string  | The name of the entity, e.g. this could be the name of a Course
+        sync_path    : string  | A string representing the path to where the entity is synced to in the local folder
+        parent       : object  | An object representing the 'parent' to this Entity, that is the Entity one level above
+                                 Note that this does not mean parent in regards to inheritance.
+        folder       : boolean | A boolean indicating whether this entity is a folder or file
+        api          : object  | An CanvasSync InstructureApi object, should be the same object across the hierarchy during
+                                 synchronization.
+        settings     : object  | A CanvasSync Settings object, should be the same object across the hierarchy during
+                                 synchronization.
+        identifier   : string  | A string representing what derived class inherited from this instance of Entity
+        synchronizer : object  | The CanvasSync Synchronizer object
+        add_to...    : boolean | A boolean value representing if the instance of the Entity class should be added to the
+                                 list of entities that the Synchronizer object stores.
+                                 This value is False for items stored in Folder objects as the Synchronizer class
+                                 uses the list of entities to make a black list of files that are already stored
+                                 across the hierarchy to avoid duplicates when syncing the 'Files' section - items
+                                 within this section should not be taken into account when the black list is made.
         """
 
         # Identifier information

@@ -12,7 +12,12 @@ Implements a class representing files not located on the Canvas server
 Initialization of this object thus does not require a info dictionary as is the case for all classes representing true
 Canvas entities. Instead, LinkedFile should be initialized with a direct download link.
 However, the LinkedFile is derived from the base entity class and the walk, sync and show methods are implemented
-and should be used in a similar fashion to other entity objects.
+and should be used in a similar fashion to other CanvasEntities objects.
+
+An Assignment object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports
@@ -38,9 +43,8 @@ class LinkedFile(Entity):
         """
         Constructor method, initializes base Entity class
 
-        assignment_info : dict   | A dictionary of information on the Canvas assignment object
-        assignment_path : string | The path pointing to the assignment location in the local folder hierarchy
-        parent          : object | The parent object, a course object
+        download_url    : string | A URL pointing to a file somewhere on the web
+        parent          : object | The parent object, an Assignment object
         """
 
         self.download_url = download_url

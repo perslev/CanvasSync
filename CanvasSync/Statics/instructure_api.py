@@ -43,7 +43,7 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return requests.get("%s%s" % (self.settings.domain, api_call), headers={'Authorization': "Bearer %s" % self.settings.token})
+        return requests.get(u"%s%s" % (self.settings.domain, api_call), headers={u'Authorization': u"Bearer %s" % self.settings.token})
 
     def get_json(self, api_call):
         """
@@ -58,7 +58,7 @@ class InstructureApi(object):
         """
         Returns a dictionary of courses.
         """
-        return self.get_json("/api/v1/courses")
+        return self.get_json(u"/api/v1/courses")
 
     def get_modules_in_course(self, course_id):
         """
@@ -66,7 +66,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json("/api/v1/courses/%s/modules" % course_id)
+        return self.get_json(u"/api/v1/courses/%s/modules" % course_id)
 
     def get_files_in_folder(self, folder_id):
         """
@@ -74,7 +74,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json("/api/v1/folders/%s/files" % folder_id)
+        return self.get_json(u"/api/v1/folders/%s/files" % folder_id)
 
     def get_folders_in_folder(self, folder_id):
         """
@@ -82,7 +82,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json("/api/v1/folders/%s/folders" % folder_id)
+        return self.get_json(u"/api/v1/folders/%s/folders" % folder_id)
 
     def get_files_in_course(self, course_id):
         """
@@ -90,7 +90,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json("/api/v1/courses/%s/files" % course_id)
+        return self.get_json(u"/api/v1/courses/%s/files" % course_id)
 
     def get_folders_in_course(self, course_id):
         """
@@ -98,7 +98,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json("/api/v1/courses/%s/folders" % course_id)
+        return self.get_json(u"/api/v1/courses/%s/folders" % course_id)
 
     def get_items_in_module(self, course_id, module_id):
         """
@@ -107,7 +107,7 @@ class InstructureApi(object):
         course_id : int | A course ID number
         module_id : int | A module ID number
         """
-        return self.get_json("/api/v1/courses/%s/modules/%s/items" % (course_id, module_id))
+        return self.get_json(u"/api/v1/courses/%s/modules/%s/items" % (course_id, module_id))
 
     def download_item_information(self, url):
         """
@@ -133,4 +133,4 @@ class InstructureApi(object):
 
         course_id : int | A course ID nuber
         """
-        return self.get_json("/api/v1/courses/%s/assignments" % course_id)
+        return self.get_json(u"/api/v1/courses/%s/assignments" % course_id)

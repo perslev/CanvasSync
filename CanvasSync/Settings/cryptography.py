@@ -22,7 +22,6 @@ decrypted and parsed for settings.
 from __future__ import print_function
 
 # Inbuilt modules
-import random
 import getpass
 import os.path
 
@@ -44,12 +43,14 @@ def encrypt(message):
     A random initialization vector (IV) is padded as the initial 16 bytes of the string
     The encrypted message will be padded to length%16 = 0 bytes (AES needs 16 bytes block sizes)
     """
-    IV = os.urandom(16)
 
     print(u"\nPlease enter a password to encrypt the settings file:")
     hashed_password = bcrypt.hashpw(getpass.getpass(), bcrypt.gensalt())
     with open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "w") as pass_file:
         pass_file.write(hashed_password)
+
+    # Generate random 16 bytes IV
+    IV = os.urandom(16)
 
     # AES object
     encrypter = AES.new(get_key_hash(hashed_password), AES.MODE_CBC, IV)
@@ -70,7 +71,11 @@ def decrypt(message):
     """
 
     # Load the locally stored bcrypt hashed password (answer)
-    hashed_password = open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "r").read()
+    path = os.path.expanduser(u"~") + u"/.CanvasSync.pw"
+    if not os.path.exists(path):
+        return False
+
+    hashed_password = open(path, "r").read()
 
     # Get password from user and compare to answer
     valid_password = False

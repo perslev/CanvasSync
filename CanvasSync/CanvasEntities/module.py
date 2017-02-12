@@ -11,9 +11,13 @@ February 2017
 module.py, Third level class in hierarchy
 
 The Module class is the third level Entity object in the folder hierarchy. It inherits from the base Entity
-class and extends its functionality to allow downloading information on Items listed under the module in the Canvas
-system. An Item object or Folder object is initialized for each item found and appended to a list of children under the
-Module object.
+class and extends its functionality to allow downloading information on Items (files, URLs and HTML pages) as well as
+sub-headers, assignments and files located in the 'Files' section in Canvas.
+
+A Course object is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
 
 # Future imports

@@ -10,15 +10,19 @@ February 2017
 
 sub_header.py, Third level class in hierarchy
 
-The SubHeader class is the fourth-to Nth level Entity object in the folder hierarchy. It inherits from the base Module
-class and extends its slightly by adding the ability to instantiate with a dictionary of file information that does not
-need downloading from the Canvas server. All other functionality is identical to the Module object. The SubHeader object
-may instantiate itself for recursive traversing of the folder hierarchy.
-An Item object or SubHeader object is initialized for each item found and appended to a list of children under the
-SubHeader object.
+The SubHeader class is a container very similar to the Module object and it has a Module object as parent.
+It inherits from the base Module class and extends its slightly by adding the ability to instantiate with a
+dictionary of file information that does not need downloading from the Canvas server.
+All other functionality is identical to the Module object. The SubHeader contains File, ExternalUrl and Page objects.
 
-Note: There could be another SubHeader encapsulated by this SubHeader object, which is handled by recursion.
+A Module class is the parent object.
+
+See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+
 """
+
+# TODO
+# - Fix recursion to allow for nested SubHeaders
 
 # Future imports
 from __future__ import print_function
