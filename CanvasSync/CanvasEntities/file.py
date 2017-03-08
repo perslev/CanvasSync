@@ -48,6 +48,8 @@ class File(Entity):
 
         self.file_info = file_info
 
+        self.locked = self.file_info["locked_for_user"]
+
         file_id = self.file_info[u"id"]
         file_name = static_functions.get_corrected_name(self.file_info[u"display_name"])
         file_path = parent.get_path() + file_name
@@ -117,8 +119,11 @@ class File(Entity):
         If the file has already been downloaded, skip downloading.
         File objects have no children objects and represents an end point of a folder traverse.
         """
-        was_downloaded = self.download()
-        self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+        if not self.locked:
+            was_downloaded = self.download()
+            self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+        else:
+            self.print_status(u"LOCKED", color=u"red", overwrite_previous_line=False)
 
     def show(self):
         """ Show the folder hierarchy by printing every level """

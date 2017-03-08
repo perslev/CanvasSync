@@ -1,10 +1,28 @@
 #!/usr/bin/env python2.7
 
 from distutils.core import setup
+import re
+
+
+VERSION_FILE = "./CanvasSync/_version.py"
+
+
+def get_version():
+    """ Load the CanvasSync package version string """
+
+    version_string = open(VERSION_FILE, "r").read()
+    regex = r"__version__[ ]?=[ ]?['\"]([^'\"]*)['\"]"
+
+    match = re.search(regex, version_string)
+
+    if match:
+        return match.group(1)
+    else:
+        raise RuntimeError("Unable to load version string in %s" % VERSION_FILE)
 
 
 setup(name='CanvasSync',
-      version='0.1.4',
+      version=get_version(),
       description='Synchronizes modules, assignments and files from a Canvas server to a local folder',
       long_description=open("README.rst").read(),
       author='Mathias Perslev',

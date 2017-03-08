@@ -3,3 +3,5 @@
 0.1.2, 11-02-17 - Now supports Python on Windows machines
 0.1.3, 11-02-17 - Now supports Python on Windows machines, minor changes
 0.1.4, 12-02-17 - Guided main menu implemented that presented when CanvasSync is invoked without parameters
+0.1.5, 13-02-17 - Files locked for the user will no longer be downloaded, fixed some Python 3 related errors
+0.1.6, 08-23-17 - Minor bug fixes, add package version .py file

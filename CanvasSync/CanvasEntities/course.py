@@ -126,7 +126,7 @@ class Course(Entity):
         if not self.to_be_synced:
             return
 
-        if not self.settings.modules_settings.values() == [False, False, False]:
+        if not list(self.settings.modules_settings.values()) == [False, False, False]:
             self.add_modules()
 
         print(text_type(self))
@@ -151,7 +151,7 @@ class Course(Entity):
         if not self.to_be_synced:
             return
 
-        if not self.settings.modules_settings.values() == [False, False, False]:
+        if not list(self.settings.modules_settings.values()) == [False, False, False]:
             self.add_modules()
 
         if self.settings.sync_assignments:
