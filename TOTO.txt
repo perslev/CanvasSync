@@ -1,0 +1,4 @@
+- When pages mentions linked files they are downloaded and added together with the HTML page itself
+  to a new one level deeper sub-folder of the same name as the original HTML page. Files located in this folder
+  may fail to follow the same structure as it does in the Other Files folder. Fik this by making sub-folders
+  mentioned in the File objects info dictionary.

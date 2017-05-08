@@ -28,6 +28,7 @@ from __future__ import print_function
 import os
 import sys
 import io
+import re
 
 # Third party
 from six import text_type
@@ -35,6 +36,8 @@ from six import text_type
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
+from CanvasSync.CanvasEntities.file import File
+from CanvasSync.CanvasEntities.linked_file import LinkedFile
 
 
 class Page(Entity):
@@ -69,6 +72,51 @@ class Page(Entity):
                                                                                     formatting=u"page"),
                                                                         self.name)
 
+    def download_linked_files(self, html_body):
+        sub_files = False
+
+        # Look for files in the HTML body
+        # Get file URLs pointing to Canvas items
+        canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', html_body)
+
+        # Download information on all found files and add File objects to the children
+        for url in canvas_file_urls:
+            try:
+                file_info = self.api.download_item_information(url)
+                if u'display_name' not in file_info:
+                    continue
+            except Exception:
+                continue
+
+            item = File(file_info, parent=self)
+            self.add_child(item)
+            sub_files = True
+
+        if self.settings.download_linked:
+            # We also look for links to files downloaded from other servers
+            # Get all URLs ending in a file name (determined as a ending with a '.'
+            # and then between 1 and 10 of any characters after that). This has 2 purposes:
+            # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
+            # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', html_body)
+
+            for url in urls:
+                linked_file = LinkedFile(url, self)
+
+                if linked_file.url_is_valid():
+                    self.add_child(linked_file)
+                    sub_files = True
+                else:
+                    del linked_file
+
+        return sub_files
+
+    def push_down(self):
+        """ Lower the level of this page once into a sub-folder of similar name """
+        self._make_folder()
+        base, tail = os.path.split(self.sync_path)
+        self.sync_path = self.sync_path + u"/" + tail
+
     def download(self):
         """ Download the page """
         if os.path.exists(self.sync_path + u".html"):
@@ -83,6 +131,9 @@ class Page(Entity):
         # Create a HTML page locally and add a link leading to the live version
         body = self.page_info[u"body"]
         html_url = self.page_info[u"html_url"]
+
+        if self.download_linked_files(body):
+            self.push_down()
 
         if not os.path.exists(self.sync_path):
             with io.open(self.sync_path + u".html", u"w", encoding=u"utf-8") as out_file:
@@ -119,6 +170,10 @@ class Page(Entity):
 
         was_downloaded = self.download()
         self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+
+        for file in self:
+            file.update_path()
+            file.sync()
 
     def show(self):
         """ Show the folder hierarchy by printing every level """

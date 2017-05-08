@@ -197,6 +197,10 @@ class Entity(object):
         """ Getter method for the list of children """
         return self.children
 
+    def update_path(self):
+        """ Update the path to the current parents sync path plus the current file name """
+        self.sync_path = self.get_parent().get_path() + self.get_name()
+
     def _make_folder(self):
         """ Create a folder on the sync path if not already present """
         if not os.path.exists(self.sync_path):

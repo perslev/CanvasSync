@@ -113,7 +113,8 @@ def get_corrected_name(name):
     if len(name) > 60:
         # The name is too long, this may happen for sub-folders where the title is accidentally used to describe the
         # content of the folder. Reduce the length of the name and append trailing dots '...'
-        name = name[:60] + u"..."
+        base, exst = os.path.splitext(name)
+        name = base[:60] + u".." + exst
 
     name = name.replace(u"/", u".")
     name = name.replace(u":", u"-")
