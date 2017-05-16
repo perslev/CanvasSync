@@ -32,6 +32,7 @@ from six import text_type
 # CanvasSync module imports
 from CanvasSync.CanvasEntities.entity import Entity
 from CanvasSync.CanvasEntities.file import File
+from CanvasSync.CanvasEntities.page import Page
 from CanvasSync.CanvasEntities.linked_file import LinkedFile
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Statics import static_functions
@@ -92,13 +93,15 @@ class Assignment(Entity):
 
         # Download information on all found files and add File objects to the children
         for url in canvas_file_urls:
-            try:
-                file_info = self.api.download_item_information(url)
-            except Exception:
-                continue
+            file_info = self.api.download_item_information(url)
 
-            item = File(file_info, parent=self)
-            self.add_child(item)
+            if u'display_name' in file_info:
+                item = File(file_info, parent=self)
+            elif u'page_id' in file_info:
+                item = Page(file_info, parent=self)
+
+            if item:
+                self.add_child(item)
 
         if self.settings.download_linked:
             # We also look for links to files downloaded from other servers
@@ -109,7 +112,7 @@ class Assignment(Entity):
             urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info[u"description"])
 
             for url in urls:
-                linked_file = LinkedFile(url, self)
+                linked_file = LinkedFile(url, parent=self)
 
                 if linked_file.url_is_valid():
                     self.add_child(linked_file)

@@ -131,6 +131,15 @@ class InstructureApi(object):
         """
         Returns a list of dictionaries of information on assignment objects under a course ID
 
-        course_id : int | A course ID nuber
+        course_id : int | A course ID number
         """
         return self.get_json(u"/api/v1/courses/%s/assignments" % course_id)
+
+    def download_page_information(self, course_id, page_id):
+        """
+        Returns a dictionaries of information on a Page object
+
+        course_id : int | A course ID number
+        page_id : int | A page ID number
+        """
+        return self.get_json(u"/api/v1/courses/%s/pages/%s" % (course_id, page_id))

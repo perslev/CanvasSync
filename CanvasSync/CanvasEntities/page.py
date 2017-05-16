@@ -51,10 +51,15 @@ class Page(Entity):
         parent    : object | The parent object, a Module or SubHeader object
         """
 
-        self.page_info = page_info
+        # Sometimes the Page object is initialized with a json dict of information on the file like object representing
+        # the HTML page instead of an object on the page itself. This file like object does not store the actual HTML
+        # body, which will be downloaded in the self.download() method. The slightly messy code below makes the class
+        # functional with either information supplied.
+        self.page_item_info = page_info
+        self.page_info = self.page_item_info if u"id" not in self.page_item_info else None
 
-        page_id = self.page_info[u"id"]
-        page_name = static_functions.get_corrected_name(self.page_info[u"title"])
+        page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
+        page_name = static_functions.get_corrected_name(self.page_item_info[u"title"])
         page_path = parent.get_path() + page_name
 
         # Initialize base class
@@ -125,8 +130,8 @@ class Page(Entity):
         # Print download status
         self.print_status(u"DOWNLOADING", color=u"blue")
 
-        # Download additional info and HTML body of the Page object
-        self.page_info = self.api.download_item_information(self.page_info[u"url"])
+        # Download additional info and HTML body of the Page object if not already supplied
+        self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
 
         # Create a HTML page locally and add a link leading to the live version
         body = self.page_info[u"body"]
