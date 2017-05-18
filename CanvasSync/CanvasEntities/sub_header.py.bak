@@ -25,7 +25,7 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 # - Fix recursion to allow for nested SubHeaders
 
 # Future imports
-
+from __future__ import print_function
 
 # Third party
 from six import text_type
@@ -52,22 +52,22 @@ class SubHeader(Module):
         self.folder_info = folder_info
 
         # Add 'title' value to new key 'name' as this is the key used in the Module object
-        self.folder_info["name"] = self.folder_info["title"]
+        self.folder_info[u"name"] = self.folder_info[u"title"]
 
         # Initialize base Module class
         Module.__init__(self,
                         module_info=folder_info,
                         module_position=folder_position,
                         parent=parent,
-                        identifier="sub_header")
+                        identifier=u"sub_header")
 
         self.items = items
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format("[SYNCED]", formatting="green")
-        return status + " " * 7 + "|   " + "\t" * self.indent + "%s: %s" \
-                                                                   % (ANSI.format("Sub header", formatting="subheader"),
+        status = ANSI.format(u"[SYNCED]", formatting=u"green")
+        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+                                                                   % (ANSI.format(u"Sub header", formatting=u"subheader"),
                                                                       self.name)
 
     def walk(self, counter):

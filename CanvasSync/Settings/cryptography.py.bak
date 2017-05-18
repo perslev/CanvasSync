@@ -19,7 +19,7 @@ decrypted and parsed for settings.
 """
 
 # Future imports
-
+from __future__ import print_function
 
 # Inbuilt modules
 import getpass
@@ -33,7 +33,7 @@ from Crypto.Hash import SHA256
 
 def get_key_hash(password):
     """ Get a 256 byte SHA hash from any length password """
-    hasher = SHA256.new(password.encode("utf-8"))
+    hasher = SHA256.new(password.encode(u"utf-8"))
     return hasher.digest()
 
 
@@ -44,9 +44,9 @@ def encrypt(message):
     The encrypted message will be padded to length%16 = 0 bytes (AES needs 16 bytes block sizes)
     """
 
-    print("\nPlease enter a password to encrypt the settings file:")
+    print(u"\nPlease enter a password to encrypt the settings file:")
     hashed_password = bcrypt.hashpw(getpass.getpass(), bcrypt.gensalt())
-    with open(os.path.expanduser("~") + "/.CanvasSync.pw", "w") as pass_file:
+    with open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "w") as pass_file:
         pass_file.write(hashed_password)
 
     # Generate random 16 bytes IV
@@ -71,7 +71,7 @@ def decrypt(message):
     """
 
     # Load the locally stored bcrypt hashed password (answer)
-    path = os.path.expanduser("~") + "/.CanvasSync.pw"
+    path = os.path.expanduser(u"~") + u"/.CanvasSync.pw"
     if not os.path.exists(path):
         return False
 
@@ -80,12 +80,12 @@ def decrypt(message):
     # Get password from user and compare to answer
     valid_password = False
     while not valid_password:
-        print("\nPlease enter password to decrypt the settings file:")
+        print(u"\nPlease enter password to decrypt the settings file:")
         password = getpass.getpass()
         if bcrypt.hashpw(password, hashed_password) == hashed_password:
             valid_password = True
         else:
-            print("\n[ERROR] Invalid password. Invoke CanvasSync with the -s flag to reset settings.")
+            print(u"\n[ERROR] Invalid password. Invoke CanvasSync with the -s flag to reset settings.")
 
     # Read the remote IV
     remoteIV = message[:16]

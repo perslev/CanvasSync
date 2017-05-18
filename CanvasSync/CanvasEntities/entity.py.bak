@@ -130,13 +130,13 @@ class Entity(object):
 
     def __repr__(self):
         """ String representation, overwritten in derived class """
-        return "Base object: %s" % self.name
+        return u"Base object: %s" % self.name
 
     def __len__(self):
         """ len() method """
         return len(self.children)
 
-    def __bool__(self):
+    def __nonzero__(self):
         """ Boolean representation method. Always returns True after initialization. """
         return True
 
@@ -151,12 +151,12 @@ class Entity(object):
     def get_course(self):
         """ Go up one level until the Course object is reached, then return it """
 
-        if self.get_identifier_string() == "course":
+        if self.get_identifier_string() == u"course":
             return self
 
         parent = self.parent
 
-        while parent.get_identifier_string().lower() != "course":
+        while parent.get_identifier_string().lower() != u"course":
             parent = parent.get_parent()
 
         return parent

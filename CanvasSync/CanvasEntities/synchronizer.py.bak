@@ -22,7 +22,7 @@ The Synchronizer encapsulates a list of children Course objects.
 """
 
 # Future imports
-
+from __future__ import print_function
 
 # Third party
 from six import text_type
@@ -60,16 +60,16 @@ class Synchronizer(Entity):
         # Initialize base class
         Entity.__init__(self,
                         id_number=-1,
-                        name="",
+                        name=u"",
                         sync_path=sync_path,
                         api=api,
                         settings=settings,
                         synchronizer=self,
-                        identifier="synchronizer")
+                        identifier=u"synchronizer")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return "\n[*] Synchronizing to folder: %s\n" % self.sync_path
+        return u"\n[*] Synchronizing to folder: %s\n" % self.sync_path
 
     def get_entities(self, course_id):
         """ Getter method for the list of Entities """
@@ -90,7 +90,7 @@ class Synchronizer(Entity):
         for course_information in self.download_courses():
 
             # Add an empty list to the entities dictionary that will store entities when added
-            self.entities[course_information["id"]] = []
+            self.entities[course_information[u"id"]] = []
 
             # Create Course object
             course = Course(course_information, parent=self)
@@ -101,7 +101,7 @@ class Synchronizer(Entity):
 
         # Print initial walk message
         print(self)
-        print(ANSI.format("\n[*] Mapping out the Canvas folder hierarchy. Please wait...", "red"))
+        print(ANSI.format(u"\n[*] Mapping out the Canvas folder hierarchy. Please wait...", u"red"))
 
         self.add_courses()
 
@@ -126,7 +126,7 @@ class Synchronizer(Entity):
         """ Show the folder hierarchy by printing every level """
 
         static_functions.clear_console()
-        print("\n")
+        print(u"\n")
         print(text_type(self))
 
         for course in self:
