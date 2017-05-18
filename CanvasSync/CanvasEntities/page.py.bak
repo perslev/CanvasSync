@@ -22,7 +22,7 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 """
 
 # Future imports
-
+from __future__ import print_function
 
 # Inbuilt modules
 import os
@@ -56,10 +56,10 @@ class Page(Entity):
         # body, which will be downloaded in the self.download() method. The slightly messy code below makes the class
         # functional with either information supplied.
         self.page_item_info = page_info
-        self.page_info = self.page_item_info if "id" not in self.page_item_info else None
+        self.page_info = self.page_item_info if u"id" not in self.page_item_info else None
 
-        page_id = self.page_item_info["id"] if not self.page_info else self.page_info["page_id"]
-        page_name = static_functions.get_corrected_name(self.page_item_info["title"])
+        page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
+        page_name = static_functions.get_corrected_name(self.page_item_info[u"title"])
         page_path = parent.get_path() + page_name
 
         # Initialize base class
@@ -69,12 +69,12 @@ class Page(Entity):
                         sync_path=page_path,
                         parent=parent,
                         folder=False,
-                        identifier="page")
+                        identifier=u"page")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("Page",
-                                                                                    formatting="page"),
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Page",
+                                                                                    formatting=u"page"),
                                                                         self.name)
 
     def download_linked_files(self, html_body):
@@ -88,7 +88,7 @@ class Page(Entity):
         for url in canvas_file_urls:
             try:
                 file_info = self.api.download_item_information(url)
-                if 'display_name' not in file_info:
+                if u'display_name' not in file_info:
                     continue
             except Exception:
                 continue
@@ -120,31 +120,31 @@ class Page(Entity):
         """ Lower the level of this page once into a sub-folder of similar name """
         self._make_folder()
         base, tail = os.path.split(self.sync_path)
-        self.sync_path = self.sync_path + "/" + tail
+        self.sync_path = self.sync_path + u"/" + tail
 
     def download(self):
         """ Download the page """
-        if os.path.exists(self.sync_path + ".html"):
+        if os.path.exists(self.sync_path + u".html"):
             return False
 
         # Print download status
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status(u"DOWNLOADING", color=u"blue")
 
         # Download additional info and HTML body of the Page object if not already supplied
-        self.page_info = self.api.download_item_information(self.page_item_info["url"]) if not self.page_info else self.page_info
+        self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
 
         # Create a HTML page locally and add a link leading to the live version
-        body = self.page_info["body"]
-        html_url = self.page_info["html_url"]
+        body = self.page_info[u"body"]
+        html_url = self.page_info[u"html_url"]
 
         if self.download_linked_files(body):
             self.push_down()
 
         if not os.path.exists(self.sync_path):
-            with io.open(self.sync_path + ".html", "w", encoding="utf-8") as out_file:
-                out_file.write("<h1><strong>%s</strong></h1>" % self.name)
-                out_file.write("<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
-                out_file.write("<hr>")
+            with io.open(self.sync_path + u".html", u"w", encoding=u"utf-8") as out_file:
+                out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
+                out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
+                out_file.write(u"<hr>")
                 out_file.write(body)
 
         return True
@@ -153,10 +153,10 @@ class Page(Entity):
         """ Print status to console """
         if overwrite_previous_line:
             # Move up one line
-            sys.stdout.write(ANSI.format("", formatting="lineup"))
+            sys.stdout.write(ANSI.format(u"", formatting=u"lineup"))
             sys.stdout.flush()
 
-        print(ANSI.format("[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
+        print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
         sys.stdout.flush()
 
     def walk(self, counter):
@@ -174,7 +174,7 @@ class Page(Entity):
         """
 
         was_downloaded = self.download()
-        self.print_status("SYNCED", color="green", overwrite_previous_line=was_downloaded)
+        self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
 
         for file in self:
             file.update_path()

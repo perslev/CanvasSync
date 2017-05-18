@@ -30,7 +30,7 @@ The module takes the arguments -s or --setup that will force CanvasSync to promp
 #   but surely can be more elegant
 
 # Future imports
-
+from __future__ import print_function
 
 # Inbuilt modules
 import getopt
@@ -53,8 +53,8 @@ try:
     import bcrypt
     import Crypto
 except ImportError:
-    print("\n [ERROR] Missing dependencies.\n"
-          "         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'")
+    print(u"\n [ERROR] Missing dependencies.\n"
+          u"         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'")
 
 
 def run_canvas_sync():
@@ -62,7 +62,7 @@ def run_canvas_sync():
 
     # Get command line arguments (C-style)
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hsi", ["help", "setup", "info"])
+        opts, args = getopt.getopt(sys.argv[1:], u"hsi", [u"help", u"setup", u"info"])
     except getopt.GetoptError as err:
         # print help information and exit
         print(err)
@@ -73,21 +73,21 @@ def run_canvas_sync():
     show_info = False
     if len(opts) != 0:
         for o, a in opts:
-            if o in ("-h", "--help"):
+            if o in (u"-h", u"--help"):
                 # Show help
                 usage.help()
 
-            elif o in ("-s", "--setup"):
+            elif o in (u"-s", u"--setup"):
                 # Force re-setup
                 setup = True
 
-            elif o in ("-i", "--info"):
+            elif o in (u"-i", u"--info"):
                 # Show current settings
                 show_info = True
 
             else:
                 # Unknown option
-                assert False, "Unknown option specified, please refer to the --help section."
+                assert False, u"Unknown option specified, please refer to the --help section."
 
     # Initialize Settings object. This object will parse the settings file or generate a new one if one does not exist.
     settings = Settings()
@@ -109,15 +109,15 @@ def main_menu(settings):
     to_do = settings.show_main_screen(settings.settings_file_exists())
 
     # Act according to the users input to the main menu function
-    if to_do == "quit":
+    if to_do == u"quit":
         sys.exit()
-    elif to_do == "set_settings":
+    elif to_do == u"set_settings":
         settings.set_settings()
         main_menu(settings)
-    elif to_do == "show_settings":
+    elif to_do == u"show_settings":
         settings.show(quit=False)
         main_menu(settings)
-    elif to_do == "show_help":
+    elif to_do == u"show_help":
         usage.help()
     else:
         # Initialize the Instructure Api object used to make API calls to the Canvas server
@@ -134,23 +134,23 @@ def main_menu(settings):
         synchronizer.sync()
 
         # If here, sync was completed, show prompt
-        print(ANSI.format("\n\n[*] Sync complete", formatting="bold"))
+        print(ANSI.format(u"\n\n[*] Sync complete", formatting=u"bold"))
 
 
 # If main module
-if __name__ == "__main__":
+if __name__ == u"__main__":
 
-    if os.name == "nt":
+    if os.name == u"nt":
         # Warn Windows users
         static_functions.clear_console()
-        eval(input("\n[OBS] You are running CanvasSync on a Windows operating system.\n"
-                  "      The application is not developed for Windows machines and may be\n"
-                  "      unstable. Some pretty output formatting and tab-autocompletion\n"
-                  "      is not supported... :-(\n"
-                  "\n    Anyway, hit enter to start."))
+        input(u"\n[OBS] You are running CanvasSync on a Windows operating system.\n"
+                  u"      The application is not developed for Windows machines and may be\n"
+                  u"      unstable. Some pretty output formatting and tab-autocompletion\n"
+                  u"      is not supported... :-(\n"
+                  u"\n    Anyway, hit enter to start.")
 
     try:
         run_canvas_sync()
     except KeyboardInterrupt:
-        print(ANSI.format("\n\n[*] Synchronization interrupted", formatting="red"))
+        print(ANSI.format(u"\n\n[*] Synchronization interrupted", formatting=u"red"))
         sys.exit()

@@ -18,14 +18,14 @@ Implements the help function that displays the help prompt.
 # Update the help section
 
 # Future imports
-
+from __future__ import print_function
 
 # Inbuilt modules
 import sys
 
 
 def help():
-    print("""
+    print(u"""
 -------------------------
        CanvasSync
   Mathias Perslev, UCPH
