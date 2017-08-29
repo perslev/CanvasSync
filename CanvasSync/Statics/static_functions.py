@@ -136,7 +136,8 @@ def validate_domain(domain):
     """ Validate the the specified domain is a valid Canvas domain by interpreting the HTTP response """
     try:
         response = requests.get(domain + u"/api/v1/courses", timeout=5).text
-        if response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}":
+        if (response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}" or
+            response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorization required\"}]}"):
             # If this response, the server exists and understands the API call but complains that the call was
             # not authenticated - the URL represents a Canvas server
             return True
