@@ -13,7 +13,8 @@ CanvasSync.py, main module
 Implements the main module of CanvasSync. This module initiates the top-level Synchronizer object with the
 settings specified in the settings file. If no settings file can be found, the user is promoted to supply the
 information.
-The main module may take input from the command line and will act accordingly. Without command line arguments, CanvasSync enter a main menu where the user is guided to either set settings, show previously set settings, show help,
+The main module may take input from the command line and will act accordingly. Without command line arguments, 
+CanvasSync enter a main menu where the user is guided to either set settings, show previously set settings, show help,
 quit of start the synchronization process.
 
 The module takes the arguments -h or --help that will show a help screen and quit.
