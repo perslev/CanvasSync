@@ -73,7 +73,7 @@ class Settings(object):
     def is_loaded(self):
         return self.sync_path != u"Not set" and self.domain != u"Not set" and self.token != u"Not set" and self.courses_to_sync[0] != u"Not set"
 
-    def load_settings(self):
+    def load_settings(self, password):
         """ Loads the current settings from the settings file and sets the attributes of the Settings object """
 
         if self.is_loaded():
@@ -84,13 +84,13 @@ class Settings(object):
             return True
 
         encrypted_message = open(self.settings_path, u"rb").read()
-        messages = decrypt(encrypted_message)
+        messages = decrypt(encrypted_message, password)
         if not messages:
             # Password file did not exist, set new settings
             print(ANSI.format(u"\n[ERROR] The hashed password file does not longer exist. You must re-enter settings.", u"announcer"))
             input(u"\nPres enter to continue.")
             self.set_settings()
-            return self.load_settings()
+            return self.load_settings("")
         else:
             messages = messages.decode(u"utf-8").split(u"\n")
 
@@ -252,7 +252,7 @@ class Settings(object):
 
     def show(self, quit=True):
         """ Show the current settings, if quit=True, sys.exit after user confirmation """
-        valid_token = self.load_settings()
+        valid_token = self.load_settings("")
 
         self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)
