@@ -61,11 +61,11 @@ When launched without commandline arguments, CanvasSync will start synchronizing
 prompt the user to enter new settings if no previous settings could be found.
 
 Command line arguments:
--S or --sync will synchronize according to specified settings
 -i or --info will display the currently saved settings
 -s or --setup will prompt the user to reinitialize settings
 -h or --help will show the help screen
--p or --password allows you to specify your settings file decryption password from the command line (potentially dangerous)
+-S or --sync to synchronize
+-p to specify settings password (potentially dangerous)
 
 Setup
 ----------

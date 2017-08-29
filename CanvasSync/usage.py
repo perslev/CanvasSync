@@ -52,7 +52,7 @@ $ canvas.py [-S] <sync> [-h] <help> [-s] <reset settings> [-i] <show current set
 
     -i [--info], optional                : Show currently active settings.
 
-    -p {password} [--password], optional : Specify settings file decryption password (potentially dangerous)
+    -p {password}, optional              : Specify settings file decryption password (potentially dangerous)
 
 Setup
 -----
