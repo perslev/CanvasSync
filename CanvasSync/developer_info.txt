@@ -1,6 +1,6 @@
 
-CanvasSync as a package was developed to function in a end-user application perspective and is not optimized for general
-usage.
+CanvasSync was developed to function in a end-user application perspective and is not optimized for 
+general interation with the Canvas API. See https://canvas.instructure.com/doc/api/.
 
 CanvasSync is implemented as a collection of classes structures in a hieararchy reflecting the structure of the
 Canvas server closely. Canvas is a collection of various container 'entities' such as modules, assignments, folders etc.
@@ -49,8 +49,7 @@ organized into a hierarchy of levels displayed below. Most objects contain a lis
 
 At the very top we have a Synchronizer class that stores a list of Course child objects. The Synchronizer initializes
 the sync by propagating a sync method call to all its children. This sync call propagates all the way to the level of
-individual files, HTML pages, URLs and linked files (see below) that will not contain child objects ending the sync. The
-same process is used to walk the hierarchy mapping out the structure without downloading and printing the hierarchy.
+individual files, HTML pages, URLs and linked files (see below) that will not contain child objects ending the sync.
 
 The Course object may hold both Module, Folder and AssignmentFolder objects.
 
@@ -65,8 +64,8 @@ With the default settings, items that are already present in Modules or Assignme
 Folder class.
 
 The AssignmentsFolder is a basic container of Assignemnt objects. The Assignment objects represents individual assignments
-in a course. The assignment description is downloaded into a HTML file and all files that are linked to in the description
-will also be downloaded, either through the File object (for Canvas hosted files) or the LinkedFile objects (for
+in a course. The assignment description is downloaded and stored as a HTML file and all files that are linked to in the 
+description will also be downloaded, either through the File object (for Canvas hosted files) or the LinkedFile objects (for
 externally hosted files.)
 
 NOTE: In almost all cases the CanvasEntity objects is initialized with the raw JSON dictionary of information on the
@@ -87,7 +86,3 @@ SETTINGS
 The CanvasSync application is initialized with a Settings object that holds information required to run the sync process
 (the top level sync path, the Canvas server domain, the authentication token, list of courses that should be synced)
 as well as other user defined settings.
-
-UNICODE
--------
-CanvasSync is implemented to use mostly Unicode.
