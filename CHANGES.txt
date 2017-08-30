@@ -7,3 +7,4 @@
 0.1.6, 08-03-17 - Minor bug fixes, add package version .py file
 0.1.7, 09-05-17 - If HTML Pages mentions files in the HTML body, they are downloaded and stored with HTML in subfolder
 0.1.8, 16-05-17 - Fixed a bug that would make CanvasSync crash if HTML pages were linked from within an assignment
+0.1.9, 30-08-17 - Added command line arguments to sync and specify password (https://github.com/JackKiefer)
