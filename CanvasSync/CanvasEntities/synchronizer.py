@@ -46,7 +46,7 @@ class Synchronizer(Entity):
         """
 
         if not settings.is_loaded():
-            settings.load_settings()
+            settings.load_settings("")
 
         # Start sync by clearing the console window
         static_functions.clear_console()

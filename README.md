@@ -64,6 +64,8 @@ Command line arguments:
 -i or --info will display the currently saved settings
 -s or --setup will prompt the user to reinitialize settings
 -h or --help will show the help screen
+-S or --sync to synchronize
+-p to specify settings password (potentially dangerous)
 
 Setup
 ----------

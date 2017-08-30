@@ -24,6 +24,7 @@ from __future__ import print_function
 # Inbuilt modules
 import getpass
 import os.path
+import sys
 
 # Third party modules
 import bcrypt
@@ -65,7 +66,7 @@ def encrypt(message):
     return encrypted_message
 
 
-def decrypt(message):
+def decrypt(message, password):
     """
     Decrypts an AES encrypted string
     """
@@ -79,13 +80,24 @@ def decrypt(message):
 
     # Get password from user and compare to answer
     valid_password = False
-    while not valid_password:
-        print(u"\nPlease enter password to decrypt the settings file:")
-        password = getpass.getpass()
+
+    # If the password isn't null then it was specified as a command-line argument
+    if not password == "":
         if bcrypt.hashpw(password, hashed_password) == hashed_password:
             valid_password = True
         else:
-            print(u"\n[ERROR] Invalid password. Invoke CanvasSync with the -s flag to reset settings.")
+            print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
+            sys.exit()
+
+    # Otherwise, get the password from the user
+    else:
+        while not valid_password:
+            print(u"\nPlease enter password to decrypt the settings file:")
+            password = getpass.getpass()
+            if bcrypt.hashpw(password, hashed_password) == hashed_password:
+                valid_password = True
+            else:
+                print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
 
     # Read the remote IV
     remoteIV = message[:16]
