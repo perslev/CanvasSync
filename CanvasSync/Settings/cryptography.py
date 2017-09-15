@@ -82,15 +82,14 @@ def decrypt(message, password):
     valid_password = False
 
     # If the password isn't null then it was specified as a command-line argument
-    if not password == "":
+    if password:
         if bcrypt.hashpw(password, hashed_password) == hashed_password:
             valid_password = True
         else:
             print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
             sys.exit()
-
-    # Otherwise, get the password from the user
     else:
+        # Otherwise, get the password from the user
         while not valid_password:
             print(u"\nPlease enter password to decrypt the settings file:")
             password = getpass.getpass()

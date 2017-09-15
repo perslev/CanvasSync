@@ -119,8 +119,12 @@ def run_canvas_sync():
     # If here, CanvasSync was launched without parameters, show main screen
     main_menu(settings)
 
+
 def main_menu(settings):
-    """ Main menu function, calss the settings.show_main_screen function and handles user response """
+    """
+    Main menu function, calss the settings.show_
+    main_screen function and handles user response
+    """
     to_do = settings.show_main_screen(settings.settings_file_exists())
 
     # Act according to the users input to the main menu function
@@ -137,8 +141,10 @@ def main_menu(settings):
     else:
         do_sync(settings)
 
-def do_sync(settings, password):
-    # Initialize the Instructure Api object used to make API calls to the Canvas server
+
+def do_sync(settings, password=None):
+    # Initialize the Instructure Api object used to make API
+    # calls to the Canvas server
     valid_token = settings.load_settings(password)
     if not valid_token:
         settings.print_auth_token_reset_error()
@@ -153,6 +159,7 @@ def do_sync(settings, password):
 
     # If here, sync was completed, show prompt
     print(ANSI.format(u"\n\n[*] Sync complete", formatting=u"bold"))
+
 
 # If main module
 if __name__ == u"__main__":
