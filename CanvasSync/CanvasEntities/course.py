@@ -54,6 +54,9 @@ class Course(Entity):
         course_id = self.course_info[u"id"]
         course_name = static_functions.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
 
+        # Make this an option here TODO
+        course_name = self.course_info[u"name"]
+
         course_path = parent.get_path() + course_name
 
         self.to_be_synced = True if course_name in parent.settings.courses_to_sync else False

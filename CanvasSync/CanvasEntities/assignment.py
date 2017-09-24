@@ -89,7 +89,12 @@ class Assignment(Entity):
         # Get URL pointing to file objects described somewhere in the description section
 
         # Get file URLs pointing to Canvas items
-        canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', self.assignment_info[u"description"])
+        canvas_file_urls = []
+
+        try:
+            canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', self.assignment_info[u"description"])
+        except:
+            canvas_file_urls = []
 
         # Download information on all found files and add File objects to the children
         for url in canvas_file_urls:

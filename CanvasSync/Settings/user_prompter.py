@@ -169,7 +169,9 @@ def ask_for_token(domain):
 def ask_for_courses(settings, api):
 
     courses = api.get_courses()
-    courses = [name[u"course_code"].split(";")[-1] for name in courses]
+#    courses = [name[u"course_code"].split(";")[-1] for name in courses]
+
+    courses = [name[u"name"] for name in courses]
 
     choices = [True]*len(courses)
 
