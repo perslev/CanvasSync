@@ -180,6 +180,8 @@ class Settings(object):
             self.avoid_duplicates = user_prompter.ask_for_avoid_duplicates(self)
 
             self.use_nicknames = user_prompter.ask_for_use_nicknames(self)
+            if self.use_nicknames:
+                self.courses_to_sync = user_prompter.ask_for_courses(self, api=self.api)
 
     def write_settings(self):
         self.print_settings(first_time_setup=False, clear=True)

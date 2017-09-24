@@ -379,7 +379,8 @@ def ask_for_use_nicknames(settings):
                           u"course codes for display and directory structure?\n", u"white"))
 
         print(ANSI.format(u"1) No, use course codes (default)", u"bold"))
-        print(ANSI.format(u"2) Yes, use course nicknames", u"bold"))
+        print(ANSI.format(u"2) Yes, use course nicknames (you will be \n"
+                          u"     prompted to reselect courses)", u"bold"))
 
         try:
             choice = int(input(u"\nChoose number: "))
