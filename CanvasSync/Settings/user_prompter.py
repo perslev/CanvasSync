@@ -169,9 +169,11 @@ def ask_for_token(domain):
 def ask_for_courses(settings, api):
 
     courses = api.get_courses()
-#    courses = [name[u"course_code"].split(";")[-1] for name in courses]
 
-    courses = [name[u"name"] for name in courses]
+    if settings.use_nicknames: 
+        courses = [name[u"name"] for name in courses]
+    else:
+        courses = [name[u"course_code"].split(";")[-1] for name in courses]
 
     choices = [True]*len(courses)
 
@@ -361,5 +363,32 @@ def ask_for_avoid_duplicates(settings):
             return True
         elif choice == 2:
             return False
+        else:
+            continue
+
+def ask_for_use_nicknames(settings):
+    choice = -1
+
+    while choice not in (1, 2):
+        settings.print_advanced_settings(clear=True)
+        print(ANSI.format(u"\n\nCourse display name settings", u"announcer"))
+        print(ANSI.format(u"In addition to identifying courses by their couse code,\n"
+                          u"Canvas can also identify courses using user-defined\n"
+                          u"nicknames that can be specified from within the Canvas UI.\n"
+                          u"Do you want CanvasSync to use course nicknames rather than\n"
+                          u"course codes for display and directory structure?\n", u"white"))
+
+        print(ANSI.format(u"1) No, use course codes (default)", u"bold"))
+        print(ANSI.format(u"2) Yes, use course nicknames", u"bold"))
+
+        try:
+            choice = int(input(u"\nChoose number: "))
+        except ValueError:
+            continue
+
+        if choice == 1:
+            return False
+        elif choice == 2:
+            return True
         else:
             continue

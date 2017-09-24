@@ -41,7 +41,7 @@ from CanvasSync.Statics import static_functions
 class Course(Entity):
     """ Derived class of the Entity base class """
 
-    def __init__(self, course_info, parent):
+    def __init__(self, course_info, parent, settings):
         """
         Constructor method, initializes base Entity class and adds all children Module objects to the list of children
 
@@ -52,10 +52,11 @@ class Course(Entity):
         self.course_info = course_info
 
         course_id = self.course_info[u"id"]
+
         course_name = static_functions.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
 
-        # Make this an option here TODO
-        course_name = self.course_info[u"name"]
+        if settings.use_nicknames:
+            course_name = self.course_info[u"name"]
 
         course_path = parent.get_path() + course_name
 

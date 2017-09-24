@@ -59,6 +59,7 @@ class Settings(object):
         self.sync_assignments = True
         self.download_linked = True
         self.avoid_duplicates = True
+        self.use_nicknames = False
 
         # Get the path pointing to the settings file.
         self.settings_path = os.path.abspath(os.path.expanduser(u"~") + u"/.CanvasSync.settings")
@@ -121,6 +122,10 @@ class Settings(object):
 
             if message[:17] == u"Avoid duplicates$":
                 self.avoid_duplicates = True if message.split(u"$")[-1] == u"True" else False
+                
+            if message[:14] == u"Use nicknames$":
+                self.use_nicknames = True if message.split(u"$")[-1] == u"True" else False
+
 
         if not static_functions.validate_token(self.domain, self.token):
             return False
@@ -174,6 +179,8 @@ class Settings(object):
 
             self.avoid_duplicates = user_prompter.ask_for_avoid_duplicates(self)
 
+            self.use_nicknames = user_prompter.ask_for_use_nicknames(self)
+
     def write_settings(self):
         self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)
@@ -192,6 +199,7 @@ class Settings(object):
             settings += u"Assignments$" + str(self.sync_assignments) + u"\n"
             settings += u"Linked files$" + str(self.download_linked) + u"\n"
             settings += u"Avoid duplicates$" + str(self.avoid_duplicates)
+            settings += u"Use nicknames$" + str(self.use_nicknames)
 
             out_file.write(encrypt(settings))
 
@@ -221,6 +229,7 @@ class Settings(object):
         print(ANSI.BOLD + u"[*] Sync assignments:         \t" + ANSI.ENDC + (ANSI.GREEN if self.sync_assignments else ANSI.RED) + str(self.sync_assignments) + ANSI.ENDC)
         print(ANSI.BOLD + u"[*] Download linked files:    \t" + ANSI.ENDC + (ANSI.GREEN if self.download_linked else ANSI.RED) + str(self.download_linked) + ANSI.ENDC)
         print(ANSI.BOLD + u"[*] Avoid item duplicates:    \t" + ANSI.ENDC + (ANSI.GREEN if self.avoid_duplicates else ANSI.RED) + str(self.avoid_duplicates) + ANSI.ENDC)
+        print(ANSI.BOLD + u"[*] Use course nicknames:     \t" + ANSI.ENDC + (ANSI.GREEN if self.use_nicknames else ANSI.RED) + str(self.use_nicknames) + ANSI.ENDC)
 
     def print_settings(self, first_time_setup=True, clear=True):
         """ Print the settings currently in memory. Clear the console first if specified by the 'clear' parameter """
