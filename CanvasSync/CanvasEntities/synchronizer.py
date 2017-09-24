@@ -93,7 +93,7 @@ class Synchronizer(Entity):
             self.entities[course_information[u"id"]] = []
 
             # Create Course object
-            course = Course(course_information, parent=self, settings=settings)
+            course = Course(course_information, parent=self, settings=self.settings)
             self.add_child(course)
 
     def walk(self):

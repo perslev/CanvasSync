@@ -135,7 +135,7 @@ def main_menu(settings):
     elif to_do == u"show_help":
         usage.help()
     else:
-        do_sync(settings)
+        do_sync(settings, "")
 
 def do_sync(settings, password):
     # Initialize the Instructure Api object used to make API calls to the Canvas server
