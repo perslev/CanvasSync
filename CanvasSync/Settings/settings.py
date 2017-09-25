@@ -200,7 +200,7 @@ class Settings(object):
             settings += u"External URLs$" + str(self.modules_settings[u"External URLs"]) + u"\n"
             settings += u"Assignments$" + str(self.sync_assignments) + u"\n"
             settings += u"Linked files$" + str(self.download_linked) + u"\n"
-            settings += u"Avoid duplicates$" + str(self.avoid_duplicates)
+            settings += u"Avoid duplicates$" + str(self.avoid_duplicates) + u"\n"
             settings += u"Use nicknames$" + str(self.use_nicknames)
 
             out_file.write(encrypt(settings))
