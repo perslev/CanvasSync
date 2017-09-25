@@ -1,3 +1,3 @@
 """ CanvasSync by Mathias Perslev """
 
-from _version import __version__
+from ._version import __version__
