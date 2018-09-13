@@ -42,7 +42,7 @@ from six.moves import input
 # CanvasSync modules
 try:
     from CanvasSync.CanvasEntities.synchronizer import Synchronizer
-except ModuleNotFoundError as e:
+except ImportError as e:
     if os.path.exists("../CanvasSync"):
         debug = input("CanvasSync was not found on the PYTHONPATH, but it"
                       " seems to exist at ../CanvasSync. "
