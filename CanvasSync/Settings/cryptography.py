@@ -61,7 +61,7 @@ def encrypt(message):
         message += " " * (16 - (len(message) % 16))
 
     # Add the unencrypted IV to the beginning of the encrypted_message
-    encrypted_message = IV + encrypter.encrypt(message)
+    encrypted_message = IV + encrypter.encrypt(message.encode("utf-8"))
 
     return encrypted_message
 
@@ -76,7 +76,8 @@ def decrypt(message, password):
     if not os.path.exists(path):
         return False
 
-    hashed_password = open(path, "r").read()
+    with open(path, "r") as pw_file:
+        hashed_password = pw_file.read()
 
     # Get password from user and compare to answer
     valid_password = False
