@@ -1,5 +1,4 @@
-#!/usr/bin/env python2.7
-
+#!/usr/bin/env python
 from distutils.core import setup
 import re
 
@@ -24,7 +23,7 @@ def get_version():
 setup(name='CanvasSync',
       version=get_version(),
       description='Synchronizes modules, assignments and files from a Canvas server to a local folder',
-      long_description=open("README.rst").read(),
+      long_description=open("README.txt").read(),
       author='Mathias Perslev',
       author_email='mathias@perslev.com',
       url='https://github.com/perslev/CanvasSync',
