@@ -10,3 +10,4 @@
 0.1.9, 30-08-17 - Added command line arguments to sync and specify password (https://github.com/JackKiefer)
 0.2.0, 15-09-17 - Fixed bug that would cause the program to crash if password was not specified through command line argument
 0.2.1, 25-09-17 - Allows users to rename courses. Fixed a bug running CanvasSync on Arch Linux.
+0.2.2, 13-08-18 - Changed dependency from pycrypto to pycryptodome, added (debugging) option for running the canvas.py script targeting the local package version if PyPi version is not installed, added temporary fix to download up to 100 files under each entity
