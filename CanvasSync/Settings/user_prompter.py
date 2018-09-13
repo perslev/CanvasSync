@@ -366,6 +366,7 @@ def ask_for_avoid_duplicates(settings):
         else:
             continue
 
+
 def ask_for_use_nicknames(settings):
     choice = -1
 

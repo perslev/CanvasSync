@@ -84,7 +84,8 @@ class Settings(object):
             self.set_settings()
             return True
 
-        encrypted_message = open(self.settings_path, u"rb").read()
+        with open(self.settings_path, u"rb") as settings_f:
+            encrypted_message = settings_f.read()
         messages = decrypt(encrypted_message, password)
         if not messages:
             # Password file did not exist, set new settings
@@ -125,7 +126,6 @@ class Settings(object):
                 
             if message[:14] == u"Use nicknames$":
                 self.use_nicknames = True if message.split(u"$")[-1] == u"True" else False
-
 
         if not static_functions.validate_token(self.domain, self.token):
             return False
