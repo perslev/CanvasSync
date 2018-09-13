@@ -40,7 +40,22 @@ import sys
 from six.moves import input
 
 # CanvasSync modules
-from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+try:
+    from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+except ModuleNotFoundError as e:
+    if os.path.exists("../CanvasSync"):
+        debug = input("CanvasSync was not found on the PYTHONPATH, but it"
+                      " seems to exist at ../CanvasSync. "
+                      "\nDo you wish to use the "
+                      "package at this location instead? "
+                      "(usually for debugging purposes)"
+                      "\n(y/n) ").lower()
+        if debug == "y":
+            sys.path.insert(0, os.path.abspath('../'))
+            from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+        else:
+            raise e
+
 from CanvasSync.Statics.ANSI import ANSI
 from CanvasSync.Settings.settings import Settings
 from CanvasSync.Statics import static_functions
@@ -95,7 +110,6 @@ def run_canvas_sync():
                 # Specify decyption password
                 print ("Warning: entering password via command line can be dangerous")
                 password = a.rstrip()
-
             else:
                 # Unknown option
                 assert False, u"Unknown option specified, please refer to the --help section."
