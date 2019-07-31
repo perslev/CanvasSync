@@ -110,13 +110,7 @@ def get_corrected_name(name):
     name = name.strip(" .")
     for char, replace in CLEAN_CHARS.items():
         name = name.replace(char, replace)
-    if len(name) > 60:
-        # The name is too long, this may happen for sub-folders where the
-        # title is accidentally used to describe the content of the folder.
-        # Reduce the length of the name and append trailing dots '...'
-        base, exst = os.path.splitext(name)
-        name = base[:60] + u".." + exst
-    return name
+    return name[:255]
 
 
 def validate_domain(domain):
