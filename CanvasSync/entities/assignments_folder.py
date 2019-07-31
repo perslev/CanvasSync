@@ -1,21 +1,17 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
-assignments_folder.py, CanvasEntity Class
+assignments_folder.py, entity Class
 
 The AssignmentsFolder class is a simple container class storing a list of child Assignment objects.
-It is one level below the parent Course class and inherits from the Entity base class.
+It is one level below the parent Course class and inherits from the CanvasEntity base class.
 
 A Course object is the parent object.
 
-See developer_info.txt file for more information on the class hierarchy of CanvasEntities objects.
+See developer_info.txt file for more information on the class hierarchy of entity objects.
 
 """
 
@@ -26,17 +22,15 @@ from __future__ import print_function
 from six import text_type
 
 # CanvasSync module imports
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.CanvasEntities.assignment import Assignment
-from CanvasSync.Statics.ANSI import ANSI
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.entities.assignment import Assignment
+from CanvasSync.utilities.ANSI import ANSI
 
 
-class AssignmentsFolder(Entity):
-    """ Derived class of the Entity base class """
-
+class AssignmentsFolder(CanvasEntity):
     def __init__(self, assignments_info, parent):
         """
-        Constructor method, initializes base Entity class
+        Constructor method, initializes base CanvasEntity class
 
         assignments_info : dict   | A list of dictionaries of information on all Canvas assignments object under a course
         parent           : object | The parent object, a Course object
@@ -50,12 +44,12 @@ class AssignmentsFolder(Entity):
         assignments_folder_path = parent.get_path() + assignments_folder_name
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=assignments_folder_id,
-                        name=assignments_folder_name,
-                        sync_path=assignments_folder_path,
-                        parent=parent,
-                        identifier=u"assignment_folder")
+        CanvasEntity.__init__(self,
+                              id_number=assignments_folder_id,
+                              name=assignments_folder_name,
+                              sync_path=assignments_folder_path,
+                              parent=parent,
+                              identifier=u"assignment_folder")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

@@ -1,10 +1,5 @@
-#!/usr/bin/env python2.7
-
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 ---------------------------------------------
@@ -17,7 +12,7 @@ A collection of functions used to prompt the user for settings.
 
 # TODO
 # - Comments
-# - Make a Y/N function to limit code reuse
+# - Make a Y/N function to reduce code redundancy
 
 # Future
 from __future__ import print_function
@@ -37,8 +32,8 @@ except ImportError:
 from six.moves import input
 
 # CanvasSync module import
-from CanvasSync.Statics import static_functions
-from CanvasSync.Statics.ANSI import ANSI
+from CanvasSync.utilities import helpers
+from CanvasSync.utilities.ANSI import ANSI
 
 
 def show_main_screen(settings_file_exists):
@@ -49,7 +44,7 @@ def show_main_screen(settings_file_exists):
     choice = -1
     to_do = "quit"
     while choice not in (0, 1, 2, 3, 4):
-        static_functions.clear_console()
+        helpers.clear_console()
 
         # Load version string
         import CanvasSync
@@ -143,7 +138,7 @@ def ask_for_domain():
     # Keep asking until a valid domain has been entered by the user
     while not found:
         domain = u"https://" + input(u"\nEnter the Canvas domain of your institution:\n$ https://")
-        found = static_functions.validate_domain(domain)
+        found = helpers.validate_domain(domain)
 
     return domain
 
@@ -161,7 +156,7 @@ def ask_for_token(domain):
     # Keep asking until a valid authentication token has been entered by the user
     while not found:
         token = input(u"\nEnter authentication token (see 'Setup' section on https://github.com/perslev/CanvasSync for details):\n$ ")
-        found = static_functions.validate_token(domain, token)
+        found = helpers.validate_token(domain, token)
 
     return token
 
@@ -363,34 +358,5 @@ def ask_for_avoid_duplicates(settings):
             return True
         elif choice == 2:
             return False
-        else:
-            continue
-
-
-def ask_for_use_nicknames(settings):
-    choice = -1
-
-    while choice not in (1, 2):
-        settings.print_advanced_settings(clear=True)
-        print(ANSI.format(u"\n\nCourse display name settings", u"announcer"))
-        print(ANSI.format(u"In addition to identifying courses by their couse code,\n"
-                          u"Canvas can also identify courses using user-defined\n"
-                          u"nicknames that can be specified from within the Canvas UI.\n"
-                          u"Do you want CanvasSync to use course nicknames rather than\n"
-                          u"course codes for display and directory structure?\n", u"white"))
-
-        print(ANSI.format(u"1) No, use course codes (default)", u"bold"))
-        print(ANSI.format(u"2) Yes, use course nicknames (you will be \n"
-                          u"     prompted to reselect courses)", u"bold"))
-
-        try:
-            choice = int(input(u"\nChoose number: "))
-        except ValueError:
-            continue
-
-        if choice == 1:
-            return False
-        elif choice == 2:
-            return True
         else:
             continue

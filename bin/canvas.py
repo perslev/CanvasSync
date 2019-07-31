@@ -1,32 +1,24 @@
-#!/usr/bin/env python
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
 CanvasSync.py, main module
 
-Implements the main module of CanvasSync. This module initiates the top-level Synchronizer object with the
-settings specified in the settings file. If no settings file can be found, the user is promoted to supply the
-information.
-The main module may take input from the command line and will act accordingly. Without command line arguments, 
-CanvasSync enter a main menu where the user is guided to either set settings, show previously set settings, show help,
-quit of start the synchronization process.
+Implements the main module of CanvasSync. This module initiates the top-level
+Synchronizer object with the settings specified in the settings file.
+If no settings file can be found, the user is promoted to supply the information.
+The main module may take input from the command line and will act accordingly.
+Without command line arguments, CanvasSync enter a main menu where the user is
+guided to either set settings, show previously set settings, show help, quit
+of start the synchronization process.
 
 The module takes the arguments -h or --help that will show a help screen and quit.
 The module takes the arguments -i or --info that will show the currently logged settings from the settings file.
 The module takes the arguments -s or --setup that will force CanvasSync to prompt the user for settings.
 
 """
-
-# TODO
-# - Make a more transparent and robust setup process, at the moment some hacks are used for CanvasSync to be stable in all
-#   scenarious (to be able to handle events such as deleted settings files and/or password files etc.) - It works
-#   but surely can be more elegant
 
 # Future imports
 from __future__ import print_function
@@ -41,7 +33,7 @@ from six.moves import input
 
 # CanvasSync modules
 try:
-    from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+    from CanvasSync.entities.synchronizer import Synchronizer
 except ImportError as e:
     if os.path.exists("../CanvasSync"):
         debug = input("CanvasSync was not found on the PYTHONPATH, but it"
@@ -52,14 +44,16 @@ except ImportError as e:
                       "\n(y/n) ").lower()
         if debug == "y":
             sys.path.insert(0, os.path.abspath('../'))
-            from CanvasSync.CanvasEntities.synchronizer import Synchronizer
+            from CanvasSync.entities.synchronizer import Synchronizer
         else:
             raise e
+    else:
+        raise NotImplementedError("Cannot find the CanvasSync package")
 
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Settings.settings import Settings
-from CanvasSync.Statics import static_functions
-from CanvasSync.Statics.instructure_api import InstructureApi
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.settings.settings import Settings
+from CanvasSync.utilities import helpers
+from CanvasSync.utilities.instructure_api import InstructureApi
 from CanvasSync import usage
 
 try:
@@ -68,11 +62,15 @@ try:
     import Crypto
 except ImportError:
     print(u"\n [ERROR] Missing dependencies.\n"
-          u"         Please install requests, py-bcrypt and pycrypto (alternatively use PIP to install CanvasSync)'")
+          u"         Please install requests, py-bcrypt and pycrypto "
+          u"(alternatively use PIP to install CanvasSync)'")
 
 
 def run_canvas_sync():
-    """ Main CanvasSync function, reads arguments from the command line and initializes the program """
+    """
+    Main CanvasSync function, reads arguments from the command line
+    and initializes the program
+    """
 
     # Get command line arguments (C-style)
     try:
@@ -93,31 +91,31 @@ def run_canvas_sync():
             if o in (u"-h", u"--help"):
                 # Show help
                 usage.help()
-
             elif o in (u"-s", u"--setup"):
                 # Force re-setup
                 setup = True
-
             elif o in (u"-i", u"--info"):
                 # Show current settings
                 show_info = True
-
             elif o in (u"-S", u"--sync"):
                 # Force sync
                 manual_sync = True
-
             elif o in (u"-p", u"--password"):
                 # Specify decyption password
-                print ("Warning: entering password via command line can be dangerous")
+                print ("Warning: entering password via command "
+                       "line can be dangerous")
                 password = a.rstrip()
             else:
                 # Unknown option
-                assert False, u"Unknown option specified, please refer to the --help section."
+                assert False, u"Unknown option specified, please refer to " \
+                              u"the --help section."
 
-    # Initialize Settings object. This object will parse the settings file or generate a new one if one does not exist.
+    # Initialize Settings object. This object will parse the settings
+    # file or generate a new one if one does not exist.
     settings = Settings()
 
-    # If the settings file does not exist or the user promoted to re-setup, start prompting user for settings info.
+    # If the settings file does not exist or the user promoted to re-setup,
+    # start prompting user for settings info.
     if setup:
         settings.set_settings()
 
@@ -175,12 +173,10 @@ def do_sync(settings, password=None):
     print(ANSI.format(u"\n\n[*] Sync complete", formatting=u"bold"))
 
 
-# If main module
-if __name__ == u"__main__":
-
+def entry():
     if os.name == u"nt":
         # Warn Windows users
-        static_functions.clear_console()
+        helpers.clear_console()
         input(u"\n[OBS] You are running CanvasSync on a Windows operating system.\n"
                   u"      The application is not developed for Windows machines and may be\n"
                   u"      unstable. Some pretty output formatting and tab-autocompletion\n"
@@ -192,3 +188,8 @@ if __name__ == u"__main__":
     except KeyboardInterrupt:
         print(ANSI.format(u"\n\n[*] Synchronization interrupted", formatting=u"red"))
         sys.exit()
+
+
+# If main module
+if __name__ == u"__main__":
+    entry()

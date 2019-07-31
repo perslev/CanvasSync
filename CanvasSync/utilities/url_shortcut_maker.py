@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------

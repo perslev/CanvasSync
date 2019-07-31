@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -31,13 +27,11 @@ from __future__ import print_function
 from six import text_type
 
 # CanvasSync modules
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.CanvasEntities.module import Module
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.entities.module import Module
 
 
 class SubHeader(Module):
-    """ Derived class of the Entity base class """
-
     def __init__(self, folder_info, folder_position, parent, items):
         """
         Constructor method, initializes base Module class and adds all children Folder and/or Item objects to
@@ -48,10 +42,10 @@ class SubHeader(Module):
         parent          : object | The parent object, a Module or Folder object
         items           : list   | A list of dictionaries on Canvas item objects stored in the folder
         """
-
         self.folder_info = folder_info
 
-        # Add 'title' value to new key 'name' as this is the key used in the Module object
+        # Add 'title' value to new key 'name' as this is the key used in the
+        # Module object
         self.folder_info[u"name"] = self.folder_info[u"title"]
 
         # Initialize base Module class

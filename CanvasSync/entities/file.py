@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -30,17 +26,15 @@ import sys
 # Third party
 from six import text_type
 
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
 
 
-class File(Entity):
-    """ Derived class of the Entity base class """
-
+class File(CanvasEntity):
     def __init__(self, file_info, parent, add_to_list_of_entities=True):
         """
-        Constructor method, initializes base Entity class
+        Constructor method, initializes base CanvasEntity class
 
         assignment_info : dict   | A dictionary of information on the Canvas file object
         parent          : object | The parent object, a Module, SubHeader, Folder or Assignment object
@@ -51,18 +45,18 @@ class File(Entity):
         self.locked = self.file_info["locked_for_user"]
 
         file_id = self.file_info[u"id"]
-        file_name = static_functions.get_corrected_name(self.file_info[u"display_name"])
+        file_name = helpers.get_corrected_name(self.file_info[u"display_name"])
         file_path = parent.get_path() + file_name
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=file_id,
-                        name=file_name,
-                        sync_path=file_path,
-                        parent=parent,
-                        folder=False,
-                        identifier=u"file",
-                        add_to_list_of_entities=add_to_list_of_entities)
+        CanvasEntity.__init__(self,
+                              id_number=file_id,
+                              name=file_name,
+                              sync_path=file_path,
+                              parent=parent,
+                              folder=False,
+                              identifier=u"file",
+                              add_to_list_of_entities=add_to_list_of_entities)
 
     def __repr__(self):
         """ String representation, overwriting base class method """

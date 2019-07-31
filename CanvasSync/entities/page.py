@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -33,19 +29,17 @@ import re
 # Third party
 from six import text_type
 
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
-from CanvasSync.CanvasEntities.file import File
-from CanvasSync.CanvasEntities.linked_file import LinkedFile
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
+from CanvasSync.entities.file import File
+from CanvasSync.entities.linked_file import LinkedFile
 
 
-class Page(Entity):
-    """ Derived class of the Entity base class """
-
+class Page(CanvasEntity):
     def __init__(self, page_info, parent):
         """
-        Constructor method, initializes base Entity class
+        Constructor method, initializes base CanvasEntity class
 
         page_info : dict   | A dictionary of information on the Canvas page object
         parent    : object | The parent object, a Module or SubHeader object
@@ -59,17 +53,17 @@ class Page(Entity):
         self.page_info = self.page_item_info if u"id" not in self.page_item_info else None
 
         page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
-        page_name = static_functions.get_corrected_name(self.page_item_info[u"title"])
+        page_name = helpers.get_corrected_name(self.page_item_info[u"title"])
         page_path = parent.get_path() + page_name
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=page_id,
-                        name=page_name,
-                        sync_path=page_path,
-                        parent=parent,
-                        folder=False,
-                        identifier=u"page")
+        CanvasEntity.__init__(self,
+                              id_number=page_id,
+                              name=page_name,
+                              sync_path=page_path,
+                              parent=parent,
+                              folder=False,
+                              identifier=u"page")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -82,7 +76,7 @@ class Page(Entity):
 
         # Look for files in the HTML body
         # Get file URLs pointing to Canvas items
-        canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', html_body)
+        canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', html_body or "")
 
         # Download information on all found files and add File objects to the children
         for url in canvas_file_urls:
@@ -103,7 +97,7 @@ class Page(Entity):
             # and then between 1 and 10 of any characters after that). This has 2 purposes:
             # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
             # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
-            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', html_body)
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', html_body or "")
 
             for url in urls:
                 linked_file = LinkedFile(url, self)
@@ -117,7 +111,9 @@ class Page(Entity):
         return sub_files
 
     def push_down(self):
-        """ Lower the level of this page once into a sub-folder of similar name """
+        """
+        Lower the level of this page once into a sub-folder of similar name
+        """
         self._make_folder()
         base, tail = os.path.split(self.sync_path)
         self.sync_path = self.sync_path + u"/" + tail
@@ -134,8 +130,8 @@ class Page(Entity):
         self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
 
         # Create a HTML page locally and add a link leading to the live version
-        body = self.page_info[u"body"]
-        html_url = self.page_info[u"html_url"]
+        body = self.page_info.get(u"body", "")
+        html_url = self.page_info.get(u"html_url", "")
 
         if self.download_linked_files(body):
             self.push_down()

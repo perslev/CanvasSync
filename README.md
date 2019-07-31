@@ -54,7 +54,7 @@ Usage examples
 After installation CanvasSync is launched by executing the following command in the console:
 
 ```
-canvas.py
+canvas
 ```
 
 When launched without commandline arguments, CanvasSync will start synchronizing with previously specified settings or

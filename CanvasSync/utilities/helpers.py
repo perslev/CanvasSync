@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -41,7 +37,7 @@ def reorganize(items):
     # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
     # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
     # and error report). In both cases return empty lists.
-    if (isinstance(items, dict) and items.keys()[0] == u"errors") or len(items) == 0:
+    if (isinstance(items, dict) and list(items.keys())[0] == u"errors") or len(items) == 0:
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
@@ -110,35 +106,30 @@ def get_corrected_name(name):
 
     name : string | A string representing the name of an Entry (Module, File etc.)
     """
+    from CanvasSync.utilities import CLEAN_CHARS
+    name = name.strip(" .")
+    for char, replace in CLEAN_CHARS.items():
+        name = name.replace(char, replace)
     if len(name) > 60:
-        # The name is too long, this may happen for sub-folders where the title is accidentally used to describe the
-        # content of the folder. Reduce the length of the name and append trailing dots '...'
+        # The name is too long, this may happen for sub-folders where the
+        # title is accidentally used to describe the content of the folder.
+        # Reduce the length of the name and append trailing dots '...'
         base, exst = os.path.splitext(name)
         name = base[:60] + u".." + exst
-
-    name = name.replace(u"/", u".")
-    name = name.replace(u":", u"-")
-
-    if os.name == u"nt":
-        # Cannot be in file names on Windows machines
-        name = name.replace(u"\\", u".")
-        name = name.replace(u"*", u"-")
-        name = name.replace(u"?", u"")
-        name = name.replace(u'"', u"'")
-        name = name.replace(u'<', u"-")
-        name = name.replace(u'>', u"-")
-        name = name.replace(u'|', u"-")
-
     return name
 
 
 def validate_domain(domain):
-    """ Validate the the specified domain is a valid Canvas domain by interpreting the HTTP response """
+    """
+    Validate the the specified domain is a valid Canvas domain by
+    interpreting the HTTP response
+    """
     try:
         response = requests.get(domain + u"/api/v1/courses", timeout=5).text
         if (response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorisation required\"}]}" or
             response == u"{\"status\":\"unauthenticated\",\"errors\":[{\"message\":\"user authorization required\"}]}"):
-            # If this response, the server exists and understands the API call but complains that the call was
+            # If this response, the server exists and understands
+            # the API call but complains that the call was
             # not authenticated - the URL represents a Canvas server
             return True
         else:
@@ -158,7 +149,8 @@ def validate_token(domain, token):
         print(u"The server did not accept the authentication token.")
         return False
 
-    response = str(requests.get(domain + u"/api/v1/courses", headers={u'Authorization': u"Bearer %s" % token}).text)
+    response = str(requests.get(domain + u"/api/v1/courses",
+                                headers={u'Authorization': u"Bearer %s" % token}).text)
 
     if u"Invalid access token" in response:
         print(u"The server did not accept the authentication token.")

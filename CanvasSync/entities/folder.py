@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -26,15 +22,13 @@ from __future__ import print_function
 from six import text_type
 
 # CanvasSync modules
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.CanvasEntities.file import File
-from CanvasSync.Statics import static_functions
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.entities.file import File
+from CanvasSync.utilities import helpers
 
 
-class Folder(Entity):
-    """ Derived class of the Entity base class """
-
+class Folder(CanvasEntity):
     def __init__(self, folder_info, parent, black_list=False):
         """
         Constructor method, initializes base Module class and adds all children Folder and/or Item objects to
@@ -47,16 +41,16 @@ class Folder(Entity):
         self.folder_info = folder_info
 
         folder_id = self.folder_info[u"id"]
-        folder_name = static_functions.get_corrected_name(self.folder_info[u"name"])
+        folder_name = helpers.get_corrected_name(self.folder_info[u"name"])
         folder_path = parent.get_path() + folder_name
 
         # Initialize base Module class
-        Entity.__init__(self,
-                        id_number=folder_id,
-                        name=folder_name,
-                        sync_path=folder_path,
-                        parent=parent,
-                        identifier=u"folder")
+        CanvasEntity.__init__(self,
+                              id_number=folder_id,
+                              name=folder_name,
+                              sync_path=folder_path,
+                              parent=parent,
+                              identifier=u"folder")
 
         self.black_list = black_list
 
@@ -86,7 +80,8 @@ class Folder(Entity):
         files = self.api.get_files_in_folder(self.id)
 
         for file in files:
-            # Skip duplicates if this settings is active (otherwise the list will be empty)
+            # Skip duplicates if this settings is active
+            # (otherwise the list will be empty)
             if file[u"id"] in self.black_list:
                 continue
 

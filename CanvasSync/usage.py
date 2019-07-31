@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -28,8 +24,8 @@ def help():
     print(u"""
 -------------------------
        CanvasSync
-  Mathias Perslev, UCPH
-      February 2017
+     Mathias Perslev
+     February 2017--
 -------------------------
 
 CanvasSync helps students automatically synchronize modules, assignments & files located on their

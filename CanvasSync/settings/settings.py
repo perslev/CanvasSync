@@ -1,35 +1,38 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
 settings.py, Class
 
-The Settings object implements the functionality of setting the initial-launch settings and later loading these settings
+The Settings object implements the functionality of setting the initial-launch
+settings and later loading these settings
 These settings include:
 
-1) A path to with synchronization will occur. The path must be pointing to a valid folder and contain a sub folder name.
+1) A path to with synchronization will occur. The path must be pointing to a
+   valid folder and contain a sub folder name.
    The sub folder is generated and stores all synchronized courses_to_sync.
 2) The domain of the Canvas web server.
-3) An authentication token used to authenticate with the Canvas API. The token is generated on the Canvas web server
+3) An authentication token used to authenticate with the Canvas API. The token
+   is generated on the Canvas web server
    after authentication under "Settings".
 
-The Settings object will prompt the user for these settings through the set_settings method and write them to a hidden
-file in the users home directory. The file is encrypted using a user-specified password. This password must be specified
-whenever CanvasSync is launched. Encryption is implemented via the PyCrypto AES-256 encryption module. The password
-is stored locally in a hashed format using the bcrypt module. At runtime, the hashed password is used to validate
-the user input password.
+The Settings object will prompt the user for these settings through the
+set_settings method and write them to a hidden file in the users home directory.
+The file is encrypted using a user-specified password. This password must
+be specified whenever CanvasSync is launched. Encryption is implemented via
+the PyCrypto AES-256 encryption module. The password is stored locally in a
+hashed format using the bcrypt module. At runtime, the hashed password is used
+to validate the user input password.
 """
 
 # TODO
 # - Clean things
-# - Implement ANKI.fomrat method instead of accessing the ANKI attributes directly
-# - Make it possible reuse settings, so that you do not have to re-specify all settings to change a single one
+# - Implement ANKI.fomrat method instead of accessing the ANKI attributes
+#   directly
+# - Make it possible reuse settings, so that you do not have to
+#   re-specify all settings to change a single one
 
 # Future imports
 from __future__ import print_function
@@ -42,11 +45,11 @@ import sys
 from six.moves import input
 
 # CanvasSync modules
-from CanvasSync.Settings.cryptography import encrypt, decrypt
-from CanvasSync.Settings import user_prompter
-from CanvasSync.Statics.instructure_api import InstructureApi
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
+from CanvasSync.settings.cryptography import encrypt, decrypt
+from CanvasSync.settings import user_prompter
+from CanvasSync.utilities.instructure_api import InstructureApi
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
 
 
 class Settings(object):
@@ -55,30 +58,42 @@ class Settings(object):
         self.domain = u"Not set"
         self.token = u"Not set"
         self.courses_to_sync = [u"Not set"]
-        self.modules_settings = {u"Files": True, u"HTML pages": True, u"External URLs": True}
+        self.modules_settings = {u"Files": True,
+                                 u"HTML pages": True,
+                                 u"External URLs": True}
         self.sync_assignments = True
         self.download_linked = True
         self.avoid_duplicates = True
         self.use_nicknames = False
 
         # Get the path pointing to the settings file.
-        self.settings_path = os.path.abspath(os.path.expanduser(u"~") + u"/.CanvasSync.settings")
+        self.settings_path = os.path.abspath(os.path.expanduser(u"~")
+                                             + u"/.CanvasSync.settings")
 
-        # Initialize user prompt class, used to get information from the user via the terminal
+        # Initialize user prompt class, used to get information from the user
+        # via the terminal
         self.api = InstructureApi(self)
 
     def settings_file_exists(self):
-        """ Returns a boolean representing if the settings file has already been created on this machine """
+        """
+        Returns a boolean representing if the settings file
+        has already been created on this machine
+        """
         return os.path.exists(self.settings_path)
 
     def is_loaded(self):
-        return self.sync_path != u"Not set" and self.domain != u"Not set" and self.token != u"Not set" and self.courses_to_sync[0] != u"Not set"
+        return self.sync_path != u"Not set" and \
+               self.domain != u"Not set" and \
+               self.token != u"Not set" and \
+               self.courses_to_sync[0] != u"Not set"
 
     def load_settings(self, password):
-        """ Loads the current settings from the settings file and sets the attributes of the Settings object """
-
+        """
+        Loads the current settings from the settings file and sets the
+        attributes of the Settings object
+        """
         if self.is_loaded():
-            return static_functions.validate_token(self.domain, self.token)
+            return helpers.validate_token(self.domain, self.token)
 
         if not self.settings_file_exists():
             self.set_settings()
@@ -89,7 +104,9 @@ class Settings(object):
         messages = decrypt(encrypted_message, password)
         if not messages:
             # Password file did not exist, set new settings
-            print(ANSI.format(u"\n[ERROR] The hashed password file does not longer exist. You must re-enter settings.", u"announcer"))
+            print(ANSI.format(u"\n[ERROR] The hashed password file does not"
+                              u"longer exist. You must re-enter settings.",
+                              u"announcer"))
             input(u"\nPres enter to continue.")
             self.set_settings()
             return self.load_settings("")
@@ -99,6 +116,9 @@ class Settings(object):
         # Set sync path, domain and auth token
         self.sync_path, self.domain, self.token = messages[:3]
 
+        def read_setting(settings_string):
+            return settings_string.split(u"$")[-1] == u"True"
+
         # Extract synchronization settings
         for message in messages:
             if message[:12] == u"SYNC COURSE$":
@@ -106,28 +126,23 @@ class Settings(object):
                     self.courses_to_sync.pop(0)
                 self.courses_to_sync.append(message.split(u"$")[-1])
 
+            setting = read_setting(message)
             if message[:6] == u"Files$":
-                self.modules_settings[u"Files"] = True if message.split(u"$")[-1] == u"True" else False
-
+                self.modules_settings[u"Files"] = setting
             if message[:11] == u"HTML pages$":
-                self.modules_settings[u"HTML pages"] = True if message.split(u"$")[-1] == u"True" else False
-
+                self.modules_settings[u"HTML pages"] = setting
             if message[:14] == u"External URLs$":
-                self.modules_settings[u"External URLs"] = True if message.split(u"$")[-1] == u"True" else False
-
+                self.modules_settings[u"External URLs"] = setting
             if message[:12] == u"Assignments$":
-                self.sync_assignments = True if message.split(u"$")[-1] == u"True" else False
-
+                self.sync_assignments = setting
             if message[:13] == u"Linked files$":
-                self.download_linked = True if message.split(u"$")[-1] == u"True" else False
-
+                self.download_linked = setting
             if message[:17] == u"Avoid duplicates$":
-                self.avoid_duplicates = True if message.split(u"$")[-1] == u"True" else False
-                
+                self.avoid_duplicates = setting
             if message[:14] == u"Use nicknames$":
-                self.use_nicknames = True if message.split(u"$")[-1] == u"True" else False
+                self.use_nicknames = setting
 
-        if not static_functions.validate_token(self.domain, self.token):
+        if not helpers.validate_token(self.domain, self.token):
             return False
         else:
             return True
@@ -170,18 +185,12 @@ class Settings(object):
 
         if show_advanced:
             self.modules_settings = user_prompter.ask_for_module_settings(self.modules_settings, self)
-
             self.sync_assignments = user_prompter.ask_for_assignment_sync(self)
             if not self.sync_assignments:
                 self.download_linked = False
             else:
                 self.download_linked = user_prompter.ask_for_download_linked(self)
-
             self.avoid_duplicates = user_prompter.ask_for_avoid_duplicates(self)
-
-            self.use_nicknames = user_prompter.ask_for_use_nicknames(self)
-            if self.use_nicknames:
-                self.courses_to_sync = user_prompter.ask_for_courses(self, api=self.api)
 
     def write_settings(self):
         self.print_settings(first_time_setup=False, clear=True)
@@ -201,7 +210,6 @@ class Settings(object):
             settings += u"Assignments$" + str(self.sync_assignments) + u"\n"
             settings += u"Linked files$" + str(self.download_linked) + u"\n"
             settings += u"Avoid duplicates$" + str(self.avoid_duplicates) + u"\n"
-            settings += u"Use nicknames$" + str(self.use_nicknames)
 
             out_file.write(encrypt(settings))
 
@@ -211,7 +219,7 @@ class Settings(object):
         Clear the console first if specified by the 'clear' parameter
         """
         if clear:
-            static_functions.clear_console()
+            helpers.clear_console()
 
         print(ANSI.format(u"\nAdvanced settings", u"announcer"))
 
@@ -231,15 +239,18 @@ class Settings(object):
         print(ANSI.BOLD + u"[*] Sync assignments:         \t" + ANSI.ENDC + (ANSI.GREEN if self.sync_assignments else ANSI.RED) + str(self.sync_assignments) + ANSI.ENDC)
         print(ANSI.BOLD + u"[*] Download linked files:    \t" + ANSI.ENDC + (ANSI.GREEN if self.download_linked else ANSI.RED) + str(self.download_linked) + ANSI.ENDC)
         print(ANSI.BOLD + u"[*] Avoid item duplicates:    \t" + ANSI.ENDC + (ANSI.GREEN if self.avoid_duplicates else ANSI.RED) + str(self.avoid_duplicates) + ANSI.ENDC)
-        print(ANSI.BOLD + u"[*] Use course nicknames:     \t" + ANSI.ENDC + (ANSI.GREEN if self.use_nicknames else ANSI.RED) + str(self.use_nicknames) + ANSI.ENDC)
 
     def print_settings(self, first_time_setup=True, clear=True):
-        """ Print the settings currently in memory. Clear the console first if specified by the 'clear' parameter """
+        """
+        Print the settings currently in memory.
+        Clear the console first if specified by the 'clear' parameter
+        """
         if clear:
-            static_functions.clear_console()
+            helpers.clear_console()
 
         if first_time_setup:
-            print(ANSI.format(u"This is a first time setup.\nYou must specify at least the following settings"
+            print(ANSI.format(u"This is a first time setup.\nYou must specify "
+                              u"at least the following settings"
                               u" in order to run CanvasSync:\n", u"announcer"))
         else:
             print(ANSI.format(u"-----------------------------", u"file"))
@@ -262,7 +273,10 @@ class Settings(object):
                 print(u" "*27 + u"\t%s) " % (index+2) + ANSI.BLUE + course + ANSI.ENDC)
 
     def show(self, quit=True):
-        """ Show the current settings, if quit=True, sys.exit after user confirmation """
+        """
+        Show the current settings
+        If quit=True, sys.exit after user confirmation
+        """
         valid_token = self.load_settings("")
 
         self.print_settings(first_time_setup=False, clear=True)
@@ -277,11 +291,19 @@ class Settings(object):
             input(u"\nHit enter to continue.")
 
     def print_auth_token_reset_error(self):
-        """ Prints error message for when the auth token stored in the settings is no longer valid """
+        """
+        Prints error message for when the auth token stored in the
+        settings is no longer valid
+        """
         print(u"\n\n[ERROR] The authentication token has been reset.\n"
-              u"        You must generate a new from the canvas webpage and reset the CanvasSync settings\n"
-              u"        using the --setup command line arguments or from the main menu.")
+              u"        You must generate a new from the canvas webpage and"
+              u" reset the CanvasSync settings\n"
+              u"        using the --setup command line arguments or from the"
+              u" main menu.")
 
     def show_main_screen(self, settings_file_exists):
-        """ Linker method to the show_main_screen function of the user_prompter module """
+        """
+        Linker method to the show_main_screen function of the
+        user_prompter module
+        """
         return user_prompter.show_main_screen(settings_file_exists)

@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -84,9 +80,7 @@ def decrypt(message, password):
 
     # If the password isn't null then it was specified as a command-line argument
     if password:
-        if bcrypt.hashpw(password, hashed_password) == hashed_password:
-            valid_password = True
-        else:
+        if bcrypt.hashpw(password, hashed_password) != hashed_password:
             print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
             sys.exit()
     else:

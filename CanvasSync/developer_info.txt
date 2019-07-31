@@ -1,5 +1,4 @@
-
-CanvasSync was developed to function in a end-user application perspective and is not optimized for 
+CanvasSync was developed to function in a end-user application perspective and is not optimized for
 general interation with the Canvas API. See https://canvas.instructure.com/doc/api/.
 
 CanvasSync is implemented as a collection of classes structures in a hieararchy reflecting the structure of the

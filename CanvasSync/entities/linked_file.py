@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -32,16 +28,14 @@ import requests
 from six import text_type
 
 # CanvasSync module imports
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.Statics.ANSI import ANSI
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.utilities.ANSI import ANSI
 
 
-class LinkedFile(Entity):
-    """ Derived class of the Entity base class """
-
+class LinkedFile(CanvasEntity):
     def __init__(self, download_url, parent):
         """
-        Constructor method, initializes base Entity class
+        Constructor method, initializes base CanvasEntity class
 
         download_url    : string | A URL pointing to a file somewhere on the web
         parent          : object | The parent object, an Assignment object
@@ -64,13 +58,13 @@ class LinkedFile(Entity):
             self.valid_url = False
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=-1,
-                        name=file_name,
-                        sync_path=file_path,
-                        parent=parent,
-                        folder=False,
-                        identifier=u"linked_file")
+        CanvasEntity.__init__(self,
+                              id_number=-1,
+                              name=file_name,
+                              sync_path=file_path,
+                              parent=parent,
+                              folder=False,
+                              identifier=u"linked_file")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

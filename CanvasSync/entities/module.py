@@ -1,16 +1,12 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
 module.py, Third level class in hierarchy
 
-The Module class is the third level Entity object in the folder hierarchy. It inherits from the base Entity
+The Module class is the third level CanvasEntity object in the folder hierarchy. It inherits from the base CanvasEntity
 class and extends its functionality to allow downloading information on Items (files, URLs and HTML pages) as well as
 sub-headers, assignments and files located in the 'Files' section in Canvas.
 
@@ -27,20 +23,18 @@ from __future__ import print_function
 from six import text_type
 
 # CanvasSync modules
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.CanvasEntities.file import File
-from CanvasSync.CanvasEntities.page import Page
-from CanvasSync.CanvasEntities.external_url import ExternalUrl
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.entities.file import File
+from CanvasSync.entities.page import Page
+from CanvasSync.entities.external_url import ExternalUrl
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
 
 
-class Module(Entity):
-    """ Derived class of the Entity base class """
-
+class Module(CanvasEntity):
     def __init__(self, module_info, module_position, parent, identifier=u"module"):
         """, i
-        Constructor method, initializes base Entity class and adds all children Folder and/or Item objects to the
+        Constructor method, initializes base CanvasEntity class and adds all children Folder and/or Item objects to the
         list of children
 
         module_info     : dict   | A dictionary of information on the Canvas module object
@@ -51,16 +45,16 @@ class Module(Entity):
         self.module_info = module_info
 
         module_id = self.module_info[u"id"]
-        module_name = static_functions.get_corrected_name(self.module_info[u"name"])
+        module_name = helpers.get_corrected_name(self.module_info[u"name"])
         module_path = parent.get_path() + u"%s - %s" % (module_position, module_name)
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=module_id,
-                        name=module_name,
-                        sync_path=module_path,
-                        parent=parent,
-                        identifier=identifier)
+        CanvasEntity.__init__(self,
+                              id_number=module_id,
+                              name=module_name,
+                              sync_path=module_path,
+                              parent=parent,
+                              identifier=identifier)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -85,7 +79,7 @@ class Module(Entity):
         """
 
         # Initialize Folder object and add to list of children, then sync
-        from CanvasSync.CanvasEntities.sub_header import SubHeader
+        from CanvasSync.entities.sub_header import SubHeader
 
         sub_folder = SubHeader(folder_info, folder_position, parent=self, items=folder_items)
         self.add_child(sub_folder)
@@ -134,7 +128,7 @@ class Module(Entity):
 
         # Determine which items are in the outer-scope (located in the folder represented by this module) and which
         # items are located in sub-folders under this module.
-        items_in_this_scope, sub_folders = static_functions.reorganize(items)
+        items_in_this_scope, sub_folders = helpers.reorganize(items)
 
         # Add all non-sub-folder items to the list of children. Currently, files, HTML pages and URLs are added.
         for item in items_in_this_scope:

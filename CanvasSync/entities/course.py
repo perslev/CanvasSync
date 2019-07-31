@@ -1,16 +1,12 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
 course.py, Second level class in hierarchy
 
-The Course class is the second level Entity object in the folder hierarchy. It inherits from the base Entity
+The Course class is the second level CanvasEntity object in the folder hierarchy. It inherits from the base CanvasEntity
 class and extends its functionality to allow downloading information on Modules listed under the course in the Canvas
 system. A Module object is initialized for each module found and appended to a list of children under the
 Course object. In addition, the object may initialize and store the AssignemntsFolder object representing the collection
@@ -30,20 +26,18 @@ from __future__ import print_function
 from six import text_type
 
 # CanvasSync modules
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.CanvasEntities.module import Module
-from CanvasSync.CanvasEntities.assignments_folder import AssignmentsFolder
-from CanvasSync.CanvasEntities.folder import Folder
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.entities.module import Module
+from CanvasSync.entities.assignments_folder import AssignmentsFolder
+from CanvasSync.entities.folder import Folder
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
 
 
-class Course(Entity):
-    """ Derived class of the Entity base class """
-
+class Course(CanvasEntity):
     def __init__(self, course_info, parent, settings):
         """
-        Constructor method, initializes base Entity class and adds all children Module objects to the list of children
+        Constructor method, initializes base CanvasEntity class and adds all children Module objects to the list of children
 
         course_info   : dict    | A dictionary of information on the Canvas course object
         parent        : object  | The parent object, the Synchronizer object
@@ -53,7 +47,7 @@ class Course(Entity):
 
         course_id = self.course_info[u"id"]
 
-        course_name = static_functions.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
+        course_name = helpers.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
 
         if settings.use_nicknames:
             course_name = self.course_info[u"name"]
@@ -63,13 +57,13 @@ class Course(Entity):
         self.to_be_synced = True if course_name in parent.settings.courses_to_sync else False
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=course_id,
-                        name=course_name,
-                        sync_path=course_path,
-                        parent=parent,
-                        identifier=u"course",
-                        folder=self.to_be_synced)
+        CanvasEntity.__init__(self,
+                              id_number=course_id,
+                              name=course_name,
+                              sync_path=course_path,
+                              parent=parent,
+                              identifier=u"course",
+                              folder=self.to_be_synced)
 
     def __repr__(self):
         """ String representation, overwriting base class method """

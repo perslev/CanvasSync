@@ -1,9 +1,5 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
@@ -30,18 +26,16 @@ import sys
 from six import text_type
 
 # CanvasSync module imports
-from CanvasSync.CanvasEntities.entity import Entity
-from CanvasSync.Statics.ANSI import ANSI
-from CanvasSync.Statics import static_functions
-from CanvasSync.Statics.url_shortcut_maker import make_url_shortcut
+from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities import helpers
+from CanvasSync.utilities.url_shortcut_maker import make_url_shortcut
 
 
-class ExternalUrl(Entity):
-    """ Derived class of the Entity base class """
-
+class ExternalUrl(CanvasEntity):
     def __init__(self, url_info, parent):
         """
-        Constructor method, initializes base Entity class and synchronizes the Item (downloads if not downloaded)
+        Constructor method, initializes base CanvasEntity class and synchronizes the Item (downloads if not downloaded)
 
         url_info : dict   | A dictionary of information on the Canvas ExternalUrl object
         parent   : object | The parent object, a Module or SubFolder object
@@ -49,17 +43,17 @@ class ExternalUrl(Entity):
         self.url_info = url_info
 
         url_id = self.url_info[u"id"]
-        url_name = static_functions.get_corrected_name(self.url_info[u"title"])
+        url_name = helpers.get_corrected_name(self.url_info[u"title"])
         url_path = parent.get_path() + url_name
 
         # Initialize base class
-        Entity.__init__(self,
-                        id_number=url_id,
-                        name=url_name,
-                        sync_path=url_path,
-                        parent=parent,
-                        folder=False,
-                        identifier=u"external_url")
+        CanvasEntity.__init__(self,
+                              id_number=url_id,
+                              name=url_name,
+                              sync_path=url_path,
+                              parent=parent,
+                              folder=False,
+                              identifier=u"external_url")
 
     def __repr__(self):
         """ String representation, overwriting base class method """

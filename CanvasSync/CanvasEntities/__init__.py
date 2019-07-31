@@ -1,1 +1,0 @@
-""" CanvasSync by Mathias Perslev """

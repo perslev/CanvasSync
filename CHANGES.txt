@@ -11,3 +11,5 @@
 0.2.0, 15-09-17 - Fixed bug that would cause the program to crash if password was not specified through command line argument
 0.2.1, 25-09-17 - Allows users to rename courses. Fixed a bug running CanvasSync on Arch Linux.
 0.2.2, 13-08-18 - Changed dependency from pycrypto to pycryptodome, added (debugging) option for running the canvas.py script targeting the local package version if PyPi version is not installed, added temporary fix to download up to 100 files under each entity
+0.2.3, 31-08-19 - Rename courses feature was poorly supported and has been removed. When installing via PIP, the entry script is now invoked with 'canvas' instead of 'canvas.py'. File- and folder names are now 'cleaned' for characters that are illegal in Windows and OneDrive sync processes on all operating systems (previously only on Windows). Fixed a various bugs. Minor refactoring performed.
+0.2.4, 31-08-19 - Fixing minor error in packaging

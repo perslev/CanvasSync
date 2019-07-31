@@ -1,14 +1,10 @@
-#!/usr/bin/env python2.7
-
 """
 CanvasSync by Mathias Perslev
-
-MSc Bioinformatics, University of Copenhagen
 February 2017
 
 --------------------------------------------
 
-instructure_api.py, Class
+instructure_api.py
 
 The InstructureApi object is initialized with a Settings object from the CanvasSync.py module.
 This class implements the basic API calling functionality to the Canvas by Instructure server.
@@ -20,19 +16,13 @@ in attribute-value pairs. The json module is used to easily convert this format 
 The InstructureApi object implements various methods that will fetch resources from the server such as lists of courses,
 modules and files that the user has authentication to access.
 """
-
-# Inbuilt modules
 import json
-
-# Third party modules
 import requests
 
 
 class InstructureApi(object):
     def __init__(self, settings):
         """
-        Constructor method
-
         settings : string | A Settings object used to load domain and token attributes
         """
         self.settings = settings
@@ -43,7 +33,8 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return requests.get(u"%s%s" % (self.settings.domain, api_call), headers={u'Authorization': u"Bearer %s" % self.settings.token})
+        return requests.get(u"%s%s" % (self.settings.domain, api_call),
+                            headers={u'Authorization': u"Bearer %s" % self.settings.token})
 
     def get_json(self, api_call):
         """
@@ -54,11 +45,17 @@ class InstructureApi(object):
         """
         return json.loads(self._get(api_call).text)
 
+    def get_json_list(self, api_call):
+        data = self.get_json(api_call)
+        if not isinstance(data, (list, tuple)):
+            data = []
+        return data
+
     def get_courses(self):
         """
-        Returns a dictionary of courses.
+        Returns a list of course dictionaries.
         """
-        return self.get_json(u"/api/v1/courses?per_page=100")
+        return self.get_json_list(u"/api/v1/courses?per_page=100")
 
     def get_modules_in_course(self, course_id):
         """
@@ -66,7 +63,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/modules?per_page=100" % course_id)
+        return self.get_json_list(u"/api/v1/courses/%s/modules?per_page=100" % course_id)
 
     def get_files_in_folder(self, folder_id):
         """
@@ -74,7 +71,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json(u"/api/v1/folders/%s/files?per_page=100" % folder_id)
+        return self.get_json_list(u"/api/v1/folders/%s/files?per_page=100" % folder_id)
 
     def get_folders_in_folder(self, folder_id):
         """
@@ -82,7 +79,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json(u"/api/v1/folders/%s/folders?per_page=100" % folder_id)
+        return self.get_json_list(u"/api/v1/folders/%s/folders?per_page=100" % folder_id)
 
     def get_files_in_course(self, course_id):
         """
@@ -90,7 +87,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/files?per_page=100" % course_id)
+        return self.get_json_list(u"/api/v1/courses/%s/files?per_page=100" % course_id)
 
     def get_folders_in_course(self, course_id):
         """
@@ -98,7 +95,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/folders?per_page=100" % course_id)
+        return self.get_json_list(u"/api/v1/courses/%s/folders?per_page=100" % course_id)
 
     def get_items_in_module(self, course_id, module_id):
         """
@@ -133,7 +130,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/assignments?per_page=100" % course_id)
+        return self.get_json_list(u"/api/v1/courses/%s/assignments?per_page=100" % course_id)
 
     def download_page_information(self, course_id, page_id):
         """
