@@ -7,8 +7,7 @@ CanvasSync helps students automatically synchronize modules, assignments & files
 to a mirrored folder on their local computer. It traverses the folder hierarchy in Canvas from the top course level down to individual
 files and creates a similar folder structure on the local computer:
 
-
-![alt tag](https://cloud.githubusercontent.com/assets/12041524/22702853/63eaa498-ed62-11e6-9227-de5823cb39c6.png)
+![](resources/overview.png)
 
 First, CanvasSync creates a folder hierarchy on the local computer reflecting the 'Modules' section on the Canvas server.
 Files are stored in folders such as ../SyncFolder/Course/Module/SubFolder/file.txt. Both regular files, links to external
@@ -79,9 +78,7 @@ your behalf, see Disclaimer below.
 
 The process of generating a token is illustrated below:
 
-
-![alt tag](https://cloud.githubusercontent.com/assets/12041524/22701027/c25ccbd8-ed5c-11e6-9ace-c8687e124bc8.png)
-
+![](resources/auth_token.png)
 
 The authentication token is stored in an local file encrypted using a private password. Consequently, the user must
 specify the password whenever CanvasSync is launched to synchronize at a later time. Passwords and/or auth tokens are
