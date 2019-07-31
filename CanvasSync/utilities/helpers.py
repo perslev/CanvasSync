@@ -110,7 +110,12 @@ def get_corrected_name(name):
     name = name.strip(" .")
     for char, replace in CLEAN_CHARS.items():
         name = name.replace(char, replace)
-    return name[:255]
+    max_length = 255
+    if len(name) > max_length:
+        # The name is too long
+        base, ext = os.path.splitext(name)
+        name = base[:max_length - len(ext)] + ext
+    return name
 
 
 def validate_domain(domain):
