@@ -72,6 +72,7 @@ def run_canvas_sync():
     and initializes the program
     """
 
+    # Executed by command line
     # Get command line arguments (C-style)
     try:
         opts, args = getopt.getopt(sys.argv[1:], u"hsiSp:", [u"help", u"setup", u"info", u"sync", u"password"])
@@ -79,6 +80,7 @@ def run_canvas_sync():
         # print help information and exit
         print(err)
         usage.help()
+
 
     # Parse the command line arguments and act accordingly
     setup = False
