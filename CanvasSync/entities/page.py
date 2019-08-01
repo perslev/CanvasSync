@@ -141,7 +141,7 @@ class Page(CanvasEntity):
                 out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
                 out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
                 out_file.write(u"<hr>")
-                out_file.write(body)
+                out_file.write(body or u"")
 
         return True
 
