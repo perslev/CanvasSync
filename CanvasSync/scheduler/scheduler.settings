@@ -1,2 +1,3 @@
 interval=hourly
 interval=every 6 hours
+interval=hourly
