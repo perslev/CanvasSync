@@ -87,6 +87,7 @@ cannot and will not be shared with third parties.
 MacOS Ststusbar
 ----------
 For MacOS CanvasSync has also a statusbar. From here you can initalise a Synchronisation manually or setup an automatic sync.
+
 <img src="resources/macos_statusbar.png" width="350">
 
 To run the Statusbar simply execute /GUI/macos_statusbar.py. You can also add it to the system startup by executing /GUI/startup_installer.py. This script also contains a function to remove the statusbar from the system startup again.
