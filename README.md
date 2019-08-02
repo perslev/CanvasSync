@@ -91,7 +91,7 @@ For MacOS CanvasSync has also a statusbar. From here you can initalise a Synchro
 <img src="resources/macos_statusbar.png" width="350">
 
 To run the Statusbar simply execute /GUI/macos_statusbar.py. You can also add it to the system startup by executing /GUI/startup_installer.py. This script also contains a function to remove the statusbar from the system startup again.
-!!!IMPORTANT: At the moment the password of the settings-file has to be 'NotSafePassword' so that the statusbar and the automatic scheduler works.
+!!! IMPORTANT: At the moment the password of the settings-file has to be 'NotSafePassword' so that the statusbar and the automatic scheduler works.
 
 Disclaimer
 ----------
