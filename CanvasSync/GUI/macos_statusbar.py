@@ -11,6 +11,55 @@ import pathlib
 import sys
 import subprocess
 import AppKit
+import configparser
+import os.path
+import datetime
+import keyring
+import pymsgbox
+
+
+class config_file:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        if not os.path.exists(self.filepath):
+            open(self.filepath, 'a').close()
+        self.config = configparser.ConfigParser()
+        self.config.read(filepath)
+
+    def read(self, section, parameter):
+        if not self.config.has_option(section, parameter):
+            return None
+        else:
+            return self.config[section][parameter]
+
+    def write(self, section, parameter, value):
+        if not self.config.has_section(section):
+            self.config.add_section(section)
+        self.config.set(section, parameter, value)
+        with open(self.filepath, 'w') as configfile:
+            self.config.write(configfile)
+
+
+from tkinter import *
+
+def pop_up():
+    app = Tk()
+    app.title("CanvasSync Password")
+    label = Label(app, text="Please enter the CanvasSync Password:")
+    label.grid()
+    pwd = StringVar()
+    e1 = Entry(app, width=40, textvariable=pwd)
+    btn = Button(app, text="Ok", command=app.destroy)
+    btn.grid(row=2)
+    e1.grid(row=1)
+
+    app.mainloop()
+    return pwd.get()
+
+def savepassword():
+    response = str(pop_up())
+    keyring.set_password('CanvasSync', 'xkcd', response)
+
 
 def changeSchedule(ToNew):
     """
@@ -18,9 +67,8 @@ def changeSchedule(ToNew):
     Arguments:
         ToNew (str): The interval changed to/the new interval.
     """
-    path = str(pathlib.Path(__file__).parent.parent) + "/scheduler/scheduler.settings"
-    with open(path, 'a') as file:
-        file.write('\ninterval=' + ToNew)
+    config.write('Settings', 'interval', ToNew)
+
 
 def adjust_interval(self):
     # Change tick-mark in Statusbar on change
@@ -46,13 +94,14 @@ def prefs(_):
     rumps.notification("Canvas Sync", "Syncing...", "The Canvas sync was started manually.")
     # Add folder of canvas module to search directory
     path = str(pathlib.Path(__file__).parent.parent.parent) + "/bin/"
-    sys.path.insert(0,path)
+    sys.path.insert(0, path)
     # Actual syncing
     import canvas
     settings = canvas.Settings()
-    password = 'NotSafePassword'   # Later store password somewhere safe and make it adjustable
+    password = keyring.get_password('CanvasSync', 'xkcd')
     canvas.do_sync(settings, password)
     rumps.notification("Canvas Sync", "Finished Synchronisation", "The Manual Canvas-Sync-task was finished.")
+    config.write('Last run', 'time', str(datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")))
 
 
 @clicked("Preferences")
@@ -61,37 +110,33 @@ def sayhi(_):
     rumps.alert("Not yet available! In next version...")
 
 
-
 hourly = MenuItem('hourly', callback=adjust_interval)
 every6 = MenuItem('every 6 hours', callback=adjust_interval)
 daily = MenuItem('daily', callback=adjust_interval)
 no_sync = MenuItem('Do not sync', callback=adjust_interval)
 
-
 if __name__ == "__main__":
+    if keyring.get_password('CanvasSync', 'xkcd') is None:
+        savepassword()
+
+    config = config_file(str(pathlib.Path(__file__).parent.parent) + "/scheduler/scheduler.ini")
+    interval = config.read('Settings', 'interval')
+
     # Do not appear in Mac Dock
     info = AppKit.NSBundle.mainBundle().infoDictionary()
     info["LSBackgroundOnly"] = "1"
 
     # Set Statusbar Properties
     app = App('Canvas Sync', icon='canvas_logo.png')
-    app.menu = [("Sync now"),("Automatic sync",[hourly,every6,daily,None,no_sync]),"Preferences"]
+    app.menu = [("Sync now"), ("Automatic sync", [hourly, every6, daily, None, no_sync]), "Preferences"]
     path = str(pathlib.Path(__file__).parent.parent) + '/scheduler/scheduler.py'
 
     # Run Scheduler as independent subprocess
     subprocess.Popen(["python", path])
 
     # Get Current Sync-Setting from file and select the selected in Statusbar
-    with open(str(pathlib.Path(__file__).parent.parent) + "/scheduler/scheduler.settings") as f:
-        contents = f.readlines()
-        for content in contents:
-            line = str(content).split("=")
-            if line[0] == "interval":
-                interval = line[1]
-    app.menu["Automatic sync"][interval].state = 1
+    if not interval == None:
+        app.menu["Automatic sync"][interval].state = 1
 
     # Run Statusbar
     app.run()
-
-
-

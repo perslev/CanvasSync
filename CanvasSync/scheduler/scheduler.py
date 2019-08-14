@@ -9,44 +9,76 @@ ToDo:
 import datetime, time
 import pathlib
 import sys
+import configparser
+import os.path
+import pymsgbox
 
-# Import Canvas Module
-path = str(pathlib.Path(__file__).parent.parent.parent) + "/bin/"
-sys.path.insert(0, path)
-import canvas
+class config_file:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        if not os.path.exists(self.filepath):
+            open(self.filepath, 'a').close()
+        self.config = configparser.ConfigParser()
+        self.config.read(filepath)
+
+    def read(self, section, parameter):
+        if not self.config.has_option(section, parameter):
+            return None
+        else:
+            return self.config[section][parameter]
+
+    def write(self, section, parameter, value):
+        if not self.config.has_section(section):
+            self.config.add_section(section)
+        self.config.set(section, parameter, value)
+        with open(self.filepath, 'w') as configfile:
+            self.config.write(configfile)
 
 
 def runSync():
+    print('sync')
+    if keyring.get_password('CanvasSync', 'xkcd') == None:
+        raise Exception("Error: Password for CanvasSync not saved in Keychain")
     settings = canvas.Settings()
-    password = 'NotSafePassword'   # Later store password somewhere safe and make it adjustable
+    password = keyring.get_password('CanvasSync', 'xkcd')
     canvas.do_sync(settings, password)
+    config.write('Last run', 'time', str(datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")))
 
 
-# The Check if has to sync
-dailysync = False
-while True:
-    # read Config
-    with open(str(pathlib.Path(__file__).parent) + "/scheduler.settings") as f:
-        contents = f.readlines()
-        for content in contents:
-            line = str(content).split("=")
-            if line[0] == "interval":
-                interval = line[1]
-    t = datetime.datetime.now()
-    print(t)
-    if interval == 'daily' and dailysync == False:
-        runSync()
-        dailysync = True
-    elif interval == 'Do not sync':
-        #do nothing
-        pass
-    if t.minute == 0 and t.second < 3:
-        if interval == 'hourly':
+if __name__ == '__main__':
+    # Import Canvas Module
+    path = str(pathlib.Path(__file__).parent.parent.parent) + "/bin/"
+    sys.path.insert(0, path)
+    import canvas
+
+    # The Check if has to sync
+    dailysync = False
+    while True:
+        # read Config
+        config = config_file(str(pathlib.Path(__file__).parent) + "/scheduler.ini")
+        interval = config.read('Settings', 'interval')
+        last_sync = config.read('Last run', 'time')
+        if last_sync == None:
+            last_sync = '01.01.2000 01:01:01'
+        last_sync = datetime.datetime.strptime(last_sync, "%d.%m.%Y %H:%M:%S")
+        current_time = datetime.datetime.now()
+        if interval == 'daily':
+            next_sync = last_sync + datetime.timedelta(days=1)
+        elif interval == 'Do not sync':
+            #do nothing
+            next_sync = last_sync + datetime.timedelta(hours=1)
+            pass
+        elif interval == 'hourly':
+            next_sync = last_sync + datetime.timedelta(hours=1)
+        elif interval == 'every 6 hours':
+            next_sync = last_sync + datetime.timedelta(hours=6)
+        else:
+            next_sync = last_sync + datetime.timedelta(minutes=10)
+        if next_sync < current_time and interval != 'Do not sync':
             runSync()
-        elif interval == 'every 6 hours' and t.hour % 6 == 0:
-            runSync()
-    else:
-        # Calc time till next full hour and wait till then
-        waitseconds = (60 - t.second) + (60 - t.minute - 1) * 60
-        print(str(waitseconds))
-        time.sleep(waitseconds)
+        else:
+            print('next sync ' + str(next_sync.strftime("%d.%m.%Y %H:%M:%S")))
+            # Calc time till next full hour and wait till then
+            waitseconds = (next_sync - current_time).total_seconds()
+            print('waiting ' + str(waitseconds) + ' seconds')
+            time.sleep(waitseconds)
