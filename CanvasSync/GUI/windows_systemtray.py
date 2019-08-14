@@ -1,18 +1,8 @@
-import pathlib, configparser, os, sys, datetime, keyring, subprocess
 from PIL import Image
-image = Image.open('canvas_logo.png')
-
+import pathlib, configparser, os, sys, datetime, keyring, subprocess
 from pystray import Icon as icon, Menu as menu, MenuItem as item
 import pystray
-
-state = 0
-state_dict = {
-    1:'hourly',
-    2:'every 6 hours',
-    3:'daily',
-    4:'Do not sync'
-}
-
+import PIL
 
 class config_file:
     def __init__(self, filepath):
@@ -92,6 +82,16 @@ def quit_icon():
 
 
 if __name__ == '__main__':
+    image = PIL.Image.open('canvas_logo.png')
+
+    state = 0
+    state_dict = {
+        1: 'hourly',
+        2: 'every 6 hours',
+        3: 'daily',
+        4: 'Do not sync'
+    }
+
     if keyring.get_password('CanvasSync', 'xkcd') is None:
         savepassword()
 
