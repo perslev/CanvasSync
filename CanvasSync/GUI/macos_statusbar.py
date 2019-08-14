@@ -2,9 +2,6 @@
 This script is the actual MacOS Statusbar for CanvasSync.
 Execute this script to run the CanvasSync Statusbar.
 Run startup_installer.py to add the CanvasSync Statsubar to the system StartUp.
-
-ToDo:
-- Password must be 'NotSafePassword' to work.
 """
 from rumps import *
 import pathlib

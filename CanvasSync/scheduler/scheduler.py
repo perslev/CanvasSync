@@ -1,10 +1,6 @@
 """
 This Script is the Scheduler for the automatic Canvas Sync. It constanly runs and checks every full hour if it needs to sync.
 It checks it every hour because the user could have changed the settings inbetween the last and the current run.
-
-ToDo:
-- Password must be 'NotSafePassword' to work.
-- At the moment when 'daily' is selected CanvasSync syncs at StartUp not just once daily.
 """
 import datetime, time
 import pathlib
