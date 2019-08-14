@@ -7,7 +7,8 @@ import pathlib
 import sys
 import configparser
 import os.path
-import pymsgbox
+import keyring
+#import pymsgbox
 
 class config_file:
     def __init__(self, filepath):
