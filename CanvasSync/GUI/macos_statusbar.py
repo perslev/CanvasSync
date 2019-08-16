@@ -129,7 +129,11 @@ if __name__ == "__main__":
     path = str(pathlib.Path(__file__).parent.parent) + '/scheduler/scheduler.py'
 
     # Run Scheduler as independent subprocess
-    subprocess.Popen(["python", path])
+    #subprocess.run(["python", path])
+    from subprocess import Popen, PIPE
+    p = subprocess.Popen([sys.executable, path],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
 
     # Get Current Sync-Setting from file and select the selected in Statusbar
     if not interval == None:

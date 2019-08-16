@@ -54,11 +54,14 @@ if __name__ == '__main__':
         # read Config
         config = config_file(str(pathlib.Path(__file__).parent) + "/scheduler.ini")
         interval = config.read('Settings', 'interval')
+        print('interval ' + str(interval))
         last_sync = config.read('Last run', 'time')
         if last_sync == None:
             last_sync = '01.01.2000 01:01:01'
         last_sync = datetime.datetime.strptime(last_sync, "%d.%m.%Y %H:%M:%S")
+        print('last sync ' + str(last_sync.strftime("%d.%m.%Y %H:%M:%S")))
         current_time = datetime.datetime.now()
+        print('current time ' + str(current_time.strftime("%d.%m.%Y %H:%M:%S")))
         if interval == 'daily':
             next_sync = last_sync + datetime.timedelta(days=1)
         elif interval == 'Do not sync':
@@ -77,5 +80,7 @@ if __name__ == '__main__':
             print('next sync ' + str(next_sync.strftime("%d.%m.%Y %H:%M:%S")))
             # Calc time till next full hour and wait till then
             waitseconds = (next_sync - current_time).total_seconds()
+            if waitseconds > 3600:
+                waitseconds = 3600
             print('waiting ' + str(waitseconds) + ' seconds')
             time.sleep(waitseconds)
