@@ -84,15 +84,18 @@ The authentication token is stored in an local file encrypted using a private pa
 specify the password whenever CanvasSync is launched to synchronize at a later time. Passwords and/or auth tokens are
 cannot and will not be shared with third parties.
 
-MacOS Ststusbar
+Statusbar
 ----------
-For MacOS CanvasSync has also a statusbar. From here you can initalise a Synchronisation manually or setup an automatic sync.
+For MacOS CanvasSync has also a statusbar, for Windows a icon at the taskbar. From here you can initalise a Synchronisation manually or setup an automatic sync.
 
-<img src="resources/macos_statusbar.png" width="350">
+<img src="resources/macos_statusbar.png" width="350">   <img src="resources/windows_systemtray.png" width="350">
 
-To run the Statusbar simply execute /GUI/macos_statusbar.py. You can also add it to the system startup by executing /GUI/startup_installer.py. This script also contains a function to remove the statusbar from the system startup again.
+To run the Statusbar simply execute /GUI/macos_statusbar.py or /GUI/windows_systemtray.py. You can also add it to the system startup by executing /GUI/startup_installer.py. This script also contains a function to remove the statusbar from the system startup again.
 
-!!! IMPORTANT: At the moment the password of the settings-file has to be 'NotSafePassword' so that the statusbar and the automatic scheduler works.
+Still ToDo:
+- quiting does not work
+- preferences GUI still has to be added
+(On MacOS the you have to grant CanvasSync access to access the KeyChain. CanvasSync saves the password here. ToDo: Make PopUp to give access if CanvasSync does not have access.)
 
 Disclaimer
 ----------
