@@ -80,6 +80,7 @@ def quit_icon():
     #ToDo: Quit App does not work at the moment.
     icon.stop()
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 if __name__ == '__main__':
     image = PIL.Image.open('canvas_logo.png')
@@ -96,10 +97,10 @@ if __name__ == '__main__':
         savepassword()
 
     # Run Scheduler as independent subprocess
-    path = str(pathlib.Path(__file__).parent.parent) + '/scheduler/scheduler.py'
+    path = str(os.path.abspath(os.path.join(os.path.join(os.path.abspath(__file__), '..'), '..'))) + '\\scheduler\\scheduler.py'
     subprocess.Popen(["python", path])
 
-    config = config_file(str(pathlib.Path(__file__).parent.parent) + "/scheduler/scheduler.ini")
+    config = config_file(str(os.path.abspath(os.path.join(os.path.join(os.path.abspath(__file__), '..'), '..'))) + "\\scheduler\\scheduler.ini")
     icon('test', image, menu=menu(
         item('Sync now', runSync),
         item(

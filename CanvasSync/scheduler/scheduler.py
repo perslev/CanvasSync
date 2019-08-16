@@ -46,6 +46,9 @@ if __name__ == '__main__':
     # Import Canvas Module
     path = str(pathlib.Path(__file__).parent.parent.parent) + "/bin/"
     sys.path.insert(0, path)
+    # Set workind dir for windows
+    # ToDo: Check if still works with MacOS
+    os.chdir(path)
     import canvas
 
     # The Check if has to sync

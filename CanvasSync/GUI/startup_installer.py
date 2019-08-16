@@ -20,13 +20,63 @@ def CreateStartupFile():
     with open(path_s, 'w') as file:
         file.write(script)
 
+def AddWinTaskScheduler(wkdir, command, enabled):
+    import datetime
+    import win32com.client
+
+    scheduler = win32com.client.Dispatch('Schedule.Service')
+    scheduler.Connect()
+    root_folder = scheduler.GetFolder('\\')
+    task_def = scheduler.NewTask(0)
+
+    # Create trigger
+    #end_time = datetime.datetime.now()
+    TASK_TRIGGER_TIME = 9
+    trigger = task_def.Triggers.Create(TASK_TRIGGER_TIME)
+    #trigger.EndBoundary = end_time.isoformat()
+    trigger.ExecutionTimeLimit = "PT5M"
+    trigger.Id = "LogonTriggerId"
+    import win32api
+    user = win32api.GetUserName()
+    trigger.UserId = user
+    trigger.ExecutionTimeLimit = "P0M2DT0H0M"
+    trigger.enabled = enabled
+
+    # Create action
+    TASK_ACTION_EXEC = 0
+    action = task_def.Actions.Create(TASK_ACTION_EXEC)
+    action.ID = 'DO NOTHING'
+    action.Path = 'cmd.exe'
+    action.Arguments = '/c "' + str(command) + '"'
+    action.WorkingDirectory = str(wkdir)
+
+    # Set parameters
+    task_def.RegistrationInfo.Description = 'Run CanvasSync at System Startup'
+    task_def.Settings.Enabled = True
+    task_def.Settings.StopIfGoingOnBatteries = False
+    task_def.Settings.DisallowStartIfOnBatteries = False
+    task_def.Settings.Hidden = True
+
+    # Register task
+    # If task already exists, it will be updated
+    TASK_CREATE_OR_UPDATE = 6
+    TASK_LOGON_NONE = 0
+    root_folder.RegisterTaskDefinition(
+        'CanvasSync',  # Task name
+        task_def,
+        TASK_CREATE_OR_UPDATE,
+        '',  # No user
+        '',  # No password
+        TASK_LOGON_NONE)
+
+
+
 def ActivateStartUpStatusbar():
-    # ToDo: Somehow Batch Script to run at StartUp does not work.
+    # ToDo: In Windows subpress feedback e.g. when asking if run this package that is not in PATH.
     if platform.system() == 'Windows':
-        path = str(pathlib.Path(__file__).parent) + '\windows_systemtray.py'
-        startup_path = os.path.expanduser('~') + '\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\CanvasSync.bat'
-        with open(startup_path, 'w+') as file:
-            file.write(str('python "' + path + '"'))
+        path = str(pathlib.Path(__file__).parent)
+        AddWinTaskScheduler(path, r'python .\windows_systemtray.py -y', True)
+
     else: #MacOS
         CreateStartupFile()
         load_command = "launchctl load " + str(os.path.expanduser('~')) + "/Library/LaunchAgents/com.CanvasSync.Statusbar.plist"
@@ -34,8 +84,8 @@ def ActivateStartUpStatusbar():
 
 def DeactivateStartUpStatusbar():
     if platform.system() == 'Windows':
-        startup_path = os.path.expanduser('~') + '\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\CanvasSync.bat'
-        os.remove(startup_path)
+        path = str(pathlib.Path(__file__).parent)
+        AddWinTaskScheduler(path, r'python .\windows_systemtray.py -y', False)
     else:  # MacOS
         unload_command = "launchctl unload " + str(os.path.expanduser('~')) + "/Library/LaunchAgents/com.CanvasSync.Statusbar.plist"
         stop_command = "launchctl stop " + str(os.path.expanduser('~')) + "/Library/LaunchAgents/com.CanvasSync.Statusbar.plist"
