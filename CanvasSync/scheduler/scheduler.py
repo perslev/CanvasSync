@@ -8,6 +8,7 @@ import sys
 import configparser
 import os.path
 import keyring
+import platform
 #import pymsgbox
 
 class config_file:
@@ -48,7 +49,8 @@ if __name__ == '__main__':
     sys.path.insert(0, path)
     # Set workind dir for windows
     # ToDo: Check if still works with MacOS
-    os.chdir(path)
+    if platform.system() == 'Windows':
+        os.chdir(path)
     import canvas
 
     # The Check if has to sync
