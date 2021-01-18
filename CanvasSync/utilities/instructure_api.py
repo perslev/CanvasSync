@@ -55,7 +55,22 @@ class InstructureApi(object):
         """
         Returns a list of course dictionaries.
         """
-        return self.get_json_list(u"/api/v1/courses?per_page=100")
+
+        # Previously this was breaking the tool... courses that have
+        # access restricted were missing required dictionary keys
+        # in other functions, so let's filter them out
+
+        course_list = self.get_json_list(u"/api/v1/courses?per_page=100")
+        filtered_course_list = []
+
+        for course in course_list:
+            if "access_restricted_by_date" in course and \
+                course[u"access_restricted_by_date"]:
+                continue
+
+            filtered_course_list.append(course)
+
+        return filtered_course_list
 
     def get_modules_in_course(self, course_id):
         """
