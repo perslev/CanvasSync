@@ -47,10 +47,13 @@ class Course(CanvasEntity):
 
         course_id = self.course_info[u"id"]
 
-        course_name = helpers.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
+        if "course_code" in course_info:
+            course_name = helpers.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
 
-        if settings.use_nicknames:
-            course_name = self.course_info[u"name"]
+            if settings.use_nicknames:
+                course_name = self.course_info[u"name"]
+        else:
+            course_name = "Nothing"
 
         course_path = parent.get_path() + course_name
 
