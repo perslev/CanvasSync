@@ -2,3 +2,5 @@ __pycache__
 build
 dist
 *.egg-info
+.DS_Store
+*.pyc
