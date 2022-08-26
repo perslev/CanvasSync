@@ -26,6 +26,7 @@ import sys
 import bcrypt
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
+from Crypto.Util.Padding import pad
 
 
 def get_key_hash(password):
@@ -52,12 +53,8 @@ def encrypt(message):
     # AES object
     encrypter = AES.new(get_key_hash(hashed_password), AES.MODE_CBC, IV)
 
-    # Padding to 16 bytes
-    if len(message) % 16 != 0:
-        message += " " * (16 - (len(message) % 16))
-
     # Add the unencrypted IV to the beginning of the encrypted_message
-    encrypted_message = IV + encrypter.encrypt(message.encode("utf-8"))
+    encrypted_message = IV + encrypter.encrypt(pad(message.encode("utf-8"), 16))
 
     return encrypted_message
 
