@@ -166,9 +166,9 @@ def ask_for_courses(settings, api):
     courses = api.get_courses()
 
     if settings.use_nicknames:
-        courses = [name[u"name"] for name in courses]
+        courses = [name[u"name"] for name in courses if "name" in name]
     else:
-        courses = [helpers.get_corrected_name(name[u"course_code"].split(";")[-1]) for name in courses]
+        courses = [helpers.get_corrected_name(name[u"course_code"].split(";")[-1]) for name in courses if "course_code" in name]
 
     choices = [True]*len(courses)
 
