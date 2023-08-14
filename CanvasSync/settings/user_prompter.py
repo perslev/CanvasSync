@@ -164,6 +164,7 @@ def ask_for_token(domain):
 def ask_for_courses(settings, api):
 
     courses = api.get_courses()
+    courses = [course for course in courses if 'access_restricted_by_date' not in course]
 
     if settings.use_nicknames:
         courses = [name[u"name"] for name in courses if "name" in name]
