@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.CanvasSync.Statusbar</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>[@replacePythonPath]</string>
+		<string>[@replaceCanvasPath]/macos_statusbar.py</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>[@replaceCanvasPath]/statusbar.err</string>
+	<key>StandardOutPath</key>
+	<string>[@replaceCanvasPath]/statusbar.out</string>
+	<key>KeepAlive</key>
+	<true/>
+</dict>
+</plist>
