@@ -177,11 +177,10 @@ def entry():
     if os.name == u"nt":
         # Warn Windows users
         helpers.clear_console()
-        input(u"\n[OBS] You are running CanvasSync on a Windows operating system.\n"
+        print(u"\n[OBS] You are running CanvasSync on a Windows operating system.\n"
                   u"      The application is not developed for Windows machines and may be\n"
                   u"      unstable. Some pretty output formatting and tab-autocompletion\n"
-                  u"      is not supported... :-(\n"
-                  u"\n    Anyway, hit enter to start.")
+                  u"      is not supported... :-(\n")
 
     try:
         run_canvas_sync()
