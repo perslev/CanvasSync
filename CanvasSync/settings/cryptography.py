@@ -43,8 +43,8 @@ def encrypt(message):
     """
 
     print(u"\nPlease enter a password to encrypt the settings file:")
-    hashed_password = bcrypt.hashpw(getpass.getpass(), bcrypt.gensalt())
-    with open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "w") as pass_file:
+    hashed_password = bcrypt.hashpw(getpass.getpass().encode(), bcrypt.gensalt())
+    with open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "wb") as pass_file:
         pass_file.write(hashed_password)
 
     # Generate random 16 bytes IV
@@ -77,7 +77,7 @@ def decrypt(message, password):
 
     # If the password isn't null then it was specified as a command-line argument
     if password:
-        if bcrypt.hashpw(password, hashed_password) != hashed_password:
+        if not bcrypt.checkpw(password.encode(), hashed_password.encode()):
             print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
             sys.exit()
     else:
@@ -85,7 +85,7 @@ def decrypt(message, password):
         while not valid_password:
             print(u"\nPlease enter password to decrypt the settings file:")
             password = getpass.getpass()
-            if bcrypt.hashpw(password, hashed_password) == hashed_password:
+            if bcrypt.checkpw(password.encode(), hashed_password.encode()):
                 valid_password = True
             else:
                 print(u"\n[ERROR] Invalid password. Please try again or invoke CanvasSync with the -s flag to reset settings.")
