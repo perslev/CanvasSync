@@ -89,10 +89,11 @@ class Assignment(CanvasEntity):
         assignment to the list of children and sync
         """
         # Get file URLs pointing to Canvas items
+        description = self.assignment_info.get(u"description", "")
         try:
-            canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"',
-                                          self.assignment_info.get(u"description") or u"")
-        except:
+            canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"', description)
+        except Exception as e:
+            print("Error:", e)
             canvas_file_urls = []
 
         # Download information on all found files and add File objects
@@ -119,8 +120,7 @@ class Assignment(CanvasEntity):
             #    they are not matched by this regex
             # 2) We should stay clear of all links to web-sites
             #    (they could be large to download, we skip them here)
-            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"',
-                              self.assignment_info.get(u"description") or u"")
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', description)
 
             for url in urls:
                 linked_file = LinkedFile(url, parent=self)
