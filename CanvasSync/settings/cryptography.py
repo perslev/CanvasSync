@@ -45,7 +45,8 @@ def encrypt(message):
     print(u"\nPlease enter a password to encrypt the settings file:")
     hashed_password = bcrypt.hashpw(getpass.getpass().encode(), bcrypt.gensalt())
     with open(os.path.expanduser(u"~") + u"/.CanvasSync.pw", "wb") as pass_file:
-        pass_file.write(hashed_password)
+        # Fix TypeError: a bytes-like object is required, not 'str'
+        pass_file.write(str.encode(hashed_password))
 
     # Generate random 16 bytes IV
     IV = os.urandom(16)
