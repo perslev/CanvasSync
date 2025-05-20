@@ -210,7 +210,7 @@ def ask_for_courses(settings, api):
 
     print(choices)
 
-    return [x for index, x in enumerate(courses) if choices[index]]
+    return [helpers.get_corrected_name(x) for index, x in enumerate(courses) if choices[index]]
 
 
 def ask_for_advanced_settings(settings):
